@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+pytest-cache-files-*/
+.ruff_cache/
+tmp/
+
+# Data and generated experiment outputs
+data/raw/
+data/processed/
+data/sample/*.wav
+!data/sample/README.md
+results/*
+!results/.gitkeep
+checkpoints/*
+!checkpoints/.gitkeep
+
+# The setup script downloads this upstream research repository when needed.
+external/aasist/

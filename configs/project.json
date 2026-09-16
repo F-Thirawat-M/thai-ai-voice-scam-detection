@@ -1,0 +1,7 @@
+{
+  "sample_rate": 16000,
+  "num_samples": 64600,
+  "aasist_config": "external/aasist/config/AASIST.conf",
+  "aasist_checkpoint": "external/aasist/models/weights/AASIST.pth"
+}
+
