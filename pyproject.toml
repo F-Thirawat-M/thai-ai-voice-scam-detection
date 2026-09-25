@@ -19,6 +19,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<9"]
+data = ["pyarrow>=15,<26"]
 
 [project.scripts]
 thai-spoof = "thai_spoof.cli:main"

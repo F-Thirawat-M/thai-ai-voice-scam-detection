@@ -77,33 +77,32 @@ spoof_probability: 0.187655
 
 ### เตรียม SEA-Spoof ภาษาไทยที่ได้รับอนุญาต
 
-เก็บข้อมูลที่ดาวน์โหลดไว้เฉพาะในเครื่องตามโครงสร้างนี้ (ไฟล์เสียงและ manifest ที่สร้างจากข้อมูลนี้ถูก `.gitignore`):
+ใช้ split เดิมของ SEA-Spoof เสมอ: `train` สำหรับฝึก, `validation` สำหรับเลือก checkpoint/threshold, `evaluation` สำหรับวัดผลตามแผนที่กำหนดไว้ ห้ามสุ่มแบ่งใหม่ ข้อมูลที่ดาวน์โหลดและไฟล์ที่สกัดได้ถูก `.gitignore` และไม่ควรแชร์กับผู้ที่ไม่ได้รับสิทธิ์
 
-```text
-data/raw/sea_spoof_th/
-  thai_metadata.jsonl
-  audio/evaluation/*.flac
-```
-
-ไฟล์ metadata จาก Google Drive มี `audio_path` เป็น path ของเครื่อง Colab เดิม สคริปต์ต่อไปนี้จะแปลงเป็น path ในเครื่อง ตรวจว่ามีไฟล์เสียงครบทุกแถว และสร้าง manifest เฉพาะภาษาไทยชุด `evaluation`:
+วาง Parquet จาก Hugging Face ไว้ที่ `data/raw/sea_spoof_hf/data/<split>/*.parquet` แล้วติดตั้ง dependency สำหรับการสกัดข้อมูล:
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\prepare_thai_manifest.py
+.\.venv\Scripts\python.exe -m pip install -e ".[data]"
 ```
 
-ถ้าไฟล์เสียงยังไม่ครบ สคริปต์จะหยุดโดยไม่สร้าง manifest อย่าใช้ชุดที่ไม่ครบเป็นผล baseline สำหรับรายงาน เมื่อผ่านแล้วจึงรัน:
+สกัดเฉพาะภาษาไทยจาก Dev และ Test โดยไม่แก้ Parquet ต้นฉบับ:
 
 ```powershell
-.\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
-  --manifest data\manifests\thai_evaluation.csv `
-  --output results\baseline_scores.csv
+.\.venv\Scripts\python.exe scripts\extract_thai_parquet.py --split validation
+.\.venv\Scripts\python.exe scripts\extract_thai_parquet.py --split evaluation
 ```
+
+ผลอยู่ที่ `data/processed/sea_spoof_th/audio/<split>/*.flac` และ `data/manifests/thai_dev.csv`, `data/manifests/thai_test.csv` แต่ละ manifest เก็บ `path`, `row_id`, `label`, `language`, `split` และ metadata ทุกคอลัมน์จากต้นทาง ยกเว้น audio bytes ที่บันทึกเป็น FLAC แยกไว้ สคริปต์ตรวจ FLAC, sample rate, label และ `row_id` ซ้ำก่อนสร้าง manifest ฉบับสมบูรณ์ รันซ้ำได้โดยไม่ทับเสียงที่ต่างจากต้นทาง
+
+ขั้นต่อไปคือรัน pretrained ทั้งสองโมเดลบน manifest เดียวกัน โดยเลือก threshold จาก Dev เท่านั้น อย่าใช้ Test เพื่อเลือก threshold หรือปรับโมเดล คำสั่ง `evaluate` ปัจจุบันคำนวณ threshold จากไฟล์ที่ส่งเข้ามา จึงยังไม่ควรใช้ค่า accuracy/confusion matrix ที่มันพิมพ์จาก Test เป็นผลวิจัยก่อนแก้ขั้น metrics นี้
+
+ไฟล์ `data/raw/sea_spoof_th/thai_metadata.jsonl` และ `scripts/prepare_thai_manifest.py` เป็นเส้นทางเก่าจาก Google Drive ยังเก็บไว้เพื่ออ้างอิง ไม่ใช่คำสั่งสำหรับ Parquet ใหม่
 
 ## ลำดับการทำงานของโครงงาน
 
 1. ทำให้ inference และ GPU ผ่าน
 2. ขอสิทธิ์ SEA-Spoof และตรวจ metadata ภาษาไทย
-3. สร้าง manifest โดยแยกผู้พูดระหว่าง train/validation/test
+3. กรองภาษาไทยตาม split เดิมและสร้าง manifest โดยไม่สุ่มแบ่งใหม่
 4. วัด pretrained AASIST บนเสียงไทยสะอาด
 5. วัดซ้ำภายใต้ noise และ telephone codec
 6. Fine-tune ด้วยข้อมูลไทยและ multi-condition augmentation
