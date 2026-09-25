@@ -8,6 +8,7 @@
 - มีคำสั่งตรวจ GPU และ dependency
 - มีคำสั่ง inference สำหรับไฟล์ WAV/FLAC หนึ่งไฟล์
 - มีคำสั่งประเมินไฟล์หลายรายการจาก CSV manifest
+- เลือก AASIST หรือ RawNet2 baseline ผ่าน `--model` ได้
 - ยังไม่ได้ fine-tune ด้วยภาษาไทย ดังนั้นผลรายไฟล์ในช่วงนี้เป็น baseline เพื่อการวิจัย ไม่ใช่เครื่องมือตัดสินเสียงปลอมจริง
 
 ## เริ่มใช้งาน
@@ -36,6 +37,19 @@
 .\.venv\Scripts\python.exe -m thai_spoof.cli infer --audio data\sample\your_voice.wav
 ```
 
+ค่าเริ่มต้นใช้ AASIST และสามารถระบุโมเดลให้ชัดเจนด้วย `--model aasist` ได้
+
+### ทดลอง RawNet2
+
+ติดตั้ง checkpoint ทางการครั้งแรก (ประมาณ 66 MB; ไฟล์จะอยู่ใน `checkpoints/` และไม่ถูกเพิ่มเข้า Git):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\setup_rawnet2_checkpoint.py
+.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model rawnet2 --audio data\sample\your_voice.wav
+```
+
+ค่าเริ่มต้นตรวจช่วงแรกประมาณ 4.04 วินาที หากต้องการเฉลี่ยคะแนนทุกช่วงของไฟล์ ใช้ `--all-chunks` กับ RawNet2 คะแนนที่พิมพ์ออกมาไม่ได้ผ่านการ calibration สำหรับภาษาไทย
+
 ผลตัวอย่าง:
 
 ```text
@@ -54,10 +68,12 @@ spoof_probability: 0.187655
 ```powershell
 .\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
   --manifest data\manifests\example.csv `
+  --model aasist `
   --output results\baseline_scores.csv
 ```
 
 รูปแบบ label ที่รองรับคือ `bonafide` และ `spoof`
+สามารถเปลี่ยนเป็น `--model rawnet2` และใช้ `--output` คนละไฟล์เพื่อเทียบผลสองโมเดลบน manifest เดียวกัน CSV ผลลัพธ์มี `model`, `score_type` และ `segments` กำกับ AASIST ใช้ logit ส่วน RawNet2 ใช้ softmax score จึงไม่ควรเทียบค่าคะแนนดิบข้ามโมเดลโดยตรง
 
 ### เตรียม SEA-Spoof ภาษาไทยที่ได้รับอนุญาต
 
@@ -91,7 +107,7 @@ data/raw/sea_spoof_th/
 4. วัด pretrained AASIST บนเสียงไทยสะอาด
 5. วัดซ้ำภายใต้ noise และ telephone codec
 6. Fine-tune ด้วยข้อมูลไทยและ multi-condition augmentation
-7. เพิ่ม RawNet2 เพื่อเปรียบเทียบ
+7. เปรียบเทียบ AASIST กับ RawNet2 บน manifest และเงื่อนไขการทดสอบเดียวกัน
 
 อ่านคำอธิบายสำหรับผู้เริ่มต้นใน `docs/BEGINNER_GUIDE_TH.md`
 
@@ -105,12 +121,16 @@ docs/                    คู่มือ
 external/aasist/         โค้ดและ checkpoint AASIST ทางการ
 results/                 คะแนนและผลการทดลอง
 scripts/                 คำสั่งติดตั้งและตรวจเครื่อง
-src/thai_spoof/          โค้ดของโปรเจกต์เรา
+src/thai_spoof/          โค้ดส่วนกลางของโปรเจกต์เรา
+src/thai_spoof/detectors/  ตัวเชื่อม AASIST/RawNet2 และรูปแบบผลลัพธ์ร่วมกัน
+third_party/rawnet2/     ใบอนุญาตและเครดิตโค้ด RawNet2
 tests/                   automated tests
 ```
 
 ## แหล่งที่มา
 
 - AASIST: https://github.com/clovaai/aasist
+- RawNet2 integration: https://github.com/Nattadol/thai-audio-deepfake
+- RawNet2 baseline: https://www.asvspoof.org/asvspoof2021/
 - SEA-Spoof: https://huggingface.co/datasets/Jack-ppkdczgx/SEA-Spoof
 - PyTorch installation: https://pytorch.org/get-started/locally/

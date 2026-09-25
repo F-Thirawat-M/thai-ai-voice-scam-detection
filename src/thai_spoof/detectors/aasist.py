@@ -1,26 +1,18 @@
+"""Inference wrapper for the official pretrained AASIST model."""
+
 from __future__ import annotations
 
 import json
 import sys
-from dataclasses import dataclass
 from pathlib import Path
 
 import torch
 
-from .audio import load_audio, repeat_or_trim
+from ..audio import load_audio, repeat_or_trim
+from .base import Prediction
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-
-
-@dataclass(frozen=True)
-class Prediction:
-    path: Path
-    prediction: str
-    spoof_probability: float
-    bonafide_probability: float
-    bonafide_score: float
-    device: str
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 
 
 class AASISTDetector:
@@ -93,5 +85,7 @@ class AASISTDetector:
             bonafide_probability=bonafide_probability,
             bonafide_score=float(logits[0, 1].cpu()),
             device=str(self.device),
+            model="aasist",
+            score_type="logit",
+            segments=1,
         )
-
