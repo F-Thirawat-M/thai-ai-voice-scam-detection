@@ -12,6 +12,7 @@ data/raw/
 data/processed/
 data/sample/*.wav
 !data/sample/README.md
+data/manifests/thai_*.csv
 results/*
 !results/.gitkeep
 checkpoints/*

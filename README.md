@@ -59,6 +59,30 @@ spoof_probability: 0.187655
 
 รูปแบบ label ที่รองรับคือ `bonafide` และ `spoof`
 
+### เตรียม SEA-Spoof ภาษาไทยที่ได้รับอนุญาต
+
+เก็บข้อมูลที่ดาวน์โหลดไว้เฉพาะในเครื่องตามโครงสร้างนี้ (ไฟล์เสียงและ manifest ที่สร้างจากข้อมูลนี้ถูก `.gitignore`):
+
+```text
+data/raw/sea_spoof_th/
+  thai_metadata.jsonl
+  audio/evaluation/*.flac
+```
+
+ไฟล์ metadata จาก Google Drive มี `audio_path` เป็น path ของเครื่อง Colab เดิม สคริปต์ต่อไปนี้จะแปลงเป็น path ในเครื่อง ตรวจว่ามีไฟล์เสียงครบทุกแถว และสร้าง manifest เฉพาะภาษาไทยชุด `evaluation`:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\prepare_thai_manifest.py
+```
+
+ถ้าไฟล์เสียงยังไม่ครบ สคริปต์จะหยุดโดยไม่สร้าง manifest อย่าใช้ชุดที่ไม่ครบเป็นผล baseline สำหรับรายงาน เมื่อผ่านแล้วจึงรัน:
+
+```powershell
+.\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
+  --manifest data\manifests\thai_evaluation.csv `
+  --output results\baseline_scores.csv
+```
+
 ## ลำดับการทำงานของโครงงาน
 
 1. ทำให้ inference และ GPU ผ่าน
