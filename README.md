@@ -36,6 +36,9 @@
 .\.venv\Scripts\python.exe -m thai_spoof.cli infer --audio data\sample\your_voice.wav
 ```
 
+ค่าเริ่มต้นใช้ AASIST และสามารถระบุโมเดลให้ชัดเจนด้วย `--model aasist` ได้
+เมื่อเพิ่มโมเดลอื่นในภายหลัง จะเลือกผ่านตัวเลือกเดียวกัน
+
 ผลตัวอย่าง:
 
 ```text
@@ -54,6 +57,7 @@ spoof_probability: 0.187655
 ```powershell
 .\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
   --manifest data\manifests\example.csv `
+  --model aasist `
   --output results\baseline_scores.csv
 ```
 
@@ -105,7 +109,8 @@ docs/                    คู่มือ
 external/aasist/         โค้ดและ checkpoint AASIST ทางการ
 results/                 คะแนนและผลการทดลอง
 scripts/                 คำสั่งติดตั้งและตรวจเครื่อง
-src/thai_spoof/          โค้ดของโปรเจกต์เรา
+src/thai_spoof/          โค้ดส่วนกลางของโปรเจกต์เรา
+src/thai_spoof/detectors/  ตัวเชื่อมโมเดลและรูปแบบผลลัพธ์ร่วมกัน (ปัจจุบันมี AASIST)
 tests/                   automated tests
 ```
 

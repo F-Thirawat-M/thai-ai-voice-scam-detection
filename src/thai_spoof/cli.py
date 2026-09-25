@@ -6,11 +6,11 @@ import json
 from pathlib import Path
 
 from .metrics import calculate_metrics
-from .model import AASISTDetector
+from .detectors import MODEL_NAMES, create_detector
 
 
 def infer_command(args: argparse.Namespace) -> int:
-    detector = AASISTDetector(device=args.device)
+    detector = create_detector(args.model, device=args.device)
     result = detector.predict(args.audio)
     print(f"file: {result.path}")
     print(f"device: {result.device}")
@@ -25,7 +25,7 @@ def infer_command(args: argparse.Namespace) -> int:
 def evaluate_command(args: argparse.Namespace) -> int:
     manifest_path = Path(args.manifest).resolve()
     output_path = Path(args.output).resolve()
-    detector = AASISTDetector(device=args.device)
+    detector = create_detector(args.model, device=args.device)
     rows: list[dict[str, str]] = []
 
     with manifest_path.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -76,17 +76,19 @@ def evaluate_command(args: argparse.Namespace) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Thai AASIST research utilities")
+    parser = argparse.ArgumentParser(description="Thai speech spoofing research utilities")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     infer = subparsers.add_parser("infer", help="score one WAV or FLAC file")
     infer.add_argument("--audio", required=True, help="path to a WAV or FLAC file")
+    infer.add_argument("--model", choices=MODEL_NAMES, default="aasist")
     infer.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     infer.set_defaults(func=infer_command)
 
     evaluate = subparsers.add_parser("evaluate", help="score files listed in a CSV")
     evaluate.add_argument("--manifest", required=True, help="CSV containing path and label")
     evaluate.add_argument("--output", required=True, help="output score CSV")
+    evaluate.add_argument("--model", choices=MODEL_NAMES, default="aasist")
     evaluate.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     evaluate.set_defaults(func=evaluate_command)
     return parser
@@ -99,4 +101,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
