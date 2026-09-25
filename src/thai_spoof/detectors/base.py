@@ -20,6 +20,9 @@ class Prediction:
     bonafide_probability: float
     bonafide_score: float
     device: str
+    model: str
+    score_type: str
+    segments: int
 
 
 class Detector(Protocol):

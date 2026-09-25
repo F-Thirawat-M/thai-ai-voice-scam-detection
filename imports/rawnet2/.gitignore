@@ -1,4 +1,0 @@
-__pycache__/
-*.pyc
-pre_trained_DF_RawNet2.zip
-checkpoints/*.pth

@@ -1,3 +1,9 @@
+"""RawNet2 architecture from the ASVspoof baseline.
+
+Source: https://github.com/Nattadol/thai-audio-deepfake (a077243)
+Original author: Hemlata Tak. License: third_party/rawnet2/LICENSE.
+"""
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

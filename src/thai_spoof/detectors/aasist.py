@@ -85,4 +85,7 @@ class AASISTDetector:
             bonafide_probability=bonafide_probability,
             bonafide_score=float(logits[0, 1].cpu()),
             device=str(self.device),
+            model="aasist",
+            score_type="logit",
+            segments=1,
         )

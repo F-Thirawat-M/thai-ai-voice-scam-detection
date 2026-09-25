@@ -10,14 +10,17 @@ from .detectors import MODEL_NAMES, create_detector
 
 
 def infer_command(args: argparse.Namespace) -> int:
-    detector = create_detector(args.model, device=args.device)
+    detector = create_detector(args.model, device=args.device, all_chunks=args.all_chunks)
     result = detector.predict(args.audio)
     print(f"file: {result.path}")
     print(f"device: {result.device}")
+    print(f"model: {result.model}")
+    print(f"segments: {result.segments}")
     print(f"prediction: {result.prediction}")
     print(f"bonafide_probability: {result.bonafide_probability:.6f}")
     print(f"spoof_probability: {result.spoof_probability:.6f}")
     print(f"bonafide_score: {result.bonafide_score:.6f}")
+    print(f"score_type: {result.score_type}")
     print("warning: this pretrained score is not calibrated for Thai speech")
     return 0
 
@@ -25,7 +28,7 @@ def infer_command(args: argparse.Namespace) -> int:
 def evaluate_command(args: argparse.Namespace) -> int:
     manifest_path = Path(args.manifest).resolve()
     output_path = Path(args.output).resolve()
-    detector = create_detector(args.model, device=args.device)
+    detector = create_detector(args.model, device=args.device, all_chunks=args.all_chunks)
     rows: list[dict[str, str]] = []
 
     with manifest_path.open("r", encoding="utf-8-sig", newline="") as handle:
@@ -44,6 +47,9 @@ def evaluate_command(args: argparse.Namespace) -> int:
                     "bonafide_probability": f"{result.bonafide_probability:.8f}",
                     "spoof_probability": f"{result.spoof_probability:.8f}",
                     "bonafide_score": f"{result.bonafide_score:.8f}",
+                    "model": result.model,
+                    "score_type": result.score_type,
+                    "segments": str(result.segments),
                 }
             )
             rows.append(scored)
@@ -65,6 +71,8 @@ def evaluate_command(args: argparse.Namespace) -> int:
             labels,
             [float(row["bonafide_score"]) for row in rows],
         )
+        metrics["model"] = args.model
+        metrics["score_type"] = rows[0]["score_type"]
         metrics_path = output_path.with_suffix(".metrics.json")
         metrics_path.write_text(
             json.dumps(metrics, ensure_ascii=False, indent=2),
@@ -82,6 +90,7 @@ def build_parser() -> argparse.ArgumentParser:
     infer = subparsers.add_parser("infer", help="score one WAV or FLAC file")
     infer.add_argument("--audio", required=True, help="path to a WAV or FLAC file")
     infer.add_argument("--model", choices=MODEL_NAMES, default="aasist")
+    infer.add_argument("--all-chunks", action="store_true", help="average all 4.04-second chunks (RawNet2 only)")
     infer.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     infer.set_defaults(func=infer_command)
 
@@ -89,6 +98,7 @@ def build_parser() -> argparse.ArgumentParser:
     evaluate.add_argument("--manifest", required=True, help="CSV containing path and label")
     evaluate.add_argument("--output", required=True, help="output score CSV")
     evaluate.add_argument("--model", choices=MODEL_NAMES, default="aasist")
+    evaluate.add_argument("--all-chunks", action="store_true", help="average all 4.04-second chunks (RawNet2 only)")
     evaluate.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     evaluate.set_defaults(func=evaluate_command)
     return parser
