@@ -35,11 +35,11 @@ AASIST รับคลื่นเสียงประมาณ 4 วินา�
 เมื่อได้ SEA-Spoof:
 
 1. เลือกเฉพาะ `language=th`
-2. ตรวจ official train/validation/evaluation split
-3. ตรวจไม่ให้ผู้พูดซ้ำข้าม split
+2. ใช้ official train/validation/evaluation split เดิม ห้ามสุ่มแบ่งใหม่
+3. ตรวจ `row_id` ไม่ซ้ำและนับ `bonafide`/`spoof` ในแต่ละ split
 4. สร้าง CSV manifest
 5. รัน `evaluate`
-6. เก็บ EER, ROC-AUC, accuracy และ confusion matrix
+6. เก็บ raw score, EER และ ROC-AUC; เลือก threshold บน validation ก่อนคำนวณ accuracy/confusion matrix ของ evaluation
 
 ## Milestone 3: Telephone robustness
 
@@ -63,4 +63,3 @@ RTX 3050 Ti มี VRAM 4 GB จึงเริ่มด้วย batch size 2 �
 - อย่าสุ่มแบ่งไฟล์โดยไม่ดู speaker และ TTS system
 - อย่าสรุปว่า softmax 0.9 หมายถึงโมเดลถูก 90%
 - อย่ารายงานผลจากไฟล์ตัวอย่างไม่กี่ไฟล์เป็นผลวิจัย
-
