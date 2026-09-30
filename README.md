@@ -110,6 +110,8 @@ spoof_probability: 0.187655
 
 อ่านคำอธิบายสำหรับผู้เริ่มต้นใน `docs/BEGINNER_GUIDE_TH.md`
 
+อ่าน [แผนขอบเขต ข้อมูลประชากร และ workflow การทดลอง](docs/RESEARCH_PLAN_TH.md) ซึ่งรวมผลตรวจ metadata ของ Typhoon Isan และข้อจำกัดที่ต้องคุยกับอาจารย์ก่อนเลือกชุดเสริม
+
 ## โครงสร้างสำคัญ
 
 ```text
