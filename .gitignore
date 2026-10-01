@@ -13,6 +13,9 @@ data/processed/
 data/sample/*.wav
 !data/sample/README.md
 data/manifests/thai_*.csv
+# EDA outputs may contain restricted source metadata and audio-derived data.
+data/exploration/*/outputs/
+.ipynb_checkpoints/
 results/*
 !results/.gitkeep
 checkpoints/*
