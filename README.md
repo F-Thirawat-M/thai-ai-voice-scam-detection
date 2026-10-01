@@ -96,7 +96,7 @@ spoof_probability: 0.187655
 
 ขั้นต่อไปคือรัน pretrained ทั้งสองโมเดลบน manifest เดียวกัน โดยเลือก threshold จาก Dev เท่านั้น อย่าใช้ Test เพื่อเลือก threshold หรือปรับโมเดล คำสั่ง `evaluate` ปัจจุบันคำนวณ threshold จากไฟล์ที่ส่งเข้ามา จึงยังไม่ควรใช้ค่า accuracy/confusion matrix ที่มันพิมพ์จาก Test เป็นผลวิจัยก่อนแก้ขั้น metrics นี้
 
-ไฟล์ `data/raw/sea_spoof_th/thai_metadata.jsonl` และ `scripts/prepare_thai_manifest.py` เป็นเส้นทางเก่าจาก Google Drive ยังเก็บไว้เพื่ออ้างอิง ไม่ใช่คำสั่งสำหรับ Parquet ใหม่
+เลิกใช้เส้นทางเตรียมข้อมูลจาก Google Drive แล้ว การเตรียมข้อมูลปัจจุบันใช้ `scripts/extract_thai_parquet.py` กับ Parquet จาก Hugging Face ตามคำสั่งด้านบนเท่านั้น
 
 ## ลำดับการทำงานของโครงงาน
 
