@@ -10,8 +10,8 @@ import torch
 import torchaudio.functional as audio_f
 import yaml
 
-from .base import Prediction
-from .rawnet2_arch import RawNet
+from ..prediction import Prediction
+from .model import RawNet
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -29,7 +29,7 @@ class RawNet2Detector:
         device: str = "auto",
         all_chunks: bool = False,
     ) -> None:
-        config = Path(config_path or PROJECT_ROOT / "configs/rawnet2.yaml")
+        config = Path(config_path or Path(__file__).with_name("config.yaml"))
         checkpoint = Path(
             checkpoint_path
             or PROJECT_ROOT / "checkpoints/rawnet2/pre_trained_DF_RawNet2.pth"
@@ -43,7 +43,7 @@ class RawNet2Detector:
         if not checkpoint.is_file():
             raise FileNotFoundError(
                 f"RawNet2 checkpoint not found: {checkpoint}. "
-                "Run python scripts/setup_rawnet2_checkpoint.py first."
+                "Run python -m thai_spoof.rawnet2.setup_checkpoint first."
             )
 
         self.device = self._resolve_device(device)

@@ -1,6 +1,6 @@
 import numpy as np
 
-from thai_spoof.audio import repeat_or_trim
+from thai_spoof.aasist.audio import repeat_or_trim
 
 
 def test_repeat_short_waveform() -> None:
@@ -22,4 +22,3 @@ def test_empty_waveform_is_rejected() -> None:
         assert "empty" in str(exc)
     else:
         raise AssertionError("empty waveform should raise ValueError")
-

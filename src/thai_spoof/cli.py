@@ -6,7 +6,26 @@ import json
 from pathlib import Path
 
 from .metrics import calculate_metrics
-from .detectors import MODEL_NAMES, create_detector
+from .prediction import Detector
+
+
+MODEL_NAMES = ("aasist", "rawnet2")
+
+
+def create_detector(
+    model_name: str, device: str = "auto", all_chunks: bool = False
+) -> Detector:
+    if model_name == "aasist":
+        if all_chunks:
+            raise ValueError("--all-chunks is currently supported only for RawNet2")
+        from .aasist.detector import AASISTDetector
+
+        return AASISTDetector(device=device)
+    if model_name == "rawnet2":
+        from .rawnet2.detector import RawNet2Detector
+
+        return RawNet2Detector(device=device, all_chunks=all_chunks)
+    raise ValueError(f"unknown model: {model_name}; available: {', '.join(MODEL_NAMES)}")
 
 
 def infer_command(args: argparse.Namespace) -> int:

@@ -25,6 +25,13 @@ if (-not (Test-Path -LiteralPath (Join-Path $AASISTRoot "models\AASIST.py"))) {
     Invoke-Checked { git clone --depth 1 https://github.com/clovaai/aasist.git $AASISTRoot }
 }
 
+$AASISTCheckpointDir = Join-Path $ProjectRoot "checkpoints\aasist"
+$AASISTCheckpoint = Join-Path $AASISTCheckpointDir "AASIST.pth"
+if (-not (Test-Path -LiteralPath $AASISTCheckpoint)) {
+    New-Item -ItemType Directory -Force -Path $AASISTCheckpointDir | Out-Null
+    Copy-Item -LiteralPath (Join-Path $AASISTRoot "models\weights\AASIST.pth") -Destination $AASISTCheckpoint
+}
+
 if (-not (Test-Path -LiteralPath $VenvPython)) {
     Write-Host "Creating .venv with the installed Python..."
     Invoke-Checked { python -m venv (Join-Path $ProjectRoot ".venv") }
