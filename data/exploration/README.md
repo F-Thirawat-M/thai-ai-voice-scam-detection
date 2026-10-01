@@ -11,11 +11,14 @@ data/exploration/
 │   ├── sea_spoof_eda_utils.py
 │   └── outputs/                  # ผลที่รันแล้ว; ไม่เข้า Git
 └── typhoon_thai_dialect_isan/
-    └── README.md                 # เตรียมตำแหน่งไว้; ยังไม่มี notebook
+    ├── README.md
+    ├── typhoon_isan_eda.ipynb     # metadata-only; ไม่โหลดเสียง
+    ├── typhoon_eda_utils.py
+    └── outputs/                  # ผลที่รันแล้ว; ไม่เข้า Git
 ```
 
 - [SEA-Spoof notebook](sea_spoof/sea_spoof_eda.ipynb) และ [วิธีรัน](sea_spoof/README.md)
-- [สถานะ Typhoon Thai Dialect Isan](typhoon_thai_dialect_isan/README.md)
+- [Typhoon Isan notebook](typhoon_thai_dialect_isan/typhoon_isan_eda.ipynb) และ [วิธีรัน/ขอบเขต metadata-only](typhoon_thai_dialect_isan/README.md)
 
 เมื่อเพิ่ม dataset ใหม่ ให้สร้าง `data/exploration/<dataset_name>/` แล้วเก็บ notebook และ helper ของชุดนั้นภายใน พร้อมผลใน `outputs/` ที่ถูก gitignore โดยใช้ชื่อ snake_case
 
@@ -25,4 +28,10 @@ Notebook ที่มีเสียง/transcript หรือผลราย�
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\run_sea_spoof_eda.py --signal-all
+```
+
+รัน Typhoon Isan แบบอ่านเฉพาะ metadata (ครั้งแรกต้องใช้อินเทอร์เน็ต; ไม่อ่านคอลัมน์ audio):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_typhoon_isan_eda.py
 ```
