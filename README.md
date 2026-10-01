@@ -114,6 +114,8 @@ spoof_probability: 0.187655
 
 ## โครงสร้างสำคัญ
 
+สำรวจข้อมูลแบบ data science แยกตาม dataset ใน [โฟลเดอร์ EDA](data/exploration/README.md) เริ่มจาก [SEA-Spoof notebook](data/exploration/sea_spoof/sea_spoof_eda.ipynb) และอ่าน [วิธีรันกับขอบเขตการสำรวจ](data/exploration/sea_spoof/README.md) ผลที่รันแล้วเก็บใน `data/exploration/<dataset>/outputs/` ซึ่งไม่เข้า Git
+
 ```text
 src/thai_spoof/
   cli.py                 คำสั่ง infer/evaluate และตัวเลือกโมเดลร่วมกัน
