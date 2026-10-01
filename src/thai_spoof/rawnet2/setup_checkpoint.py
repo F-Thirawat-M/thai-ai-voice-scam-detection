@@ -10,7 +10,7 @@ import zipfile
 from pathlib import Path
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
 CHECKPOINT_DIR = PROJECT_ROOT / "checkpoints/rawnet2"
 ARCHIVE = CHECKPOINT_DIR / "pre_trained_DF_RawNet2.zip"
 CHECKPOINT = CHECKPOINT_DIR / "pre_trained_DF_RawNet2.pth"
@@ -36,7 +36,8 @@ def main() -> None:
         subprocess.run(
             [
                 sys.executable,
-                str(PROJECT_ROOT / "scripts/download_rawnet2_checkpoint.py"),
+                "-m",
+                "thai_spoof.rawnet2.download_checkpoint",
                 "--output",
                 str(ARCHIVE),
             ],

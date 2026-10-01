@@ -12,6 +12,10 @@ from pathlib import Path
 
 
 DEFAULT_URL = "https://www.asvspoof.org/asvspoof2021/pre_trained_DF_RawNet2.zip"
+DEFAULT_OUTPUT = (
+    Path(__file__).resolve().parents[3]
+    / "checkpoints/rawnet2/pre_trained_DF_RawNet2.zip"
+)
 
 
 def remote_size(url: str) -> int:
@@ -35,7 +39,7 @@ def download_part(url: str, start: int, end: int, path: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--url", default=DEFAULT_URL)
-    parser.add_argument("--output", type=Path, default=Path("pre_trained_DF_RawNet2.zip"))
+    parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--workers", type=int, default=24)
     args = parser.parse_args()
 

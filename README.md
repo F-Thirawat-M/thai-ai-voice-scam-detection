@@ -4,7 +4,7 @@
 
 ## สถานะปัจจุบัน
 
-- มีโค้ด AASIST และ pretrained checkpoint ทางการใน `external/aasist/`
+- มีโค้ด AASIST ทางการใน `external/aasist/` และน้ำหนักใน `checkpoints/aasist/`
 - มีคำสั่งตรวจ GPU และ dependency
 - มีคำสั่ง inference สำหรับไฟล์ WAV/FLAC หนึ่งไฟล์
 - มีคำสั่งประเมินไฟล์หลายรายการจาก CSV manifest
@@ -44,7 +44,7 @@
 ติดตั้ง checkpoint ทางการครั้งแรก (ประมาณ 66 MB; ไฟล์จะอยู่ใน `checkpoints/` และไม่ถูกเพิ่มเข้า Git):
 
 ```powershell
-.\.venv\Scripts\python.exe scripts\setup_rawnet2_checkpoint.py
+.\.venv\Scripts\python.exe -m thai_spoof.rawnet2.setup_checkpoint
 .\.venv\Scripts\python.exe -m thai_spoof.cli infer --model rawnet2 --audio data\sample\your_voice.wav
 ```
 
@@ -69,11 +69,11 @@ spoof_probability: 0.187655
 .\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
   --manifest data\manifests\example.csv `
   --model aasist `
-  --output results\baseline_scores.csv
+  --output results\aasist\baseline_scores.csv
 ```
 
 รูปแบบ label ที่รองรับคือ `bonafide` และ `spoof`
-สามารถเปลี่ยนเป็น `--model rawnet2` และใช้ `--output` คนละไฟล์เพื่อเทียบผลสองโมเดลบน manifest เดียวกัน CSV ผลลัพธ์มี `model`, `score_type` และ `segments` กำกับ AASIST ใช้ logit ส่วน RawNet2 ใช้ softmax score จึงไม่ควรเทียบค่าคะแนนดิบข้ามโมเดลโดยตรง
+สามารถเปลี่ยนเป็น `--model rawnet2` และใช้ `--output results\rawnet2\baseline_scores.csv` เพื่อเทียบผลสองโมเดลบน manifest เดียวกัน CSV ผลลัพธ์มี `model`, `score_type` และ `segments` กำกับ AASIST ใช้ logit ส่วน RawNet2 ใช้ softmax score จึงไม่ควรเทียบค่าคะแนนดิบข้ามโมเดลโดยตรง
 
 ### เตรียม SEA-Spoof ภาษาไทยที่ได้รับอนุญาต
 
@@ -115,18 +115,30 @@ spoof_probability: 0.187655
 ## โครงสร้างสำคัญ
 
 ```text
-configs/                 ค่าตั้งต้นของโมเดลและเสียง
+src/thai_spoof/
+  cli.py                 คำสั่ง infer/evaluate และตัวเลือกโมเดลร่วมกัน
+  prediction.py          รูปแบบผลลัพธ์ร่วมกัน
+  metrics.py             การวัดผลร่วมกัน
+  aasist/                ฝั่ง F-Thirawat-M: detector.py, audio.py, config.json
+  rawnet2/               ฝั่ง Nattadol: detector.py, model.py, config.yaml,
+                         download_checkpoint.py, setup_checkpoint.py, LICENSE
+data/raw/                ข้อมูลต้นฉบับในเครื่อง
+data/processed/          เสียงที่สกัดจากข้อมูลต้นฉบับ
 data/manifests/          รายการไฟล์และ label
-data/sample/             ไฟล์เสียงทดลองส่วนตัว (ไม่ถูกเพิ่มเข้า Git)
-docs/                    คู่มือ
-external/aasist/         โค้ดและ checkpoint AASIST ทางการ
-results/                 คะแนนและผลการทดลอง
-scripts/                 คำสั่งติดตั้งและตรวจเครื่อง
-src/thai_spoof/          โค้ดส่วนกลางของโปรเจกต์เรา
-src/thai_spoof/detectors/  ตัวเชื่อม AASIST/RawNet2 และรูปแบบผลลัพธ์ร่วมกัน
-third_party/rawnet2/     ใบอนุญาตและเครดิตโค้ด RawNet2
+data/sample/             ไฟล์เสียงทดลองส่วนตัว
+checkpoints/aasist/      น้ำหนัก AASIST
+checkpoints/rawnet2/     น้ำหนัก RawNet2
+external/aasist/         โค้ดเครือข่าย AASIST ทางการ
+results/aasist/          ผลทดลอง AASIST
+results/rawnet2/         ผลทดลอง RawNet2
+scripts/                 ติดตั้งเครื่องและเตรียม dataset
+docs/                    คู่มือและแผนวิจัย
 tests/                   automated tests
 ```
+
+งานโมเดลของแต่ละฝั่งแก้ในโฟลเดอร์ของตัวเองได้ ส่วน CLI, metrics และ dataset ใช้ร่วมกัน
+อ่านคู่มือแต่ละโมเดลใน [AASIST](src/thai_spoof/aasist/README.md) และ [RawNet2](src/thai_spoof/rawnet2/README.md)
+ไฟล์เสียง น้ำหนัก และผลทดลองที่สร้างในเครื่องไม่ถูกเพิ่มเข้า Git
 
 ## แหล่งที่มา
 

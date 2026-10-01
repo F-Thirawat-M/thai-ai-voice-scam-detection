@@ -34,7 +34,7 @@ def main() -> int:
 
     required = [
         PROJECT_ROOT / "external/aasist/models/AASIST.py",
-        PROJECT_ROOT / "external/aasist/models/weights/AASIST.pth",
+        PROJECT_ROOT / "checkpoints/aasist/AASIST.pth",
         PROJECT_ROOT / "external/aasist/config/AASIST.conf",
     ]
     missing = [path for path in required if not path.exists()]
@@ -52,4 +52,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

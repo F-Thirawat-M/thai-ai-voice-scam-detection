@@ -27,6 +27,10 @@ thai-spoof = "thai_spoof.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+"thai_spoof.aasist" = ["config.json", "README.md"]
+"thai_spoof.rawnet2" = ["config.yaml", "LICENSE", "README.md"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-p no:cacheprovider"

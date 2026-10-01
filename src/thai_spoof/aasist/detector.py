@@ -8,8 +8,8 @@ from pathlib import Path
 
 import torch
 
-from ..audio import load_audio, repeat_or_trim
-from .base import Prediction
+from .audio import load_audio, repeat_or_trim
+from ..prediction import Prediction
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -23,7 +23,7 @@ class AASISTDetector:
         project_config: str | Path | None = None,
         device: str = "auto",
     ) -> None:
-        config_path = Path(project_config or PROJECT_ROOT / "configs/project.json")
+        config_path = Path(project_config or Path(__file__).with_name("config.json"))
         if not config_path.is_absolute():
             config_path = PROJECT_ROOT / config_path
         with config_path.open("r", encoding="utf-8") as handle:
