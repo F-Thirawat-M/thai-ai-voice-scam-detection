@@ -1,5 +1,7 @@
 # Thai AI Voice Detection
 
+> **แผนงานล่าสุด (ตรวจทาน 3 ตุลาคม 2026):** อ่าน [Workflow หลัก Common Voice → TTS → AASIST / RawNet2](docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md) ก่อนเริ่มพัฒนาต่อ แผนใหม่นี้ใช้ Common Voice ภาษาไทยและเสียง TTS เพื่อเปรียบเทียบ Clean กับ Clean + Noise + Telephone ส่วน SEA-Spoof/Typhoon เก็บเป็นงานสำรวจเดิม ข้อมูลการใช้งานด้านล่างเป็น baseline ที่มีอยู่ ไม่ได้หมายความว่า pipeline ฝึกใหม่พัฒนาเสร็จแล้ว
+
 โปรเจกต์ทดลองจำแนกเสียงพูดภาษาไทยระหว่างเสียงมนุษย์จริง (`bonafide`) และเสียงสังเคราะห์ (`spoof`) โดยเริ่มจากโมเดล AASIST ที่ผ่านการฝึกบน ASVspoof 2019
 
 ## สถานะปัจจุบัน
