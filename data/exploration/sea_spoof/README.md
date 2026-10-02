@@ -2,6 +2,11 @@
 
 โฟลเดอร์นี้เก็บเฉพาะ notebook, helper และผลสำรวจของ SEA-Spoof ไม่ผสมกับ dataset อื่น ข้อมูลชุดเดียวสามารถใช้เปรียบเทียบหลายโมเดลได้โดยไม่ต้องทำสำเนาแยกตามโมเดล
 
+## เลือก notebook ตามขอบเขต
+
+- `sea_spoof_metadata_eda.ipynb` — **ใหม่: metadata จาก Hugging Face ครบ Train/Validation/Evaluation ไม่ใช้ dataset เดิมในเครื่อง ไม่โหลดเสียงทั้งชุด** ดู [วิธีรันและข้อจำกัด](README_metadata.md); ผลแยกใน `outputs/metadata_only/`
+- `sea_spoof_eda.ipynb` — เดิม: ตรวจ source/manifest และเสียงที่มีในเครื่อง (ขณะทำรายงานมีเฉพาะ Validation/Evaluation) คำอธิบายด้านล่างเป็นของ notebook เดิม
+
 ## เปิดใน VS Code
 
 1. เปิด `sea_spoof_eda.ipynb`
