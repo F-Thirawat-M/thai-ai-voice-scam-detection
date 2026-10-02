@@ -9,7 +9,11 @@ data/exploration/
 │   ├── README.md
 │   ├── sea_spoof_eda.ipynb
 │   ├── sea_spoof_eda_utils.py
+│   ├── sea_spoof_metadata_eda.ipynb  # remote metadata-only ครบสาม split
+│   ├── sea_spoof_metadata_utils.py
+│   ├── README_metadata.md
 │   └── outputs/                  # ผลที่รันแล้ว; ไม่เข้า Git
+│       └── metadata_only/         # ผลใหม่แยกจากผลตรวจเสียงเดิม
 └── typhoon_thai_dialect_isan/
     ├── README.md
     ├── typhoon_isan_eda.ipynb     # metadata-only; ไม่โหลดเสียง
@@ -18,6 +22,7 @@ data/exploration/
 ```
 
 - [SEA-Spoof notebook](sea_spoof/sea_spoof_eda.ipynb) และ [วิธีรัน](sea_spoof/README.md)
+- [SEA-Spoof remote metadata notebook](sea_spoof/sea_spoof_metadata_eda.ipynb) และ [วิธีรัน/ขอบเขต](sea_spoof/README_metadata.md) — ครบ Train/Validation/Evaluation ไม่ใช้ dataset เดิมในเครื่อง
 - [Typhoon Isan notebook](typhoon_thai_dialect_isan/typhoon_isan_eda.ipynb) และ [วิธีรัน/ขอบเขต metadata-only](typhoon_thai_dialect_isan/README.md)
 
 เมื่อเพิ่ม dataset ใหม่ ให้สร้าง `data/exploration/<dataset_name>/` แล้วเก็บ notebook และ helper ของชุดนั้นภายใน พร้อมผลใน `outputs/` ที่ถูก gitignore โดยใช้ชื่อ snake_case
@@ -34,4 +39,10 @@ Notebook ที่มีเสียง/transcript หรือผลราย�
 
 ```powershell
 .\.venv\Scripts\python.exe scripts\run_typhoon_isan_eda.py
+```
+
+รัน SEA-Spoof แบบ remote metadata-only (ต้องใช้บัญชี HF ที่ได้รับอนุมัติ; ไม่เลือก audio):
+
+```powershell
+.\.venv\Scripts\python.exe scripts\run_sea_spoof_metadata_eda.py
 ```
