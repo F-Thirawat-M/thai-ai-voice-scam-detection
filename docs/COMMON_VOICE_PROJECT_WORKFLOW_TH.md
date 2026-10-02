@@ -2,7 +2,7 @@
 
 เริ่มจัดทำ: 2 ตุลาคม 2026 · ตรวจทานล่าสุด: 3 ตุลาคม 2026 · ฉบับ: ร่าง protocol v1 · สถานะ: แผนสำหรับตกลงร่วมกันและใช้พัฒนาระบบ ยังไม่ใช่ผลทดลอง
 
-> **ให้อ่านไฟล์นี้ก่อนเริ่มงานใหม่** ทิศทางปัจจุบันคือใช้ Common Voice ภาษาไทยเป็นแหล่งเสียงมนุษย์และข้อความ แล้วสร้างเสียงสังเคราะห์ด้วย TTS เพื่อเปรียบเทียบ AASIST กับ RawNet2 ภายใต้การฝึกแบบ Clean และ Clean + Noise + Telephone แผน SEA-Spoof เป็นชุดหลักในเอกสารเก่าถูกพักไว้ ไม่ได้แปลว่าต้องลบข้อมูลหรือผลสำรวจเดิม
+> **ให้อ่านไฟล์นี้ก่อนเริ่มงานใหม่** ทิศทางปัจจุบันคือใช้ Common Voice ภาษาไทยเป็นแหล่งเสียงมนุษย์และข้อความ แล้วสร้างเสียงสังเคราะห์ด้วย TTS เพื่อเปรียบเทียบ AASIST กับ RawNet2 ภายใต้การฝึกแบบ Clean และ Clean + Noise + Telephone ผู้ใช้ให้ปรับโครงสร้างและลบข้อมูล/โค้ด/แผน SEA-Spoof และ Typhoon ที่เลิกใช้แล้วเมื่อ 3 ตุลาคม 2026 ไม่ต้องนำกลับมาเป็น dependency ของ workflow ใหม่ ดู [โครงสร้างปัจจุบัน](PROJECT_STRUCTURE_TH.md) และ [รายการ cleanup](CLEANUP_2026-10-03.md)
 >
 > เอกสารนี้แยก “ข้อเท็จจริงที่ตรวจใน repository” ออกจาก “ข้อเสนอที่จะพัฒนา” คำสั่งของ pipeline ใหม่ในส่วน 20 **ยังไม่มีให้รันจนกว่าจะเขียนระบบตามแผน** ห้ามรายงานว่าดาวน์โหลด สร้างเสียง ฝึก หรือประเมินสำเร็จเพียงเพราะมีแผนนี้
 
@@ -85,7 +85,7 @@
 | ข้อมูลประเมิน | Train / Dev / Final Test ที่แยกไว้ก่อน synthesis และ augmentation |
 | Metric หลัก | EER ต่อ condition พร้อมความผิดพลาดที่ threshold เลือกจาก Dev |
 | อายุ เพศ ถิ่น | วิเคราะห์เสริมได้เมื่อมีข้อมูลเพียงพอ ยังไม่เป็นเงื่อนไขหลักของทุกตัวอย่าง |
-| SEA-Spoof / Typhoon Isan | เก็บผลสำรวจและไฟล์เดิมไว้เป็นข้อมูลอ้างอิง ยังไม่รวมในงานหลักนี้ |
+| SEA-Spoof / Typhoon Isan | นำออกจาก workflow และลบ local datasets/EDA/pipelines ตามคำขอแล้ว; source ที่เคย commit ดูย้อนหลังได้ใน Git |
 | ผลใช้งานจริง | ระบบทดลอง ไม่อ้างว่าใช้ตัดสินการหลอกลวงหรือพิสูจน์เสียงปลอมได้เด็ดขาด |
 
 ### 2.2 เรื่องที่ต้องถามอาจารย์/ตกลงกับเพื่อน
@@ -118,7 +118,7 @@
 <a id="s03"></a>
 ## 3. สถานะโค้ดและสิ่งที่นำกลับมาใช้ได้
 
-ส่วนนี้เป็น snapshot จากการตรวจ repository วันที่จัดทำ ไม่ใช่การยืนยันว่าเครื่องอื่นมีไฟล์เหมือนกัน
+ส่วนนี้ปรับตาม repository หลัง cleanup 3 ตุลาคม 2026 ไม่ใช่การยืนยันว่าเครื่องอื่นมีไฟล์เหมือนกัน
 
 | ส่วน | มีแล้ว | งานที่ต้องเพิ่ม/ปรับ |
 | --- | --- | --- |
@@ -127,7 +127,7 @@
 | CLI ปัจจุบัน | `infer`, `evaluate`, เลือก `--model` ได้ | workflow Common Voice, TTS, train, scoring และ threshold แยก Dev/Test |
 | Audio | โหลด mono/resample/crop-repeat สำหรับ inference | shared preprocessing ที่ให้ทั้งสองโมเดลรับ tensor และ condition เดียวกัน |
 | Metrics | EER แบบจุด ROC ใกล้ FAR=FRR และค่าประเมินอื่น | ประกาศ EER method, fixed Dev threshold, reject nonfinite, regression tests |
-| Dataset EDA | SEA-Spoof และ Typhoon Isan | Common Voice release audit / split / synthesis lineage |
+| Dataset EDA | เตรียมโฟลเดอร์ Common Voice พร้อม README; EDA เก่าถูกลบแล้ว | Common Voice notebook / release audit / split / synthesis lineage ยังต้องพัฒนา |
 | Training workflow ใหม่ | ยังไม่มี | ต้องสร้างและทดสอบ ไม่ใช่เพียงเพิ่ม CLI argument |
 
 ไฟล์ที่ผู้พัฒนาควรอ่านก่อนแก้:
@@ -147,7 +147,7 @@
 3. `evaluate` เดิมเลือก threshold จากชุดที่ส่งเข้าไป จึงยังไม่เหมาะกับการรายงาน fixed-threshold Final Test ตามแผนนี้
 4. AASIST ต้นฉบับมีทางเลือกประเมิน evaluation set ระหว่าง training และ class weights สำหรับข้อมูลเดิม ห้ามนำมาใช้กับ Final Test/สัดส่วน label ใหม่โดยอัตโนมัติ
 5. random crop ของต้นฉบับที่ตรวจมีกรณีขอบเขตความยาวต้องระวัง ให้สร้างฟังก์ชันที่ทดสอบกรณี `length == 64600` และเลือกจุดเริ่มสุดท้ายได้
-6. `.gitignore` เดิมยังไม่ครอบคลุม manifest ชื่อใหม่ทุกแบบ หรือ `.venv-tts-*` ต้องเพิ่มก่อนสร้างข้อมูลจริง
+6. `.gitignore` ปรับให้ครอบคลุม data/raw, data/processed, sample files, EDA outputs, `.venv-*` และ `.env` แล้ว ให้เก็บ manifest จริงใต้ dataset version และตรวจ `git check-ignore` ก่อนเพิ่ม artifact ชนิดใหม่
 7. ไม่ควรรัน `scripts/setup.ps1` ซ้ำโดยไม่อ่าน เพราะมีขั้นตอนติดตั้ง/อัปเกรด dependency และดึง upstream ซึ่งอาจเปลี่ยน environment ที่ใช้งานได้อยู่
 
 <a id="s04"></a>
@@ -239,7 +239,7 @@ EER + fixed-threshold errors + สถิติ + วิเคราะห์ + �
 <a id="s06"></a>
 ## 6. โครงสร้างไฟล์และการแบ่งงาน
 
-โครงสร้างต่อไปนี้เป็น **เป้าหมายที่ต้องสร้าง** ส่วนใหญ่ยังไม่มี ไม่ต้องสร้างโฟลเดอร์ว่างทั้งหมดในครั้งเดียว:
+เตรียมโฟลเดอร์หลัก/README และ package scaffold ตามโครงสร้างนี้แล้ว ส่วน modules, executable YAML, notebook, corpus และ training pipeline ด้านล่างยังเป็น **เป้าหมายที่ต้องพัฒนา** ไม่ได้สร้าง implementation เปล่าไว้หลอกว่าทำงานได้ ดูรายละเอียดสถานะใน [PROJECT_STRUCTURE_TH.md](PROJECT_STRUCTURE_TH.md)
 
 ```text
 configs/cvtts/
@@ -248,8 +248,10 @@ configs/cvtts/
   runs/                           # resolved model × arm × seed configs
 docs/
   COMMON_VOICE_PROJECT_WORKFLOW_TH.md
+  PROJECT_STRUCTURE_TH.md          # สถานะและโครงสร้างที่มีจริง
   decisions/CVTTS_DECISIONS.md
   reports/cvtts/                   # sanitized summaries; ไม่ใส่ข้อมูลส่วนบุคคล
+examples/inference_manifest.csv    # ชื่อไฟล์สมมติสำหรับ CLI เดิม ไม่ใช่ข้อมูลจริง
 src/thai_spoof/cvtts/
   audit.py, split.py, schemas.py, provenance.py
   synthesis/                      # adapter ของ TTS แต่ละระบบ
@@ -291,7 +293,7 @@ results/cvtts/<protocol>/<run_id>/
 - ผู้ใช้ไม่ต้องการ prefix `codex/` ให้ใช้ชื่อเช่น `feat-cv-audit`, `feat-cv-split`, `feat-tts-pipeline`, `feat-aasist-training`, `feat-rawnet2-training`, `feat-evaluation-protocol`
 - ก่อนเริ่มทุกครั้งตรวจ `git status --short --branch` และ diff เดิม ห้ามทับ/ลบงานของผู้ใช้
 - งานอิสระเริ่มจาก `main` ที่มี dependency ที่ต้องใช้แล้ว; งานที่ขึ้นกับ branch ที่ยังไม่ merge ต้องระบุฐานและเหตุผล ไม่แยกจาก branch อื่นเพียงเพราะกำลังอยู่ที่นั่น
-- เอกสารรอบนี้จัดทำบน `docs-common-voice-workflow`; ผู้ใช้เป็นคน commit เอง
+- งานแผนเดิมรวมเข้าฐาน main แล้ว; งาน cleanup/โครงสร้างนี้แยกจาก main เป็น `refactor-common-voice-layout` ผู้ใช้เป็นคน commit เอง
 - AI ผู้รับช่วง **ห้าม commit/push/merge หรือลบข้อมูลเอง** หากไม่ได้รับคำสั่งเพิ่ม
 - หนึ่ง branch ต่อ feature ที่ตรวจสอบได้ อย่าเปลี่ยน data contract ทั้งโครงการพร้อมเพิ่ม model training โดยไม่มีจุด review
 
@@ -340,7 +342,7 @@ results/cvtts/<protocol>/<run_id>/
 
 ### 8.1 ตรวจที่มาและ metadata
 
-1. หาไฟล์ที่มีจริงและ root path ของ Common Voice ไม่สมมติว่าอยู่ในโฟลเดอร์ของ SEA-Spoof
+1. หาไฟล์ที่มีจริงและ root path ของ Common Voice; โฟลเดอร์ `data/raw/common_voice/` ที่เตรียมไว้ยังไม่มี release ใหม่ ห้ามถือว่าโครงสร้างว่างแปลว่าโหลดข้อมูลแล้ว
 2. บันทึก release, locale, download source/date, terms/license version, archive/file checksum ถ้ามี
 3. อ่าน header ของ `validated.tsv` และไฟล์ประกอบจริง ใช้ชื่อคอลัมน์ตาม release ไม่บังคับ schema จากความจำ
 4. ตรวจจำนวนแถว, ชนิดข้อมูล, missing/blank/unspecified, จำนวนค่าที่ไม่ซ้ำ และตัวอย่างค่าที่ไม่เปิดเผยตัวบุคคล
@@ -884,7 +886,7 @@ Train ไม่จำเป็นต้อง materialize ทุก augmentation
 - รวม original Common Voice + native TTS + canonical + Dev/Test condition cache + checkpoints/optimizer states + outputs
 - Train augmentation แนะนำสร้าง on-the-fly เพื่อไม่เก็บ noise versions จำนวนมาก
 - pilot วัดขนาดต่อชั่วโมงของ format ที่ใช้จริง แล้วคำนวณ expected total พร้อมเผื่อพื้นที่ temporary/checkpoints
-- ห้ามลบ SEA-Spoof/Typhoon หรือไฟล์เพื่อนเพื่อเอาพื้นที่โดยไม่มีคำสั่งเฉพาะจากผู้ใช้
+- SEA-Spoof/Typhoon local data ถูกล้างตามคำขอแล้ว สำหรับข้อมูลใหม่/checkpoints/งานทีม ห้ามลบเพื่อเอาพื้นที่โดยอนุมานเอง ต้องตรวจขอบเขตคำสั่งและเป้าหมายให้ชัด
 
 ### 19.3 Resume / failure handling
 
@@ -1047,7 +1049,7 @@ validation ต้องปฏิเสธ `REQUIRED_*`, unresolved revisions, so
 2. แยกงานที่ “ทำเสร็จ/ตรวจแล้ว/ยังไม่ได้รัน/ติด blocker” ในคำตอบทุกช่วง
 3. เริ่มทีละ task ที่มี dependency พร้อม พร้อมบอกไฟล์ที่จะสร้าง/แก้และเกณฑ์ตรวจ
 4. ไม่โหลด corpus ใหม่/ติดตั้งทุก TTS/เปิดงานฝึกยาวพร้อมกันเพียงเพราะเอกสารมีแผนทั้งโครงการ ต้องยึดคำสั่งผู้ใช้และทรัพยากรในรอบนั้น
-5. ไม่ลบ SEA-Spoof, Typhoon, Common Voice, checkpoint หรือไฟล์เพื่อนโดยอนุมานว่าไม่ใช้แล้ว
+5. ไม่ลบ Common Voice, noise, TTS corpus, checkpoint หรือไฟล์เพื่อนโดยอนุมานว่าไม่ใช้แล้ว; cleanup ของข้อมูลเก่าทำตามคำขอที่บันทึกไว้ ไม่ใช่สิทธิ์ให้ลบข้อมูลใหม่ในอนาคต
 6. ไม่แก้ label, split, generator revisions, test cohort หรือ threshold policy เพื่อให้คะแนนดีขึ้นโดยไม่มี decision log และ protocol version
 7. ไม่ใช้ผล Test ย้อนเลือกการทดลอง และไม่ใช้คำว่า train สำเร็จถ้าเพียงรัน pretrained inference
 8. ไม่เดา feature names, release, จำนวนคน, licensing, memory หรือ training times ถ้ายังไม่ตรวจ
@@ -1061,7 +1063,7 @@ validation ต้องปฏิเสธ `REQUIRED_*`, unresolved revisions, so
 ```text
 อ่าน docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md ทั้งไฟล์ก่อนลงมือ
 นี่คือแผนหลักฉบับใหม่: Common Voice Thai → หลาย TTS → fine-tune AASIST/RawNet2
-เปรียบเทียบ Clean กับ Clean+Noise+Telephone; SEA-Spoof/Typhoon ไม่ใช่ core ตอนนี้
+เปรียบเทียบ Clean กับ Clean+Noise+Telephone; SEA-Spoof/Typhoon ถูกนำออกแล้ว ไม่ต้องกู้คืน
 อย่าเริ่มทั้งโปรเจกต์พร้อมกัน ให้ทำ T00–T02 ก่อน:
 1. ตรวจ Git/คำสั่ง repository/สภาพแวดล้อมและที่อยู่ Common Voice แบบ read-only
 2. ตรวจ exact release/schema/สิทธิ์และจำนวน metadata/audio ที่มีจริง
@@ -1095,7 +1097,7 @@ validation ต้องปฏิเสธ `REQUIRED_*`, unresolved revisions, so
 
 **Noise+Telephone หมายถึงใส่สองอย่างพร้อมกันไหม?** ใน v1 นี้ไม่ใช่ หมายถึงฝึกด้วยสาม condition: clean หรือ noise หรือ telephone ถ้าต้องการ noise แล้วผ่านโทรศัพท์ด้วยให้เพิ่ม condition แยก
 
-**ยังใช้ SEA-Spoof/Typhoon ไหม?** ยังไม่ใช้เป็นชุดหลักตามความเข้าใจล่าสุด เก็บงานเดิมไว้ อาจกลับมาใช้ external evaluation ได้เมื่อเพิ่ม scope อย่างชัดเจน แต่ไม่ต้องฝืนรวมทุก dataset ในงานนี้
+**ยังใช้ SEA-Spoof/Typhoon ไหม?** ไม่ใช้ใน workflow ปัจจุบัน และลบ local data/EDA/pipelines ที่เกี่ยวข้องตามคำขอแล้ว หากอนาคตต้องการ external evaluation ให้ถือเป็นการเพิ่ม scope ใหม่พร้อมตรวจสิทธิ์/ดาวน์โหลดใหม่ ไม่ใช่ dependency ของแผนนี้
 
 **ต้องวนผล Test ไปสร้างเสียงใหม่ไหม?** ไม่ใช่ค่าเริ่มต้นของแผน ถ้าต้องปรับวนให้ใช้ Dev และมี control/budget ชัดเจน ส่วน Final Test เก็บไว้ประเมินหลังจบการพัฒนา
 

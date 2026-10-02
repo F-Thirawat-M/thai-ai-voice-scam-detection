@@ -1,67 +1,56 @@
-# คู่มือสำหรับผู้เริ่มต้น
+# เริ่มใช้งาน: Common Voice + TTS + ตัวตรวจจับ
 
-> **ขอบเขตล่าสุด:** คู่มือนี้อธิบาย baseline เดิม สำหรับลำดับงานทั้งโปรเจกต์หลังปรับมาใช้ Common Voice + TTS ให้อ่าน [Workflow หลักฉบับใหม่](COMMON_VOICE_PROJECT_WORKFLOW_TH.md) ซึ่งแยกสิ่งที่มีแล้วกับสิ่งที่ยังต้องพัฒนา
+## เข้าใจบทบาทก่อน
 
-## โมเดลกำลังทำอะไร
+- **Common Voice**: แหล่งเสียงมนุษย์และข้อความ; ต้องตรวจ release และสิทธิ์ของข้อมูลที่จะใช้
+- **TTS**: โมเดลสร้างเสียงพูดจากข้อความ ใช้สร้างกลุ่ม spoof
+- **AASIST / RawNet2**: ตัวตรวจจับเสียงจริงกับเสียงสังเคราะห์ ไม่ใช่ตัวสร้างเสียง
+- **Inference**: ใช้น้ำหนักที่ฝึกแล้วทำนาย ยังไม่มีการเรียนรู้เพิ่ม
+- **Fine-tuning**: ฝึกปรับน้ำหนักด้วยข้อมูลของโครงงาน
+- **Train / Dev / Final Test**: ใช้ฝึก / เลือกวิธีและ threshold / ประเมินขั้นสุดท้าย ตามลำดับ
 
-AASIST รับคลื่นเสียงประมาณ 4 วินาทีและคืนคะแนนสองค่า:
+ตอนนี้ยังอยู่ระยะ pretrained inference + เตรียมระบบข้อมูล/ฝึกใหม่ การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ
 
-- `spoof`: โมเดลพบลักษณะคล้ายเสียงสังเคราะห์
-- `bonafide`: โมเดลพบลักษณะคล้ายเสียงมนุษย์จริง
+## เริ่มตรวจของที่มี
 
-โมเดลที่มากับ repository ฝึกจาก ASVspoof 2019 ซึ่งไม่ใช่ชุดข้อมูลภาษาไทย ผลแรกจึงเรียกว่า **cross-language baseline** ไม่ใช่ผลสุดท้ายของโครงงาน
+เปิด PowerShell ที่ project root:
 
-## คำศัพท์สำคัญ
+```powershell
+.\.venv\Scripts\python.exe scripts\check_environment.py
+.\.venv\Scripts\python.exe -m thai_spoof.cli --help
+.\.venv\Scripts\python.exe -m pytest -q
+```
 
-- **Inference**: ใช้โมเดลที่ฝึกแล้วทำนายไฟล์ใหม่
-- **Training**: ปรับพารามิเตอร์โมเดลด้วยข้อมูลที่มี label
-- **Fine-tuning**: นำโมเดลเดิมมาฝึกเพิ่มด้วยข้อมูลของเรา
-- **Checkpoint**: ไฟล์พารามิเตอร์ที่โมเดลเรียนรู้แล้ว
-- **Bonafide**: เสียงจริง
-- **Spoof**: เสียงปลอมหรือเสียงสังเคราะห์
-- **EER**: จุดที่อัตรารับเสียงปลอมผิดและปฏิเสธเสียงจริงผิดเท่ากัน ค่ายิ่งต่ำยิ่งดี
-- **SNR**: อัตราส่วนสัญญาณเสียงพูดต่อเสียงรบกวน ค่ายิ่งต่ำยิ่งมี noise มาก
+สคริปต์ตรวจ Python/Torch/CUDA/GPU และไฟล์ AASIST; RAM/พื้นที่ว่างต้องตรวจแยก ไม่รัน setup หรืออัปเกรด package โดยไม่จำเป็น
 
-## Milestone 1: ระบบรันได้
+## ทดลองทำนาย
 
-สิ่งที่ถือว่าผ่าน:
+```powershell
+.\.venv\Scripts\python.exe scripts\create_smoke_audio.py
+.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model aasist --audio data\sample\smoke_tone.wav
+.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model rawnet2 --audio data\sample\smoke_tone.wav
+```
 
-1. `scripts/check_environment.py` เห็น CUDA และ RTX 3050 Ti
-2. คำสั่ง `infer` โหลด checkpoint สำเร็จ
-3. โปรแกรมอ่าน WAV หนึ่งไฟล์และแสดง prediction ได้
+เสียง smoke เป็นสัญญาณจำลอง ตรวจเพียงว่าโค้ดทำงาน ผลทายไม่บอกความแม่นยำ ใช้เสียงพูดของตนเองได้โดยเปลี่ยน path; อย่าใส่ไฟล์ส่วนตัวเข้า Git
 
-ผลการทำนายในช่วงนี้อาจผิดได้ เพราะยังไม่ได้ปรับโมเดลให้เข้ากับภาษาไทย
+ทั้งสองระบบปัจจุบันเตรียมเสียงเป็น mono 16 kHz ใช้ window 64,600 samples ประมาณ 4.04 วินาที ค่าเริ่มต้นใช้ช่วงแรกและวนซ้ำเมื่อสั้น ไม่ได้จำกัดว่าไฟล์ต้นทางต้องยาวเท่านี้ RawNet2 มีตัวเลือก all-chunks แต่ไม่ใช้ตัวเลือกนี้ฝ่ายเดียวในการเปรียบเทียบหลัก
 
-## Milestone 2: Thai clean baseline
+## เริ่มโครงงานใหม่จากตรงไหน
 
-เมื่อได้ SEA-Spoof:
+1. อ่าน [workflow ส่วน 1–5](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s01) และตกลงกับเพื่อน/อาจารย์
+2. ตรวจ Common Voice ที่จะใช้ว่าเป็น release ไหน อยู่ที่ไหน และมี metadata/audio อะไรบ้าง
+3. พัฒนา EDA ใน `data/exploration/common_voice/` และ helper กลางใน `src/thai_spoof/cvtts/`
+4. แบ่งผู้พูด/ข้อความ/เสียงซ้ำออกจากกันก่อนสร้าง TTS
+5. Pilot TTS → สร้าง corpus → Clean/Mixed → fine-tune → Dev → Final Test ตาม workflow
 
-1. เลือกเฉพาะ `language=th`
-2. ใช้ official train/validation/evaluation split เดิม ห้ามสุ่มแบ่งใหม่
-3. ตรวจ `row_id` ไม่ซ้ำและนับ `bonafide`/`spoof` ในแต่ละ split
-4. สร้าง CSV manifest
-5. รัน `evaluate`
-6. เก็บ raw score, EER และ ROC-AUC; เลือก threshold บน validation ก่อนคำนวณ accuracy/confusion matrix ของ evaluation
+ยังไม่ต้องหา SEA-Spoof/Typhoon หรือรันสคริปต์ของชุดเก่า เพราะเอาออกจากขอบเขตและ repository แล้ว
 
-## Milestone 3: Telephone robustness
+ดูตำแหน่งไฟล์ใน [โครงสร้างโปรเจกต์](PROJECT_STRUCTURE_TH.md) และงานย่อย/คำสั่งที่ต้องพัฒนาที่ [workflow ส่วน 20–21](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s20) คำสั่ง proposed ยังรันไม่ได้จนกว่าจะ implement
 
-สร้างสำเนาเสียงทดสอบในเงื่อนไขต่อไปนี้:
+## ข้อควรจำ
 
-- Clean
-- narrow-band/telephone codec
-- Noise ที่ 20, 10 และ 0 dB
-- telephone codec ร่วมกับ noise
-
-ห้ามใช้ไฟล์ evaluation ไปฝึกโมเดล และต้องใช้ไฟล์ต้นฉบับชุดเดียวกันทุกเงื่อนไขเพื่อให้เปรียบเทียบอย่างยุติธรรม
-
-## Milestone 4: Fine-tuning
-
-RTX 3050 Ti มี VRAM 4 GB จึงเริ่มด้วย batch size 2 และ mixed precision หลังจาก baseline ถูกต้องแล้วเท่านั้น การฝึกเต็มชุดอาจต้องใช้ cloud GPU
-
-## สิ่งที่ยังไม่ควรทำ
-
-- อย่าเริ่มจากสร้างเว็บหรือ mobile application
-- อย่าแก้ architecture ก่อนมี baseline
-- อย่าสุ่มแบ่งไฟล์โดยไม่ดู speaker และ TTS system
-- อย่าสรุปว่า softmax 0.9 หมายถึงโมเดลถูก 90%
-- อย่ารายงานผลจากไฟล์ตัวอย่างไม่กี่ไฟล์เป็นผลวิจัย
+- ไม่มีข้อมูลไม่เท่ากับไม่มี missing values: ต้องตรวจไฟล์จริงก่อนรายงาน
+- Clean หมายถึงไม่เติม condition จำลอง ไม่ได้แปลว่าเสียงไม่มี noise อยู่เดิม
+- Mixed ในแผน v1 คือเลือก clean หรือ noise หรือ telephone ไม่ใช่ใส่ noise+telephone พร้อมกันทุกคลิป
+- Dev ใช้ปรับได้; Final Test ไม่ใช้ย้อนเลือกวิธี
+- ค่า softmax ของ pretrained model ไม่ใช่ความน่าเชื่อถือในการพิสูจน์เสียงจริง/ปลอม

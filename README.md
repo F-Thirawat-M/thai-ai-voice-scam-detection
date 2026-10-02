@@ -1,153 +1,89 @@
-# Thai AI Voice Detection
+# Thai Synthetic Speech Detection
 
-> **แผนงานล่าสุด (ตรวจทาน 3 ตุลาคม 2026):** อ่าน [Workflow หลัก Common Voice → TTS → AASIST / RawNet2](docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md) ก่อนเริ่มพัฒนาต่อ แผนใหม่นี้ใช้ Common Voice ภาษาไทยและเสียง TTS เพื่อเปรียบเทียบ Clean กับ Clean + Noise + Telephone ส่วน SEA-Spoof/Typhoon เก็บเป็นงานสำรวจเดิม ข้อมูลการใช้งานด้านล่างเป็น baseline ที่มีอยู่ ไม่ได้หมายความว่า pipeline ฝึกใหม่พัฒนาเสร็จแล้ว
+โครงงานเปรียบเทียบ **AASIST และ RawNet2** สำหรับตรวจเสียงสังเคราะห์ภาษาไทย โดยใช้ Common Voice เป็นแหล่งเสียงจริง/ข้อความ และสร้างเสียงปลอมด้วย TTS หลายระบบ เปรียบเทียบการ fine-tune แบบ Clean กับ Clean + Noise + Telephone
 
-โปรเจกต์ทดลองจำแนกเสียงพูดภาษาไทยระหว่างเสียงมนุษย์จริง (`bonafide`) และเสียงสังเคราะห์ (`spoof`) โดยเริ่มจากโมเดล AASIST ที่ผ่านการฝึกบน ASVspoof 2019
+## เริ่มอ่าน
 
-## สถานะปัจจุบัน
+- [Workflow ทั้งโปรเจกต์](docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md): ขั้นตอนละเอียด ข้อตกลงการทดลอง และ prompt ส่งต่อให้ AI
+- [โครงสร้างและตำแหน่งเก็บไฟล์](docs/PROJECT_STRUCTURE_TH.md): อะไรมีแล้ว และอะไรต้องพัฒนาต่อ
+- [เริ่มใช้งานสำหรับผู้เริ่มต้น](docs/BEGINNER_GUIDE_TH.md): ตรวจเครื่องและทดลอง inference ที่มีอยู่
+- [การจัดการข้อมูล](data/README.md): raw / processed / exploration / sample
+- [รายการทำความสะอาด](docs/CLEANUP_2026-10-03.md): สิ่งที่ลบและข้อจำกัดการกู้คืน
 
-- มีโค้ด AASIST ทางการใน `external/aasist/` และน้ำหนักใน `checkpoints/aasist/`
-- มีคำสั่งตรวจ GPU และ dependency
-- มีคำสั่ง inference สำหรับไฟล์ WAV/FLAC หนึ่งไฟล์
-- มีคำสั่งประเมินไฟล์หลายรายการจาก CSV manifest
-- เลือก AASIST หรือ RawNet2 baseline ผ่าน `--model` ได้
-- ยังไม่ได้ fine-tune ด้วยภาษาไทย ดังนั้นผลรายไฟล์ในช่วงนี้เป็น baseline เพื่อการวิจัย ไม่ใช่เครื่องมือตัดสินเสียงปลอมจริง
+## สถานะจริง
 
-## เริ่มใช้งาน
+มี pretrained inference ของ AASIST/RawNet2, CLI `infer/evaluate`, checkpoint, environment check และ tests พื้นฐานแล้ว
 
-เปิด PowerShell ที่โฟลเดอร์นี้ แล้วรัน:
+**ยังไม่มี** Common Voice audit pipeline, TTS generation pipeline, multi-condition training หรือ Final Test แบบ fixed Dev threshold โฟลเดอร์ที่เตรียมไว้เป็นจุดเริ่มต้น ไม่ได้หมายความว่าการทดลองเสร็จแล้ว
 
-```powershell
-.\scripts\setup.ps1
-.\.venv\Scripts\python.exe scripts\check_environment.py
-```
+SEA-Spoof/Typhoon พร้อม pipeline และเอกสารแผนเดิมถูกนำออกตามการปรับขอบเขต ไม่ต้องโหลดชุดเหล่านั้นเพื่อเริ่มงานใหม่
 
-หากทุกอย่างถูกต้อง บรรทัด `CUDA available` ควรเป็น `True`
-
-ทดสอบเส้นทางโปรแกรมทั้งหมดด้วยสัญญาณจำลอง (ผลการจำแนกไม่มีความหมายทางวิจัย):
-
-```powershell
-.\.venv\Scripts\python.exe scripts\create_smoke_audio.py
-.\.venv\Scripts\python.exe -m thai_spoof.cli infer --audio data\sample\smoke_tone.wav
-```
-
-### ตรวจเสียงหนึ่งไฟล์
-
-วางไฟล์ WAV หรือ FLAC ใน `data/sample/` แล้วรัน:
-
-```powershell
-.\.venv\Scripts\python.exe -m thai_spoof.cli infer --audio data\sample\your_voice.wav
-```
-
-ค่าเริ่มต้นใช้ AASIST และสามารถระบุโมเดลให้ชัดเจนด้วย `--model aasist` ได้
-
-### ทดลอง RawNet2
-
-ติดตั้ง checkpoint ทางการครั้งแรก (ประมาณ 66 MB; ไฟล์จะอยู่ใน `checkpoints/` และไม่ถูกเพิ่มเข้า Git):
-
-```powershell
-.\.venv\Scripts\python.exe -m thai_spoof.rawnet2.setup_checkpoint
-.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model rawnet2 --audio data\sample\your_voice.wav
-```
-
-ค่าเริ่มต้นตรวจช่วงแรกประมาณ 4.04 วินาที หากต้องการเฉลี่ยคะแนนทุกช่วงของไฟล์ ใช้ `--all-chunks` กับ RawNet2 คะแนนที่พิมพ์ออกมาไม่ได้ผ่านการ calibration สำหรับภาษาไทย
-
-ผลตัวอย่าง:
+## โครงสร้างหลัก
 
 ```text
-device: cuda
-prediction: bonafide
-bonafide_probability: 0.812345
-spoof_probability: 0.187655
-```
-
-ค่าความน่าจะเป็นนี้ไม่ได้ผ่านการ calibration และ pretrained model ยังไม่เคย fine-tune ด้วยภาษาไทย จึงห้ามตีความเป็นความน่าเชื่อถือทางนิติวิทยาศาสตร์
-
-### ประเมินหลายไฟล์
-
-คัดลอก `data/manifests/example.csv` แล้วแก้ `path` และ `label` ให้ตรงกับข้อมูลจริง:
-
-```powershell
-.\.venv\Scripts\python.exe -m thai_spoof.cli evaluate `
-  --manifest data\manifests\example.csv `
-  --model aasist `
-  --output results\aasist\baseline_scores.csv
-```
-
-รูปแบบ label ที่รองรับคือ `bonafide` และ `spoof`
-สามารถเปลี่ยนเป็น `--model rawnet2` และใช้ `--output results\rawnet2\baseline_scores.csv` เพื่อเทียบผลสองโมเดลบน manifest เดียวกัน CSV ผลลัพธ์มี `model`, `score_type` และ `segments` กำกับ AASIST ใช้ logit ส่วน RawNet2 ใช้ softmax score จึงไม่ควรเทียบค่าคะแนนดิบข้ามโมเดลโดยตรง
-
-### เตรียม SEA-Spoof ภาษาไทยที่ได้รับอนุญาต
-
-ใช้ split เดิมของ SEA-Spoof เสมอ: `train` สำหรับฝึก, `validation` สำหรับเลือก checkpoint/threshold, `evaluation` สำหรับวัดผลตามแผนที่กำหนดไว้ ห้ามสุ่มแบ่งใหม่ ข้อมูลที่ดาวน์โหลดและไฟล์ที่สกัดได้ถูก `.gitignore` และไม่ควรแชร์กับผู้ที่ไม่ได้รับสิทธิ์
-
-วาง Parquet จาก Hugging Face ไว้ที่ `data/raw/sea_spoof_hf/data/<split>/*.parquet` แล้วติดตั้ง dependency สำหรับการสกัดข้อมูล:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install -e ".[data]"
-```
-
-สกัดเฉพาะภาษาไทยจาก Dev และ Test โดยไม่แก้ Parquet ต้นฉบับ:
-
-```powershell
-.\.venv\Scripts\python.exe scripts\extract_thai_parquet.py --split validation
-.\.venv\Scripts\python.exe scripts\extract_thai_parquet.py --split evaluation
-```
-
-ผลอยู่ที่ `data/processed/sea_spoof_th/audio/<split>/*.flac` และ `data/manifests/thai_dev.csv`, `data/manifests/thai_test.csv` แต่ละ manifest เก็บ `path`, `row_id`, `label`, `language`, `split` และ metadata ทุกคอลัมน์จากต้นทาง ยกเว้น audio bytes ที่บันทึกเป็น FLAC แยกไว้ สคริปต์ตรวจ FLAC, sample rate, label และ `row_id` ซ้ำก่อนสร้าง manifest ฉบับสมบูรณ์ รันซ้ำได้โดยไม่ทับเสียงที่ต่างจากต้นทาง
-
-ขั้นต่อไปคือรัน pretrained ทั้งสองโมเดลบน manifest เดียวกัน โดยเลือก threshold จาก Dev เท่านั้น อย่าใช้ Test เพื่อเลือก threshold หรือปรับโมเดล คำสั่ง `evaluate` ปัจจุบันคำนวณ threshold จากไฟล์ที่ส่งเข้ามา จึงยังไม่ควรใช้ค่า accuracy/confusion matrix ที่มันพิมพ์จาก Test เป็นผลวิจัยก่อนแก้ขั้น metrics นี้
-
-เลิกใช้เส้นทางเตรียมข้อมูลจาก Google Drive แล้ว การเตรียมข้อมูลปัจจุบันใช้ `scripts/extract_thai_parquet.py` กับ Parquet จาก Hugging Face ตามคำสั่งด้านบนเท่านั้น
-
-## ลำดับการทำงานของโครงงาน
-
-1. ทำให้ inference และ GPU ผ่าน
-2. ขอสิทธิ์ SEA-Spoof และตรวจ metadata ภาษาไทย
-3. กรองภาษาไทยตาม split เดิมและสร้าง manifest โดยไม่สุ่มแบ่งใหม่
-4. วัด pretrained AASIST บนเสียงไทยสะอาด
-5. วัดซ้ำภายใต้ noise และ telephone codec
-6. Fine-tune ด้วยข้อมูลไทยและ multi-condition augmentation
-7. เปรียบเทียบ AASIST กับ RawNet2 บน manifest และเงื่อนไขการทดสอบเดียวกัน
-
-อ่านคำอธิบายสำหรับผู้เริ่มต้นใน `docs/BEGINNER_GUIDE_TH.md`
-
-อ่าน [แผนขอบเขต ข้อมูลประชากร และ workflow การทดลอง](docs/RESEARCH_PLAN_TH.md) ซึ่งรวมผลตรวจ metadata ของ Typhoon Isan และข้อจำกัดที่ต้องคุยกับอาจารย์ก่อนเลือกชุดเสริม
-
-## โครงสร้างสำคัญ
-
-สำรวจข้อมูลแบบ data science แยกตาม dataset ใน [โฟลเดอร์ EDA](data/exploration/README.md) เริ่มจาก [SEA-Spoof notebook](data/exploration/sea_spoof/sea_spoof_eda.ipynb) และอ่าน [วิธีรันกับขอบเขตการสำรวจ](data/exploration/sea_spoof/README.md) ผลที่รันแล้วเก็บใน `data/exploration/<dataset>/outputs/` ซึ่งไม่เข้า Git
-
-```text
+configs/cvtts/              ที่เก็บ protocol และ TTS/run configs ที่จะสร้าง
+data/
+  raw/common_voice/        ชุดต้นทาง (ยังไม่มี release ใหม่ในโฟลเดอร์นี้)
+  raw/noise/               noise recordings ต้นทาง
+  processed/cvtts/         corpus ที่สร้างและ versioned manifests
+  exploration/common_voice/  notebook และผล EDA ที่จะพัฒนา
+  sample/                 เสียงทดลอง inference ไม่ใช่ train/test
+docs/                     คู่มือ, workflow, decisions, reports
+examples/                 ตัวอย่างสังเคราะห์/placeholder ที่ commit ได้
 src/thai_spoof/
-  cli.py                 คำสั่ง infer/evaluate และตัวเลือกโมเดลร่วมกัน
-  prediction.py          รูปแบบผลลัพธ์ร่วมกัน
-  metrics.py             การวัดผลร่วมกัน
-  aasist/                ฝั่ง F-Thirawat-M: detector.py, audio.py, config.json
-  rawnet2/               ฝั่ง Nattadol: detector.py, model.py, config.yaml,
-                         download_checkpoint.py, setup_checkpoint.py, LICENSE
-data/raw/                ข้อมูลต้นฉบับในเครื่อง
-data/processed/          เสียงที่สกัดจากข้อมูลต้นฉบับ
-data/manifests/          รายการไฟล์และ label
-data/sample/             ไฟล์เสียงทดลองส่วนตัว
-checkpoints/aasist/      น้ำหนัก AASIST
-checkpoints/rawnet2/     น้ำหนัก RawNet2
-external/aasist/         โค้ดเครือข่าย AASIST ทางการ
-results/aasist/          ผลทดลอง AASIST
-results/rawnet2/         ผลทดลอง RawNet2
-scripts/                 ติดตั้งเครื่องและเตรียม dataset
-docs/                    คู่มือและแผนวิจัย
-tests/                   automated tests
+  aasist/                 adapter/config/preprocessing ของ AASIST ที่มีแล้ว
+  rawnet2/                adapter/model/config ของ RawNet2 ที่มีแล้ว
+  cvtts/                  พื้นที่ pipeline ข้อมูล/ฝึกใหม่ (ยังเป็น scaffold)
+  cli.py                  คำสั่ง inference ร่วม
+  metrics.py              legacy metrics; ต้องพัฒนาก่อนใช้ Final Test
+  prediction.py           รูปแบบผลทำนายร่วม
+scripts/                  setup, environment check, smoke signal
+tests/                    tests ที่ใช้อยู่ และตำแหน่ง tests/cvtts สำหรับงานใหม่
+external/aasist/           upstream source ที่ inference ยังใช้งาน
+checkpoints/              pretrained weights และน้ำหนักที่จะ fine-tune
+results/                  ผลที่สร้างในเครื่อง ไม่ commit
+tmp/                      ไฟล์ชั่วคราวที่สร้างใหม่ได้
 ```
 
-งานโมเดลของแต่ละฝั่งแก้ในโฟลเดอร์ของตัวเองได้ ส่วน CLI, metrics และ dataset ใช้ร่วมกัน
-อ่านคู่มือแต่ละโมเดลใน [AASIST](src/thai_spoof/aasist/README.md) และ [RawNet2](src/thai_spoof/rawnet2/README.md)
-ไฟล์เสียง น้ำหนัก และผลทดลองที่สร้างในเครื่องไม่ถูกเพิ่มเข้า Git
+ข้อมูลหลักใช้ร่วมกันทั้งสองโมเดล ไม่ทำสำเนา dataset แยกตาม model; แยก model/arm/seed ที่ run config, checkpoint และผลทดลอง
 
-## แหล่งที่มา
+## ตรวจเครื่องและทดลองสิ่งที่มีแล้ว
 
-- AASIST: https://github.com/clovaai/aasist
-- RawNet2 integration: https://github.com/Nattadol/thai-audio-deepfake
-- RawNet2 baseline: https://www.asvspoof.org/asvspoof2021/
-- SEA-Spoof: https://huggingface.co/datasets/Jack-ppkdczgx/SEA-Spoof
-- PyTorch installation: https://pytorch.org/get-started/locally/
+เปิด PowerShell ที่ project root:
+
+```powershell
+.\.venv\Scripts\python.exe scripts\check_environment.py
+.\.venv\Scripts\python.exe -m thai_spoof.cli --help
+.\.venv\Scripts\python.exe scripts\create_smoke_audio.py
+.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model aasist --audio data\sample\smoke_tone.wav
+.\.venv\Scripts\python.exe -m thai_spoof.cli infer --model rawnet2 --audio data\sample\smoke_tone.wav
+.\.venv\Scripts\python.exe -m pytest -q
+```
+
+Smoke signal ไม่ใช่เสียงพูด ผลทายไม่มีความหมายทางวิจัย สำหรับเสียงพูดของตนเองให้วาง WAV/FLAC ใน `data/sample/` แล้วเปลี่ยน path
+
+เครื่องใหม่อ่าน `scripts/setup.ps1` ก่อนรัน เพราะติดตั้ง dependencies/ดาวน์โหลด upstream; เครื่องนี้ไม่ต้องรัน setup ซ้ำเพื่อปรับโครงสร้าง ถ้าขาด RawNet2 weights จึงใช้ `python -m thai_spoof.rawnet2.setup_checkpoint`
+
+## ประเมินหลายไฟล์ด้วย CLI เดิม
+
+ตัวอย่างคอลัมน์อยู่ที่ [examples/inference_manifest.csv](examples/inference_manifest.csv) เป็นชื่อไฟล์สมมติ ไม่ใช่ข้อมูลพร้อมรัน ให้สร้าง manifest จริงใน `data/processed/cvtts/<version>/manifests/` หรือพื้นที่ส่วนตัวที่ไม่ commit
+
+```powershell
+.\.venv\Scripts\python.exe -m thai_spoof.cli evaluate --model aasist --manifest path\to\your_manifest.csv --output results\manual\aasist_scores.csv
+```
+
+Relative audio paths ใน CLI เดิมอ้างจาก working directory; labels คือ `bonafide/spoof` คะแนน AASIST/RawNet2 ยังคนละสเกลและยังไม่ calibrated สำหรับไทย **metrics เดิมเลือก threshold จากชุดที่ส่งเข้าไป จึงห้ามใช้ accuracy/confusion จาก Final Test เป็นผลตาม protocol ใหม่** จนพัฒนาส่วน Dev threshold แยกแล้ว
+
+## งานถัดไป
+
+เริ่ม T00–T02 ใน workflow: ยืนยัน scope → ตรวจ Common Voice release/สิทธิ์/ไฟล์จริง → พัฒนา audit ก่อนสร้างเสียงจำนวนมาก ไม่มีการดาวน์โหลด dataset ใหม่หรือเริ่ม train จากการปรับโครงสร้างครั้งนี้
+
+Branch ใช้ชื่อตาม feature โดยไม่ใส่ `codex/`; ผู้ใช้เป็นผู้ commit/push เอง
+
+## ที่มาโมเดล
+
+- [AASIST ทางการ](https://github.com/clovaai/aasist)
+- [RawNet2 integration ต้นทาง](https://github.com/Nattadol/thai-audio-deepfake)
+- [ASVspoof 2021 baselines](https://github.com/asvspoof-challenge/2021)
+
+เก็บ attribution/license ของโค้ดทั้งสองโมเดลไว้เหมือนเดิม รายละเอียดใน [AASIST](src/thai_spoof/aasist/README.md) และ [RawNet2](src/thai_spoof/rawnet2/README.md)

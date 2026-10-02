@@ -1,0 +1,3 @@
+path,label
+data/sample/your_human_audio.wav,bonafide
+data/sample/your_synthetic_audio.wav,spoof

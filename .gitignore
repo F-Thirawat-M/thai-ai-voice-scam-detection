@@ -1,4 +1,8 @@
 .venv/
+.venv-*/
+.env
+.env.*
+!.env.example
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -10,9 +14,10 @@ tmp/
 # Data and generated experiment outputs
 data/raw/
 data/processed/
-data/sample/*.wav
+data/sample/*
 !data/sample/README.md
-data/manifests/thai_*.csv
+# All real manifests live under ignored data/processed, never examples/.
+data/manifests/
 # EDA outputs may contain restricted source metadata and audio-derived data.
 data/exploration/*/outputs/
 .ipynb_checkpoints/

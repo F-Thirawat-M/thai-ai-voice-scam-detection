@@ -1,4 +1,0 @@
-path,label,speaker_id,system_id,language,split
-data/sample/human_01.wav,bonafide,spk001,none,th,test
-data/sample/ai_01.wav,spoof,spk002,tts01,th,test
-

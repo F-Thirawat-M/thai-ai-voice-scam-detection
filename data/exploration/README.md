@@ -1,48 +1,16 @@
-# สำรวจข้อมูลเสียง แยกตาม dataset
+# สำรวจข้อมูล
 
-แต่ละ dataset มีโฟลเดอร์ของตัวเองสำหรับ notebook, helper ที่เฉพาะชุดข้อมูล, คู่มือ และผลสำรวจ ไม่แยกสำเนาข้อมูลตามโมเดล เพราะ AASIST, RawNet2 หรือโมเดลอื่นอาจใช้ dataset เดียวกันเพื่อเปรียบเทียบ
+เก็บ notebook/helper เฉพาะการสำรวจแยกตาม dataset ปัจจุบันเตรียมเฉพาะ [Common Voice](common_voice/README.md) สำหรับแผนใหม่ ยังไม่มี notebook หรือผลสำรวจ Common Voice ที่สร้างจากโครงสร้างนี้
 
 ```text
-data/exploration/
-├── README.md
-├── sea_spoof/
-│   ├── README.md
-│   ├── sea_spoof_eda.ipynb
-│   ├── sea_spoof_eda_utils.py
-│   ├── sea_spoof_metadata_eda.ipynb  # remote metadata-only ครบสาม split
-│   ├── sea_spoof_metadata_utils.py
-│   ├── README_metadata.md
-│   └── outputs/                  # ผลที่รันแล้ว; ไม่เข้า Git
-│       └── metadata_only/         # ผลใหม่แยกจากผลตรวจเสียงเดิม
-└── typhoon_thai_dialect_isan/
-    ├── README.md
-    ├── typhoon_isan_eda.ipynb     # metadata-only; ไม่โหลดเสียง
-    ├── typhoon_eda_utils.py
-    └── outputs/                  # ผลที่รันแล้ว; ไม่เข้า Git
+data/exploration/common_voice/
+  README.md
+  common_voice_eda.ipynb    # จะสร้างใน task T02
+  outputs/                 # ตารางและ notebook ที่มีข้อมูลจริง ไม่ commit
 ```
 
-- [SEA-Spoof notebook](sea_spoof/sea_spoof_eda.ipynb) และ [วิธีรัน](sea_spoof/README.md)
-- [SEA-Spoof remote metadata notebook](sea_spoof/sea_spoof_metadata_eda.ipynb) และ [วิธีรัน/ขอบเขต](sea_spoof/README_metadata.md) — ครบ Train/Validation/Evaluation ไม่ใช้ dataset เดิมในเครื่อง
-- [Typhoon Isan notebook](typhoon_thai_dialect_isan/typhoon_isan_eda.ipynb) และ [วิธีรัน/ขอบเขต metadata-only](typhoon_thai_dialect_isan/README.md)
+เสียงต้นทางอยู่ `data/raw/common_voice/<release>/`; manifest ที่ใช้ทำซ้ำการทดลองอยู่ `data/processed/cvtts/<version>/manifests/` ไม่วาง dataset ขนาดใหญ่ไว้ข้าง notebook และไม่คัดลอกชุดข้อมูลแยกตาม AASIST/RawNet2
 
-เมื่อเพิ่ม dataset ใหม่ ให้สร้าง `data/exploration/<dataset_name>/` แล้วเก็บ notebook และ helper ของชุดนั้นภายใน พร้อมผลใน `outputs/` ที่ถูก gitignore โดยใช้ชื่อ snake_case
+Notebook ควรเรียก helper จาก `src/thai_spoof/cvtts/` แทนคัดลอก logic หลายแห่ง ก่อน commit ให้ล้าง outputs ที่มีข้อมูลส่วนตัวหรือเนื้อหาที่แจกไม่ได้
 
-ไฟล์เสียง/Parquet ต้นฉบับยังแยกใน `data/raw/<dataset_name>/`, ข้อมูลที่ประมวลผลใน `data/processed/<dataset_name>/` ตามโครงสร้างของแต่ละ pipeline ไม่ย้ายต้นฉบับมาไว้ใน exploration และไม่เปลี่ยนโครงสร้างข้อมูลเดิมโดยไม่ปรับ pipeline ที่อ้างถึง
-
-Notebook ที่มีเสียง/transcript หรือผลรายแถวต้องตรวจสิทธิ์ก่อนเผยแพร่ และ Clear All Outputs ก่อน commit notebook source คำสั่งรัน SEA-Spoof เดิมยังใช้ได้:
-
-```powershell
-.\.venv\Scripts\python.exe scripts\run_sea_spoof_eda.py --signal-all
-```
-
-รัน Typhoon Isan แบบอ่านเฉพาะ metadata (ครั้งแรกต้องใช้อินเทอร์เน็ต; ไม่อ่านคอลัมน์ audio):
-
-```powershell
-.\.venv\Scripts\python.exe scripts\run_typhoon_isan_eda.py
-```
-
-รัน SEA-Spoof แบบ remote metadata-only (ต้องใช้บัญชี HF ที่ได้รับอนุมัติ; ไม่เลือก audio):
-
-```powershell
-.\.venv\Scripts\python.exe scripts\run_sea_spoof_metadata_eda.py
-```
+EDA ของ SEA-Spoof/Typhoon และผลเดิมถูกลบแล้วตามคำขอ เป้าหมายใหม่ดู [workflow](../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md)
