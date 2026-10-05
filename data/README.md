@@ -15,8 +15,14 @@
 | `exploration/common_voice/outputs/` | ตารางรายละเอียด ผล EDA และ executed notebook | ไม่เข้า |
 | `sample/` | เสียงทดลองส่วนตัว ไม่ใช่ corpus วิจัย | เฉพาะ README เข้า |
 
-เครื่องนี้ดาวน์โหลดและแตก Common Voice Thai 27.0 ไว้แล้วที่ `raw/common_voice/cv-corpus-27.0-2026-09-11/th/` และมี notebook EDA แบบง่าย ยังไม่ได้เตรียม noise หรือสร้าง TTS ใหม่ หากข้อมูลอยู่ที่อื่นให้ระบุ data root ใน config ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
+เครื่องนี้ดาวน์โหลดและแตก Common Voice Thai 27.0 ไว้แล้วที่ `raw/common_voice/cv-corpus-27.0-2026-09-11/th/` มี notebook EDA และ TTS feasibility pilot แต่ยังไม่ได้เตรียม noise หรือสร้างชุด TTS ครบ Train/Dev หากข้อมูลอยู่ที่อื่นให้ระบุ data root ใน config ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
 
 ไม่ใช้ `data/manifests/` กลางอีกแล้ว เพราะ manifest ต้องผูกกับ dataset version; ตัวอย่างที่แจกได้ย้ายไป `examples/` ส่วน config ไม่เก็บ tokens
+
+ขั้นเตรียมทดลองใน notebook Common Voice บันทึกชุดเล็กที่ `processed/cvtts/pilot_v1/` เป็นรายการเสียงจริง Train 80 / Dev 20 และรายงานตรวจ split โดยอ้างถึง MP3 ดิบ ไม่คัดลอกเสียง ในขั้นแบ่งข้อมูลยังไม่มี TTS และยังไม่มี Final Test; ใช้ลองกระบวนการ ไม่ใช่ชุดสำหรับสรุปผลวิจัย
+
+ขั้น TTS feasibility แยกเป็น `exploration/common_voice/common_voice_tts_pilot.ipynb` สร้าง MMS Thai จากข้อความ Train เพียง 1 คลิปไว้ใน `processed/cvtts/pilot_v1/native_tts/` พร้อม provenance และสถานะรอฟังตรวจ ไม่ใช่การสร้างทั้ง dataset หรือการ fine-tune ตัวตรวจจับ
+
+หัวข้อ TTS review batch ขยายตัวอย่าง Train เป็น 10 คลิป (รวมคลิปแรก) เพื่อฟังข้อความสั้นถึงยาว รายการอยู่ `manifests/tts_train_review10.csv` ภายใน pilot version และผลฟังตรวจอยู่ `qc/tts_reviews/` ไม่ใช่ชุด train ที่พร้อมใช้ทั้งสองคลาสและไม่มี TTS จาก Dev ในขั้นนี้
 
 กติกา split, QC และฟิลด์ทั้งหมดอยู่ใน [workflow](../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md) อย่าถือว่า `.gitignore` เพียงอย่างเดียวตรวจสิทธิ์การแชร์ข้อมูลให้แล้ว

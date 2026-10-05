@@ -1,0 +1,7 @@
+ .../common_voice/common_voice_tts_pilot.ipynb      | 779 [32m+++++++++++++++++++++[m
+ pyproject.toml                                     |   5 [32m+[m
+ src/thai_spoof/cvtts/README.md                     |   2 [32m+[m[31m-[m
+ src/thai_spoof/cvtts/__init__.py                   |   5 [32m+[m[31m-[m
+ src/thai_spoof/cvtts/text.py                       |  30 [32m+[m
+ tests/cvtts/test_text.py                           |  48 [32m++[m
+ 6 files changed, 866 insertions(+), 3 deletions(-)

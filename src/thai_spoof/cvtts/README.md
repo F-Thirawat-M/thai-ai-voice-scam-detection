@@ -1,6 +1,6 @@
 # Shared Common Voice / TTS pipeline
 
-นี่คือ package scaffold ยังไม่มี loader, TTS adapter, trainer หรือคำสั่ง pipeline ใหม่
+มี helper `text.py` สำหรับเตรียมตัว “ำ” ของ MMS Thai pilot เป็นอักษรที่ tokenizer รองรับ และหยุดเมื่อ tokenizer เปลี่ยน/ตัดข้อความหลังเตรียมโดยไม่ประกาศ พร้อม tests ที่ `tests/cvtts/test_text.py` ยังไม่มี loader, TTS adapter, trainer หรือคำสั่ง pipeline ใหม่ ตัวอย่างสร้างเสียงอยู่ใน notebook ไม่ใช่ pipeline เต็ม
 
 งานที่จะพัฒนาตาม [workflow](../../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md): audit/split/schemas/provenance → synthesis → shared audio/conditions/datasets → training adapters → scoring/evaluation/reporting
 
