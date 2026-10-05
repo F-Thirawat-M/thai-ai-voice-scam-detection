@@ -15,7 +15,7 @@
 | `exploration/common_voice/outputs/` | ตารางรายละเอียด ผล EDA และ executed notebook | ไม่เข้า |
 | `sample/` | เสียงทดลองส่วนตัว ไม่ใช่ corpus วิจัย | เฉพาะ README เข้า |
 
-เพิ่งเตรียมโครงสร้าง ยังไม่ได้ดาวน์โหลด Common Voice/noise หรือสร้าง TTS ใหม่ หากข้อมูลอยู่ที่อื่นให้ระบุ data root ใน config ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
+เครื่องนี้ดาวน์โหลดและแตก Common Voice Thai 27.0 ไว้แล้วที่ `raw/common_voice/cv-corpus-27.0-2026-09-11/th/` และมี notebook EDA แบบง่าย ยังไม่ได้เตรียม noise หรือสร้าง TTS ใหม่ หากข้อมูลอยู่ที่อื่นให้ระบุ data root ใน config ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
 
 ไม่ใช้ `data/manifests/` กลางอีกแล้ว เพราะ manifest ต้องผูกกับ dataset version; ตัวอย่างที่แจกได้ย้ายไป `examples/` ส่วน config ไม่เก็บ tokens
 
