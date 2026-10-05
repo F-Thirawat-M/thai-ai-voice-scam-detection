@@ -1,4 +1,5 @@
-"""Reserved package for the Common Voice/TTS research pipeline.
+"""Shared Common Voice/TTS research pipeline package.
 
-Dataset preparation, synthesis and training are not implemented yet.
+Only the pilot MMS Thai text-preparation helpers are implemented here.
+Full dataset preparation, TTS adapters and training are not implemented yet.
 """
