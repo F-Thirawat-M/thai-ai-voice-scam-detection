@@ -127,7 +127,7 @@
 | CLI ปัจจุบัน | `infer`, `evaluate`, เลือก `--model` ได้ | workflow Common Voice, TTS, train, scoring และ threshold แยก Dev/Test |
 | Audio | โหลด mono/resample/crop-repeat สำหรับ inference | shared preprocessing ที่ให้ทั้งสองโมเดลรับ tensor และ condition เดียวกัน |
 | Metrics | EER แบบจุด ROC ใกล้ FAR=FRR และค่าประเมินอื่น | ประกาศ EER method, fixed Dev threshold, reject nonfinite, regression tests |
-| Dataset EDA | เตรียมโฟลเดอร์ Common Voice พร้อม README; EDA เก่าถูกลบแล้ว | Common Voice notebook / release audit / split / synthesis lineage ยังต้องพัฒนา |
+| Dataset EDA | มี Common Voice notebook แบบง่าย ใช้ pandas ดูข้อมูลและเสียงตัวอย่าง; EDA เก่าถูกลบแล้ว | full waveform QC / project split / synthesis lineage ยังต้องพัฒนา |
 | Training workflow ใหม่ | ยังไม่มี | ต้องสร้างและทดสอบ ไม่ใช่เพียงเพิ่ม CLI argument |
 
 ไฟล์ที่ผู้พัฒนาควรอ่านก่อนแก้:
@@ -239,7 +239,7 @@ EER + fixed-threshold errors + สถิติ + วิเคราะห์ + �
 <a id="s06"></a>
 ## 6. โครงสร้างไฟล์และการแบ่งงาน
 
-เตรียมโฟลเดอร์หลัก/README และ package scaffold ตามโครงสร้างนี้แล้ว ส่วน modules, executable YAML, notebook, corpus และ training pipeline ด้านล่างยังเป็น **เป้าหมายที่ต้องพัฒนา** ไม่ได้สร้าง implementation เปล่าไว้หลอกว่าทำงานได้ ดูรายละเอียดสถานะใน [PROJECT_STRUCTURE_TH.md](PROJECT_STRUCTURE_TH.md)
+เตรียมโฟลเดอร์หลัก/README และ package scaffold ตามโครงสร้างนี้แล้ว และมี Common Voice EDA notebook แบบง่าย ส่วน modules, executable YAML, TTS corpus และ training pipeline ด้านล่างยังเป็น **เป้าหมายที่ต้องพัฒนา** ดูรายละเอียดสถานะใน [PROJECT_STRUCTURE_TH.md](PROJECT_STRUCTURE_TH.md)
 
 ```text
 configs/cvtts/
@@ -342,7 +342,7 @@ results/cvtts/<protocol>/<run_id>/
 
 ### 8.1 ตรวจที่มาและ metadata
 
-1. หาไฟล์ที่มีจริงและ root path ของ Common Voice; โฟลเดอร์ `data/raw/common_voice/` ที่เตรียมไว้ยังไม่มี release ใหม่ ห้ามถือว่าโครงสร้างว่างแปลว่าโหลดข้อมูลแล้ว
+1. เครื่องนี้มี Common Voice Thai 27.0 ที่ `data/raw/common_voice/cv-corpus-27.0-2026-09-11/th/` แล้ว และมี basic EDA notebook; เมื่อทำต่อหรือย้ายเครื่องให้ตรวจ release/root จริงอีกครั้ง ไม่ hardcode จำนวนข้อมูลจากผลเก่า
 2. บันทึก release, locale, download source/date, terms/license version, archive/file checksum ถ้ามี
 3. อ่าน header ของ `validated.tsv` และไฟล์ประกอบจริง ใช้ชื่อคอลัมน์ตาม release ไม่บังคับ schema จากความจำ
 4. ตรวจจำนวนแถว, ชนิดข้อมูล, missing/blank/unspecified, จำนวนค่าที่ไม่ซ้ำ และตัวอย่างค่าที่ไม่เปิดเผยตัวบุคคล

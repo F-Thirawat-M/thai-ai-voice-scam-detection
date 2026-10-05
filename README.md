@@ -8,6 +8,7 @@
 - [โครงสร้างและตำแหน่งเก็บไฟล์](docs/PROJECT_STRUCTURE_TH.md): อะไรมีแล้ว และอะไรต้องพัฒนาต่อ
 - [เริ่มใช้งานสำหรับผู้เริ่มต้น](docs/BEGINNER_GUIDE_TH.md): ตรวจเครื่องและทดลอง inference ที่มีอยู่
 - [การจัดการข้อมูล](data/README.md): raw / processed / exploration / sample
+- [Common Voice EDA แบบง่าย](data/exploration/common_voice/common_voice_eda.ipynb): เริ่มดู df, คอลัมน์, ค่าว่าง, ความยาวเสียง และผู้พูด
 - [รายการทำความสะอาด](docs/CLEANUP_2026-10-03.md): สิ่งที่ลบและข้อจำกัดการกู้คืน
 
 ## สถานะจริง
@@ -23,10 +24,10 @@ SEA-Spoof/Typhoon พร้อม pipeline และเอกสารแผน�
 ```text
 configs/cvtts/              ที่เก็บ protocol และ TTS/run configs ที่จะสร้าง
 data/
-  raw/common_voice/        ชุดต้นทาง (ยังไม่มี release ใหม่ในโฟลเดอร์นี้)
+  raw/common_voice/        ชุดต้นทาง; เครื่องนี้มี Common Voice Thai 27.0 แล้ว
   raw/noise/               noise recordings ต้นทาง
   processed/cvtts/         corpus ที่สร้างและ versioned manifests
-  exploration/common_voice/  notebook และผล EDA ที่จะพัฒนา
+  exploration/common_voice/  notebook EDA แบบง่ายและผลเฉพาะเครื่อง
   sample/                 เสียงทดลอง inference ไม่ใช่ train/test
 docs/                     คู่มือ, workflow, decisions, reports
 examples/                 ตัวอย่างสังเคราะห์/placeholder ที่ commit ได้

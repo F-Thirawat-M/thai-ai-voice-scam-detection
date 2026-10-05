@@ -24,7 +24,7 @@
 | `configs/cvtts/` | protocol, TTS registry, run configs |
 | `src/thai_spoof/cvtts/` | shared audit/split/TTS/conditions/training/evaluation |
 | `tests/cvtts/` | tests ของ pipeline ใหม่ |
-| `data/exploration/common_voice/` | notebook EDA และ outputs |
+| `data/exploration/common_voice/` | มี notebook EDA แบบง่ายแล้ว; automated QC/split ยังต้องพัฒนาต่อ |
 | `data/raw/common_voice/`, `data/raw/noise/` | ข้อมูลต้นทางตาม source/release |
 | `data/processed/cvtts/` | corpus/version, canonical/native audio, manifests, QC, jobs |
 | `docs/decisions/`, `docs/reports/cvtts/` | decision log และรายงาน |
