@@ -15,7 +15,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[3]
+ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT / "src"))
 
 import numpy as np
@@ -126,7 +126,7 @@ def main():
         "resume_supported": False, "final_test_accessed": False, "generator_count": 1,
         "preflight_subset_only": bool(args.max_batches),
     }
-    code_files = ["experiments/pilot/scripts/train_aasist_clean.py", "src/thai_spoof/pilot/pilot_data.py",
+    code_files = ["experiments/pilot/scripts/aasist/train_aasist_clean.py", "src/thai_spoof/pilot/pilot_data.py",
                   "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/cvtts/provenance.py", "src/thai_spoof/aasist/detector.py",
                   "src/thai_spoof/aasist/config.json", "external/aasist/models/AASIST.py",
                   "external/aasist/data_utils.py"]

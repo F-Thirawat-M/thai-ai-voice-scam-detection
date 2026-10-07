@@ -12,20 +12,43 @@ pytest-cache-files-*/
 tmp/
 
 # Data and generated experiment outputs
-data/raw/
-data/processed/
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+!data/raw/common_voice/README.md
+!data/raw/noise/README.md
+data/processed/**
+!data/processed/**/
+!data/processed/**/.gitkeep
+!data/processed/cvtts/pilot_v1/README.md
 data/sample/*
 !data/sample/README.md
 # All real manifests live under ignored data/processed, never examples/.
 data/manifests/
 # EDA outputs may contain restricted source metadata and audio-derived data.
 data/exploration/*/outputs/
-experiments/pilot/notebooks/outputs/
+experiments/pilot/notebooks/outputs/**
+!experiments/pilot/notebooks/outputs/**/
+!experiments/pilot/notebooks/outputs/.gitkeep
 .ipynb_checkpoints/
-results/*
-!results/.gitkeep
-checkpoints/*
-!checkpoints/.gitkeep
+results/**
+!results/**/
+!results/**/.gitkeep
+!results/README.md
+!results/pilot/aasist_clean_smoke/README.md
+!results/pilot/aasist_overfit_check/README.md
+!results/pilot/rawnet2/README.md
+!results/pilot/share/README.md
+checkpoints/**
+!checkpoints/**/
+!checkpoints/**/.gitkeep
+!checkpoints/README.md
+!checkpoints/aasist/README.md
+!checkpoints/rawnet2/README.md
+!checkpoints/tts/README.md
+# Documentation/empty placeholders only; real payload remains ignored.
+# Extracted handoff checksums and helper are delivered in the private ZIP.
+_pilot_handoff/
 
 # The setup script downloads this upstream research repository when needed.
 external/aasist/

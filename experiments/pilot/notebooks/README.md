@@ -12,4 +12,4 @@
 
 ทุก notebook หา project root ผ่าน `pyproject.toml` ไม่ขึ้นกับตำแหน่งโฟลเดอร์เดิม และยังใช้ dataset/weights เดิม ไม่ย้ายเสียง
 
-Notebook ไม่ใช่การ fine-tune detector ขั้นฝึกอยู่ [../scripts/](../README.md) ดู [หน้าเริ่ม pilot](../README.md) สำหรับสถานะปัจจุบัน หรือ [รายละเอียด notebook](../docs/NOTEBOOK_DETAILS_TH.md) เมื่อจำเป็น
+Notebook เป็นส่วนเตรียมข้อมูลร่วมสองโมเดล ไม่ใช่การ fine-tune detector ขั้นฝึกแยกอยู่ [../scripts/](../scripts/README.md) ดู [หน้าเริ่ม pilot](../README.md) สำหรับสถานะปัจจุบัน หรือ [รายละเอียด notebook](../docs/NOTEBOOK_DETAILS_TH.md) เมื่อจำเป็น

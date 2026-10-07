@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def trainer_module():
-    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/train_aasist_clean.py"
+    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/aasist/train_aasist_clean.py"
     spec = importlib.util.spec_from_file_location("aasist_smoke_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

@@ -7,7 +7,7 @@ import pytest
 
 @pytest.fixture
 def overfit_script(tmp_path, monkeypatch):
-    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/check_aasist_overfit.py"
+    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/aasist/check_aasist_overfit.py"
     spec = importlib.util.spec_from_file_location("overfit_script_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)

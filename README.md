@@ -16,6 +16,7 @@
 | --- | --- |
 | ทำงานต่อจากตอนนี้ | [Pilot — หน้าเริ่มต้น](experiments/pilot/README.md) |
 | เข้าใจว่าแต่ละโฟลเดอร์คืออะไร | [แผนผังไฟล์](docs/PROJECT_STRUCTURE_TH.md) |
+| เพื่อนรับข้อมูล/แบ่งงาน AASIST–RawNet2 | [คู่มือส่งต่องาน](docs/TEAM_HANDOFF_TH.md) |
 | ดูขอบเขตงานวิจัยจริงที่ยังไม่เริ่ม | [Research — สถานะและแผน](experiments/research/README.md) |
 | อ่าน workflow วิจัยละเอียด | [Workflow หลัก](docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md) — มีคำสั่ง proposed ที่ยังรันไม่ได้ |
 
@@ -25,10 +26,12 @@
 experiments/pilot/       notebook / คำสั่ง / คู่มือทดลองเบื้องต้น
 experiments/research/    ขอบเขตงานจริง (ตอนนี้มีแผน ยังไม่มี trainer พร้อมใช้)
 src/thai_spoof/          โค้ดโมเดลและ helpers ที่โปรแกรมใช้
-data/ + results/         ข้อมูลและผลในเครื่อง ไม่เข้า Git
+data/ + results/         ข้อมูลและผลจริงไม่เข้า Git; คู่มือ/โครงสร้างเข้า Git
 ```
 
 ข้อมูล pilot อยู่ `data/processed/cvtts/pilot_v1/`; ผลฝึก pilot อยู่ `results/pilot/` ไม่ใช้เป็น main experiment หรือ Final Test
+
+สคริปต์/คู่มือ pilot แยก `aasist/` และ `rawnet2/` ส่วน notebook/dataset/loader ใช้ร่วมกัน ฝั่ง RawNet2 มีพื้นที่ README แต่ยังไม่มี trainer โฟลเดอร์ที่มี `.gitkeep` เป็นเพียงตำแหน่ง ไม่ใช่เสียงหรือ weights ที่ดาวน์โหลดแล้ว
 
 Tests: `.\.venv\Scripts\python.exe -m pytest -q`
 

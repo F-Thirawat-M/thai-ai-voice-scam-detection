@@ -13,4 +13,4 @@
 
 **Notebook ย้ายไป [experiments/pilot/notebooks/](../experiments/pilot/notebooks/README.md)** ไม่อยู่ใน data/exploration แล้ว ผลฝึกอยู่ [results/pilot/](../results/pilot/) ไม่ใช่ qc ของ dataset
 
-Raw/processed/sample เสียงจริงไม่เข้า Git ส่วน root รายงานที่ commit ได้อยู่ใน docs ไม่มีการทำสำเนา raw data แยกตามโมเดล และยังไม่ได้สร้าง dataset version สำหรับการทดลองจริง
+Raw/processed/sample เสียงจริง, metadata, manifest และรายงาน QC จริงไม่เข้า Git ส่วน README/`.gitkeep` ในโฟลเดอร์ที่กำหนดเข้า Git เพื่อให้เพื่อนเห็นโครงสร้างเมื่อ clone โดยยังไม่มีข้อมูลจริง ไม่มีการทำสำเนา raw data แยกตามโมเดล และยังไม่ได้สร้าง dataset version สำหรับการทดลองจริง ดู [วิธีรับข้อมูลแยกจาก Git](../docs/TEAM_HANDOFF_TH.md)
