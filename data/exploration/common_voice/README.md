@@ -1,6 +1,22 @@
 # Common Voice EDA แบบง่าย
 
-## ขั้นถัดไป: Wayu ครบ pilot Train 80 / Dev 20
+## ขั้นล่าสุด: เตรียมเสียงสองคลาสเป็น mono 16 kHz
+
+เปิด [common_voice_pilot_audio.ipynb](common_voice_pilot_audio.ipynb) เลือก **`.venv` หลัก** ไม่ใช่ `.venv-wayu` แล้วรันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](outputs/common_voice_pilot_audio.executed.ipynb) หัวข้อ 3 มีเสียงคน/Wayu ก่อนและหลังแปลงให้ฟัง ไม่โหลด TTS ใหม่
+
+อ่าน `wayu_pilot_train_native.csv` / `wayu_pilot_dev_native.csv` ที่ตรวจ hash กับ generation report เตรียม **200 ไฟล์ WAV FLOAT, mono, 16 kHz** ด้วย helper ร่วม `thai_spoof.cvtts.audio` มี Train คน 80 + Wayu 80 และ Dev คน 20 + Wayu 20 ไม่แก้ไฟล์ต้นทาง แปลง sample rate โดยไม่ normalize gain/clip/trim ความยาวยังเต็มคลิป ไม่ตัดเป็น 4.04 วินาทีหรือ repeat/pad ในขั้นนี้ ไม่เติม noise/telephone และยังไม่ train
+
+ผลภายใน `data/processed/cvtts/pilot_v1/` (ไม่เข้า Git):
+
+- เสียง: `canonical/clean16k/<split>/<label>/<sample_id>.wav`
+- รายการใหม่: `manifests/wayu_pilot_train_clean16k.csv` (160) และ `wayu_pilot_dev_clean16k.csv` (40)
+- รายงานเทคนิค: `qc/canonical_audio/wayu_pilot_clean16k_v1.json`
+
+manifest เก็บ `source_audio_path`/`source_audio_file_sha256` และ source rate/channels/duration สำหรับย้อนตรวจ พร้อม output waveform/file hashes และ policy `mono16k_float_fullclip_v1` ตรวจ source hashes, readback ทั้ง 200 ไฟล์, duration error ไม่เกิน 1 target sample, duplicate/split overlap และไม่เขียนทับเมื่อข้อมูลต่าง มี tests โดยใช้เสียงที่สร้างเอง ไม่เก็บความคิดเห็นส่วนตัว
+
+**ข้อจำกัด:** codec/sample rate ของไฟล์ปลายทางเหมือนกัน ไม่ได้ทำให้ MP3 ต้นทางไร้ artefacts หรือแบนด์วิดท์เดิมเท่ากัน ไม่ใช่ผลทดสอบคุณภาพคำอ่านทั้งชุด ขั้นถัดไปคือ DataLoader/window และ training loop สำหรับลอง AASIST Clean 1 epoch; ยังไม่มีคำสั่ง fine-tune พร้อมใช้
+
+## Wayu ครบ pilot Train 80 / Dev 20
 
 เปิด [common_voice_wayu_pilot_dataset.ipynb](common_voice_wayu_pilot_dataset.ipynb) เลือก **`.venv-wayu` Python 3.11** แล้วรันจากบนลงล่าง หรือดู [ผลที่รันแล้ว](outputs/common_voice_wayu_pilot_dataset.executed.ipynb) notebook นี้อ่าน `real_train.csv`, `real_dev.csv` และ `pilot_split_report.json` จาก EDA ไม่ต้องมี MMS หรือ manifest review10 ของ MMS
 
@@ -23,7 +39,7 @@
 - เสียงปลอม: `manifests/tts_wayu_train.csv` (80), `tts_wayu_dev.csv` (20), `tts_wayu_all.csv` (100)
 - สองคลาส: `manifests/wayu_pilot_train_native.csv` (คน 80 + TTS 80), `wayu_pilot_dev_native.csv` (คน 20 + TTS 20)
 
-**ยังไม่พร้อมสั่ง train โดยตรง:** เสียงคนยังเป็น MP3 sample rate เดิม ส่วน TTS เป็น WAV 24 kHz รายการ `native` ไม่ใช่ config/manifest ของ CLI ฝึกที่พร้อมใช้ ขั้นต่อไปต้องจัดรูปแบบเสียงร่วมกันและเพิ่ม training loop AASIST ไม่มีการ resample/crop/pad/noise/telephone/fine-tune ใน notebook นี้ ไม่อ้างว่าควบคุมความต่าง codec/sample rate ระหว่างคลาสแล้ว หรือว่าผล pilot เท่ากับผลวิจัย
+**รายการ native ยังไม่พร้อมสั่ง train โดยตรง:** เสียงคนเป็น MP3 sample rate เดิม ส่วน TTS เป็น WAV 24 kHz รายการ `native` ไม่ใช่ config/manifest ของ CLI ฝึกที่พร้อมใช้ ใช้ notebook เตรียมเสียงร่วมด้านบนเพื่อสร้างรายการ `clean16k` แล้วจึงพัฒนา training loop AASIST ไม่มีการ resample/crop/pad/noise/telephone/fine-tune ใน notebook สร้าง Wayu ไม่อ้างว่าควบคุมทุกความต่างระหว่างคลาสแล้ว หรือว่าผล pilot เท่ากับผลวิจัย
 
 <a id="wayu-pilot"></a>
 

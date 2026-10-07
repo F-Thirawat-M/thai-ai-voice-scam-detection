@@ -11,6 +11,12 @@
 
 ตอนนี้ยังอยู่ระยะ pretrained inference + เตรียมระบบข้อมูล/ฝึกใหม่ การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ
 
+## ขั้นเตรียมเสียงร่วมก่อนลอง train
+
+หลังมี Wayu ครบ pilot ใช้ [common_voice_pilot_audio.ipynb](../data/exploration/common_voice/common_voice_pilot_audio.ipynb) เลือก **`.venv` หลัก** เพื่อทำไฟล์ใหม่ทั้งสองคลาสเป็น WAV FLOAT mono 16 kHz โดยเก็บความยาวเต็ม ไม่ตัดเหลือ 4 วินาที ไม่เติม noise/telephone ไม่ normalize gain และไม่แก้ native data ดูผลที่รันแล้วใน `data/exploration/common_voice/outputs/` ที่ไม่เข้า Git
+
+ใช้รายการใหม่ `wayu_pilot_train_clean16k.csv` / `wayu_pilot_dev_clean16k.csv` ภายใน `data/processed/cvtts/pilot_v1/manifests/` สำหรับพัฒนา training DataLoader ต่อไป มี source/output hashes ย้อนตรวจได้ ยังไม่มี training loop/window policy พร้อมใช้ จึงยังไม่ train AASIST/RawNet2 และไม่รายงาน EER จากขั้นเตรียมเสียง การเปลี่ยนรูปแบบไฟล์ไม่ได้ลบ artefacts/แบนด์วิดท์จากต้นทาง
+
 ## ขั้นเตรียม Wayu ครบชุดทดลองเล็ก
 
 หลัง EDA แบ่งเสียงคนเป็น Train 80 / Dev 20 และฟัง Wayu review10 แล้ว ใช้ [notebook สร้างครบ pilot](../data/exploration/common_voice/common_voice_wayu_pilot_dataset.ipynb) เลือก `.venv-wayu` ไม่ใช่ `.venv` หลัก เครื่องใหม่เตรียม environment ด้วย `scripts/setup_wayu_pilot.ps1 -Dataset` หลังมี raw Common Voice และ manifests จาก EDA ก่อน ไม่ต้องสร้าง MMS เพื่อรัน notebook นี้
