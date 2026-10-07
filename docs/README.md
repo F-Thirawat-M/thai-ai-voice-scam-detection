@@ -7,5 +7,6 @@
 5. [รายงาน](reports/cvtts/README.md) — ที่เก็บสรุปแบบเผยแพร่ได้
 6. [Cleanup 3 ตุลาคม 2026](CLEANUP_2026-10-03.md) — รายการที่เลิกใช้และนำออก
 7. [AASIST Clean smoke 1 epoch](AASIST_CLEAN_SMOKE_TH.md) — โค้ดที่เพิ่ม คำสั่งที่ใช้ได้ ผลรอบแรก และข้อจำกัด
+8. [AASIST จำ Train ชุดเล็ก](AASIST_OVERFIT_CHECK_TH.md) — diagnostic 4 คลิปก่อนปรับ recipe ไม่ใช้ Dev/Test
 
 ไม่มีแผน SEA-Spoof คู่ขนานกับแผนใหม่แล้ว หากต้องดูแผนเก่าให้ดู Git history ไม่ดึงกลับมารวมใน workflow โดยอัตโนมัติ

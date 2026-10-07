@@ -78,6 +78,8 @@ CLI `thai-spoof infer` เดิมยังใช้ pretrained config เด�
 
 ## ขั้นถัดไปที่เหมาะสม
 
+อัปเดต: ทำข้อ 1 แบบ fixed-input memorization ผ่านแล้ว ดู [ผลและข้อจำกัด](AASIST_OVERFIT_CHECK_TH.md) ไม่ได้อัปเดต/แทนที่ผล Dev ของรอบ smoke เดิม ขั้นต่อไปคือข้อ 2
+
 1. ทำ overfit-small-batch test จาก Train เพื่อดูว่าโมเดลจำชุดเล็กได้และ label/loss/data flow สอดคล้องกัน ไม่ใช้ Dev เป็นชุดฝึก
 2. ตรวจผลของ microbatch/BatchNorm และ recipe ด้วยงบ Train/Dev ที่บันทึกไว้; Dev loss ที่เพิ่มอย่างเดียวไม่ระบุสาเหตุแน่ชัด
 3. เพิ่ม TTS ระบบที่สองและตรวจ corpus/split/QC ก่อนการเปรียบเทียบหลาย generators; Wayu ตัวเดียวรอบนี้ยังไม่ตรง scope หลัก

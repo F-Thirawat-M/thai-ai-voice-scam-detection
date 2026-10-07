@@ -6,6 +6,8 @@
 
 สร้าง unit/integration tests เพิ่มตาม [workflow ส่วน 18](../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s18) เมื่อเริ่ม implementation ส่วนอื่น tests เหล่านี้ไม่ได้ยืนยันว่าคำอ่านทั้งหมดถูกหรือ model generalize ได้
 
+`test_overfit.py` ตรวจ paired Train selection, finite/label validation, gradient learning ขณะ dropout/BN stats ตรึง, accumulation รวม microbatch ที่ขนาดไม่เท่ากัน และ checkpoint reload ด้วยโมเดลจำลอง; `test_overfit_guard.py` ตรวจ Train-only entry point/ไม่ทับ run/งบจำกัด; `test_provenance.py` ตรวจ exact/LF-CRLF และปฏิเสธ code changes จริง ผล AASIST จริงแยกอยู่ใน [คู่มือ overfit check](../../docs/AASIST_OVERFIT_CHECK_TH.md)
+
 ใช้ fixtures ที่สร้างเองและแจกได้ ทดสอบ split isolation, shared audio/conditions, generation resume, gradients/save-load และ Dev-only threshold ก่อนเปิด Final Test
 
 Tests ระดับ baseline ที่ยังใช้อยู่คือ `../test_audio.py` และ `../test_metrics.py`; ผ่านสองไฟล์นี้ไม่ได้แปลว่า protocol ใหม่ผ่านแล้ว

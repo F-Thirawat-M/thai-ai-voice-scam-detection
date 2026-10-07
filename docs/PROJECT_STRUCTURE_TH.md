@@ -13,6 +13,8 @@
 | `scripts/check_environment.py` | ตรวจ runtime/GPU/ไฟล์ AASIST |
 | `scripts/create_smoke_audio.py` | สร้างเสียงสัญญาณทดสอบเส้นทาง inference |
 | `scripts/train_aasist_pilot.py` | AASIST Clean 1-epoch feasibility smoke พร้อม Dev diagnostics/reload; ไม่ใช่ main-run trainer |
+| `scripts/check_aasist_overfit.py`, `src/thai_spoof/cvtts/overfit.py` | Train 4 คลิปแบบ fixed-input memorization check ไม่ใช้ Dev/Test; ผลใน `results/cvtts/aasist_overfit_check/` |
+| `src/thai_spoof/cvtts/provenance.py` | preparation code hash guard ที่รองรับ Git LF/CRLF ไม่ละเลย content change |
 | `src/thai_spoof/cvtts/windows.py`, `pilot_data.py` | Shared window policy และ strict canonical Wayu pilot Dataset |
 | `scripts/setup.ps1` | bootstrap เครื่องใหม่ มีขั้นดาวน์โหลด/ติดตั้ง จึงไม่รันซ้ำโดยไม่อ่าน |
 | `external/aasist/` | upstream source ที่ AASIST adapter import จริง ไม่ใช่ของเหลือที่ลบได้ |

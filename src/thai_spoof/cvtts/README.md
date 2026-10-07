@@ -10,6 +10,10 @@
 
 งานที่จะพัฒนาตาม [workflow](../../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md): audit/split/schemas/provenance → synthesis → shared audio/conditions/datasets → training adapters → scoring/evaluation/reporting
 
+เพิ่ม `overfit.py` และ `scripts/check_aasist_overfit.py` สำหรับ Train 2 คู่/4 คลิปแบบ input คงที่ ปิด dropout/ตรึง BN stats แต่ gradient เปิด, เริ่ม pretrained ใหม่ ไม่ใช้ Dev/Test ผ่านเกณฑ์หลัง 20 updates ดู [ผลและข้อจำกัด](../../../docs/AASIST_OVERFIT_CHECK_TH.md) ไม่ใช่ recipe ใหม่สำหรับ main run
+
+`provenance.py` ตรวจ preparation code hash แบบ exact หรือ normalize CRLF→LF **เฉพาะโค้ด** เพื่อรองรับ Git checkout บน Windows ไม่ bypass การเปลี่ยนเนื้อหา ไม่เปลี่ยน hashes ของ audio/manifests และไม่แก้รายงานเก่า
+
 คง model-specific network/inference code ใน `../aasist/` และ `../rawnet2/` ส่วน data split/augmentation/score convention ใช้ร่วมกันที่นี่ ไม่คัดลอก pipeline ให้โมเดลละชุด
 
 ให้สร้าง modules เมื่อเริ่ม task ที่เกี่ยวข้องพร้อม tests ไม่สร้าง implementation เปล่าที่คืนค่าหลอกว่างานสำเร็จ

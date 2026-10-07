@@ -27,6 +27,7 @@ from thai_spoof.aasist.detector import AASISTDetector
 from thai_spoof.cvtts.pilot_data import (
     LABEL_TO_INT, CleanPilotDataset, check_split_disjoint, file_sha256, load_pilot_split,
 )
+from thai_spoof.cvtts.provenance import verify_preparation_code
 
 
 def evaluate(model, loader, device):
@@ -72,9 +73,8 @@ def main():
     canonical = json.loads(report_path.read_text(encoding="utf-8"))
     if canonical["audio_policy"] != "mono16k_float_fullclip_v1":
         raise ValueError("unexpected audio policy")
-    for name, digest in canonical["preparation_code_sha256"].items():
-        if file_sha256(ROOT / name) != digest:
-            raise ValueError(f"preparation code changed: {name}")
+    preparation_check = {name: verify_preparation_code(ROOT / name, digest)
+                         for name, digest in canonical["preparation_code_sha256"].items()}
     train_rows, train_waves = load_pilot_split(ROOT, "train", canonical["manifest_sha256"]["wayu_pilot_train_clean16k.csv"])
     dev_rows, dev_waves = load_pilot_split(ROOT, "dev", canonical["manifest_sha256"]["wayu_pilot_dev_clean16k.csv"])
     check_split_disjoint(train_rows, dev_rows)
@@ -127,12 +127,13 @@ def main():
         "preflight_subset_only": bool(args.max_batches),
     }
     code_files = ["scripts/train_aasist_pilot.py", "src/thai_spoof/cvtts/pilot_data.py",
-                  "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/aasist/detector.py",
+                  "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/cvtts/provenance.py", "src/thai_spoof/aasist/detector.py",
                   "src/thai_spoof/aasist/config.json", "external/aasist/models/AASIST.py",
                   "external/aasist/data_utils.py"]
     run = {
         "run_id": args.run_id, "status": "running", "started_utc": datetime.now(timezone.utc).isoformat(),
         "config": config, "canonical_report_sha256": file_sha256(report_path),
+        "preparation_code_verification": preparation_check,
         "manifest_sha256": canonical["manifest_sha256"],
         "initial_checkpoint_sha256": file_sha256(ROOT / "checkpoints/aasist/AASIST.pth"),
         "upstream_config_sha256": file_sha256(config_path),

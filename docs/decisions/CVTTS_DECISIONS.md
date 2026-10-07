@@ -18,6 +18,15 @@
 - Dev loss เพิ่ม 1.594355 → 4.853433; ผ่านด้านเทคนิคเท่านั้น ไม่อ้างว่าความแม่นยำเพิ่ม ขั้นต่อไปคือ overfit-small-batch/recipe checks ก่อนขยาย corpus/conditions
 - Branch `feat-aasist-clean-smoke` แยกจาก canonical audio ที่ผู้ใช้ commit แล้ว; ผู้ใช้ commit/push เอง รายละเอียดและคำสั่งอยู่ [คู่มือ](../AASIST_CLEAN_SMOKE_TH.md)
 
+## 7 ตุลาคม 2026 — Fixed Train subset memorization check
+
+- ทำขั้นถัดไปใน pilot: Train 2 paired texts / 4 clips (2 real + 2 Wayu), seeded selection และ fixed windows ไม่เลือกด้วยคะแนน detector ไม่ใช้ Dev/Test
+- เริ่ม pretrained เดิมใหม่; eval mode WITH autograd, dropout off/BN running stats frozen แต่ทุก parameter trainable; AdamW 1e-4/weight decay 0, microbatch 2/effective batch 4
+- ตั้งเกณฑ์ก่อนรัน accuracy=100% และ CE<=0.1 หลังอย่างน้อย 20 updates, งบสูงสุด 100; ผ่านที่ update 20, loss 3.375760→0.002260, fresh-model reload ตรงกัน
+- เป็น memorization diagnostic ไม่ใช่ generalization/main recipe/สาเหตุของ Dev loss เดิม ไม่ใช้ checkpoint นี้เป็นจุดเริ่ม main run
+- พบ Git checkout เปลี่ยน code LF เป็น CRLF ทำให้ preparation hashes ไม่ตรงก่อนฝึก จึงเพิ่มตัวตรวจที่ยอมรับเฉพาะ CRLF→LF พร้อม log; audio/manifests/hash reports/results เก่าไม่ถูกแก้
+- Branch `feat-aasist-overfit-check` ต่อจาก main; ผู้ใช้ commit/push เอง ดู [รายละเอียด](../AASIST_OVERFIT_CHECK_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

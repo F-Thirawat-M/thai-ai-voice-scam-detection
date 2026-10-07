@@ -1,6 +1,10 @@
 # Common Voice EDA แบบง่าย
 
-## ขั้นล่าสุด: AASIST Clean smoke 1 epoch
+## ขั้นล่าสุด: ตรวจจำ Train 4 คลิป
+
+ทำ [fixed-input memorization check](../../../docs/AASIST_OVERFIT_CHECK_TH.md) แล้วจาก canonical Train: คน 2 + Wayu 2 ฝึกซ้ำและผ่านที่ 20 updates ไม่ใช้ Dev/Test ผลอยู่ `results/cvtts/aasist_overfit_check/fixed4_20261007_v1/` ไม่แก้ dataset หรือ notebooks เดิม Accuracy 100% นี้เป็นของชุดที่ฝึกซ้ำ ไม่ใช่ผลกับเสียงใหม่
+
+## AASIST Clean smoke 1 epoch
 
 หลัง canonical preparation มี Dataset/window policy และ `scripts/train_aasist_pilot.py` ที่ลองฝึกและตรวจ checkpoint reload แล้ว ใช้ `.venv` หลัก ไม่ใช่ notebook TTS อ่าน [คู่มือและผลครั้งแรก](../../../docs/AASIST_CLEAN_SMOKE_TH.md) ผลอยู่ใน `results/cvtts/aasist_clean_smoke/` เป็น technical smoke เท่านั้น (Dev loss รอบแรกแย่ลง) ไม่ใช่ Final Test/การพิสูจน์ความแม่นยำ และยังไม่ใช่ RawNet2/Mixed training
 

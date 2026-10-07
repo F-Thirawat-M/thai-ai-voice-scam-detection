@@ -11,11 +11,17 @@
 
 ตอนนี้มี pretrained inference และ AASIST Clean feasibility smoke 1 epoch แล้ว การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ และการฝึกสำเร็จไม่เท่ากับตรวจแม่นขึ้น
 
-## ขั้นล่าสุด: ลองฝึก AASIST จริงรอบสั้น
+## ขั้นล่าสุด: ตรวจให้โมเดลจำ Train ชุดเล็ก
+
+อ่าน [ผลทดลองจำ Train 4 คลิป](AASIST_OVERFIT_CHECK_TH.md) มีเสียงคน 2 + Wayu 2 ใช้ input คงที่และตั้งใจปิด dropout/ตรึง BatchNorm running stats ขณะเปิด gradient ผ่านเกณฑ์หลัง 20 updates: loss 3.375760 → 0.002260, accuracy ของ **ชุดที่ฝึกซ้ำ** 50% → 100% ไม่ใช้ Dev/Test และไม่ใช่ accuracy กับเสียงใหม่
+
+ยังไม่ขยายการทดลองจริง ขั้นถัดไปคือตรวจ recipe/สาเหตุ Dev loss เดิมด้วย Train/Dev โดยเปลี่ยนทีละปัจจัย และไม่ใช้ diagnostic checkpoint แทน pretrained initialization ของ main runs
+
+## ลองฝึก AASIST จริงรอบสั้น
 
 อ่าน [คู่มือ AASIST Clean smoke และผลรอบแรก](AASIST_CLEAN_SMOKE_TH.md) ใช้ `.venv` หลัก Script `scripts/train_aasist_pilot.py` ฝึก Train 160 คลิป/ตรวจ Dev 40 คลิป มี gradient, parameter update และ fresh-model checkpoint reload ผ่านแล้ว ผลใน `results/cvtts/aasist_clean_smoke/` ไม่เข้า Git ยังไม่มี RawNet2 training, Noise/Telephone, best selection, resume หรือ Final Test
 
-Dev loss รอบแรกเพิ่มจากประมาณ 1.59 เป็น 4.85 จึงสรุปเพียงว่าฝึกได้จริง ไม่ใช่ดีขึ้น ขั้นถัดไปควรตรวจ overfit-small-batch/recipe ก่อนขยายงาน ไม่ฝึกต่อเพื่อไล่คะแนนโดยไม่มี run log
+Dev loss รอบแรกเพิ่มจากประมาณ 1.59 เป็น 4.85 จึงสรุปเพียงว่าฝึกได้จริง ไม่ใช่ดีขึ้น ตรวจ overfit-small-batch ผ่านแล้วตามหัวข้อข้างบน แต่ยังไม่ระบุสาเหตุ Dev loss ที่เพิ่ม ต้องตรวจ recipe ก่อนขยายงาน ไม่ฝึกต่อเพื่อไล่คะแนนโดยไม่มี run log
 
 ## ขั้นเตรียมเสียงร่วมก่อนลอง train
 

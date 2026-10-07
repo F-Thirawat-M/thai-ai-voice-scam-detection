@@ -8,6 +8,7 @@
 - [โครงสร้างและตำแหน่งเก็บไฟล์](docs/PROJECT_STRUCTURE_TH.md): อะไรมีแล้ว และอะไรต้องพัฒนาต่อ
 - [เริ่มใช้งานสำหรับผู้เริ่มต้น](docs/BEGINNER_GUIDE_TH.md): ตรวจเครื่องและทดลอง inference ที่มีอยู่
 - [AASIST Clean smoke 1 epoch](docs/AASIST_CLEAN_SMOKE_TH.md): วิธีฝึกรอบสั้น ผลครั้งแรก และข้อจำกัด
+- [ทดลองจำ Train 4 คลิป](docs/AASIST_OVERFIT_CHECK_TH.md): diagnostic ผ่านแล้ว; ไม่ใช่ความแม่นยำกับเสียงใหม่
 - [การจัดการข้อมูล](data/README.md): raw / processed / exploration / sample
 - [Common Voice EDA แบบง่าย](data/exploration/common_voice/common_voice_eda.ipynb): เริ่มดู df, คอลัมน์, ค่าว่าง, ความยาวเสียง และผู้พูด
 - [รายการทำความสะอาด](docs/CLEANUP_2026-10-03.md): สิ่งที่ลบและข้อจำกัดการกู้คืน
@@ -17,6 +18,8 @@
 มี pretrained inference ของ AASIST/RawNet2, CLI `infer/evaluate`, checkpoint, environment check และ tests พื้นฐานแล้ว
 
 มี notebooks EDA/split/pilot synthesis ของ Common Voice และ shared canonical audio พร้อม AASIST **Clean feasibility smoke 1 epoch** ที่มีการอัปเดตน้ำหนักและตรวจ reload จริงแล้ว ผลนี้ยังไม่ใช่ความสำเร็จด้านความแม่นยำ (Dev loss รอบแรกสูงขึ้น) และมี Wayu generator เดียว
+
+เพิ่ม fixed-Train-subset memorization check: จำคน 2 + Wayu 2 ได้หลัง 20 updates (subset loss 0.002260 / accuracy 100% บนคลิปที่ฝึกซ้ำ) ไม่ใช้ Dev/Test และไม่บอกสาเหตุ Dev loss เดิม ยังอยู่ใน pilot
 
 **ยังไม่มี** automated full-corpus pipeline, multi-condition/main-run training, RawNet2 fine-tuning หรือ Final Test แบบ fixed Dev threshold ไม่ได้หมายความว่าการทดลองวิจัยเสร็จแล้ว
 
@@ -80,7 +83,7 @@ Relative audio paths ใน CLI เดิมอ้างจาก working direct
 
 ## งานถัดไป
 
-หลัง smoke ควรตรวจ overfit-small-batch/recipe, เพิ่ม TTS ระบบที่สอง และพัฒนา Noise/Telephone, resume, Dev selection/threshold ก่อนทำ main runs โดยยังต้องยืนยัน scope/สิทธิ์ตาม workflow ดู [ขั้นต่อไปและผลรอบแรก](docs/AASIST_CLEAN_SMOKE_TH.md)
+ตรวจจำชุดเล็กผ่านแล้ว ขั้นต่อไปคือเช็ก recipe ด้วย Train/Dev แบบเปลี่ยนทีละปัจจัย ก่อนเพิ่ม TTS ระบบที่สองและพัฒนา Noise/Telephone, resume, Dev selection/threshold สำหรับ main runs โดยยังต้องยืนยัน scope/สิทธิ์ตาม workflow ดู [ผลและขั้นต่อไป](docs/AASIST_OVERFIT_CHECK_TH.md)
 
 Branch ใช้ชื่อตาม feature โดยไม่ใส่ `codex/`; ผู้ใช้เป็นผู้ commit/push เอง
 
