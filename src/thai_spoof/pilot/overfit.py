@@ -1,4 +1,4 @@
-"""Bounded, deterministic-input memorization diagnostic; Train subset only."""
+"""Pilot-only bounded memorization diagnostic; Train subset only."""
 
 from __future__ import annotations
 

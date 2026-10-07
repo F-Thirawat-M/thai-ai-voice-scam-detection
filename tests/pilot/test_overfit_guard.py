@@ -7,7 +7,7 @@ import pytest
 
 @pytest.fixture
 def overfit_script(tmp_path, monkeypatch):
-    path = Path(__file__).resolve().parents[2] / "scripts/check_aasist_overfit.py"
+    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/check_aasist_overfit.py"
     spec = importlib.util.spec_from_file_location("overfit_script_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -18,7 +18,7 @@ def overfit_script(tmp_path, monkeypatch):
 
 
 def test_existing_overfit_run_is_not_overwritten(overfit_script, tmp_path):
-    output = tmp_path / "results/cvtts/aasist_overfit_check/guard"
+    output = tmp_path / "results/pilot/aasist_overfit_check/guard"
     output.mkdir(parents=True)
     marker = output / "run.json"
     marker.write_text("original", encoding="utf-8")

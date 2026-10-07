@@ -1,4 +1,4 @@
-# ทดลองให้ AASIST จำ Train ชุดเล็ก
+# Pilot: ทดลองให้ AASIST จำ Train ชุดเล็ก
 
 ## ทำไปเพื่ออะไร
 
@@ -22,7 +22,7 @@
 
 ## ผลที่รัน 7 ตุลาคม 2026
 
-Run: `results/cvtts/aasist_overfit_check/fixed4_20261007_v1/`
+Run: `results/pilot/aasist_overfit_check/fixed4_20261007_v1/`
 
 | Update | Loss บน 4 คลิปเดิม | Accuracy บน 4 คลิปเดิม |
 | --- | --- | --- |
@@ -40,11 +40,11 @@ Run: `results/cvtts/aasist_overfit_check/fixed4_20261007_v1/`
 
 ## โค้ดและไฟล์ที่เพิ่ม
 
-- `src/thai_spoof/cvtts/overfit.py`: เลือกคู่ Train, ฝึก tensor คงที่, ตรวจ loss/gradients, เกณฑ์หยุด
-- `scripts/check_aasist_overfit.py`: audit/โหลด pretrained/เรียก diagnostic/บันทึกผลและตรวจ fresh-model reload
+- `src/thai_spoof/pilot/overfit.py`: เลือกคู่ Train, ฝึก tensor คงที่, ตรวจ loss/gradients, เกณฑ์หยุด
+- `experiments/pilot/scripts/check_aasist_overfit.py`: audit/โหลด pretrained/เรียก diagnostic/บันทึกผลและตรวจ fresh-model reload
 - `src/thai_spoof/cvtts/provenance.py`: ตรวจ code hash เดิมแบบ exact หรือยอมรับเฉพาะ CRLF→LF เมื่อ Git Windows เปลี่ยนรูปแบบบรรทัด บันทึกวิธีตรวจไว้ใน run; ถ้าเนื้อหาอื่นเปลี่ยนจะหยุด **audio/manifest hashes ยัง byte-exact**
-- `scripts/train_aasist_pilot.py`: แก้เฉพาะการตรวจ preparation code ให้ใช้ helper ข้างบน ไม่เปลี่ยน recipe/ข้อมูล/ผล smoke เก่า
-- `tests/cvtts/test_overfit.py`, `test_overfit_guard.py`, `test_provenance.py`: ตรวจ paired selection/Train-only/ไม่ทับ run, gradient/BN/dropout, accumulation, checkpoint reload ด้วยโมเดลจำลอง และการปฏิเสธเนื้อหาโค้ดที่เปลี่ยนจริง
+- `experiments/pilot/scripts/train_aasist_clean.py`: แก้เฉพาะการตรวจ preparation code ให้ใช้ helper ข้างบน ไม่เปลี่ยน recipe/ข้อมูล/ผล smoke เก่า
+- `tests/pilot/test_overfit.py`, `tests/pilot/test_overfit_guard.py`, `tests/cvtts/test_provenance.py`: ตรวจ paired selection/Train-only/ไม่ทับ run, gradient/BN/dropout, accumulation, checkpoint reload ด้วยโมเดลจำลอง และการปฏิเสธเนื้อหาโค้ดที่เปลี่ยนจริง
 
 ไม่ได้แก้โครงข่าย upstream หรือไฟล์ข้อมูล/pretrained เดิม ไม่ commit/push อัตโนมัติ Branch คือ `feat-aasist-overfit-check`
 
@@ -65,7 +65,7 @@ Run: `results/cvtts/aasist_overfit_check/fixed4_20261007_v1/`
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
-.\.venv\Scripts\python.exe scripts\check_aasist_overfit.py --run-id fixed4_my_run_01 --device cuda --max-updates 100
+.\.venv\Scripts\python.exe experiments\pilot\scripts\check_aasist_overfit.py --run-id fixed4_my_run_01 --device cuda --max-updates 100
 ```
 
 Script ปฏิเสธ run directory เดิม ไม่ลบ/backup/เขียนทับ ถ้ารันจบแต่ไม่ผ่านเกณฑ์ จะบันทึก `status: completed` และ `diagnostic_passed: false` ไม่สร้างผลว่าเรียนรู้สำเร็จ ถ้าเกิด runtime error หลังสร้าง run จะเก็บ `status: failed` และ log ที่ได้ถึงตอนนั้น ไม่มี resume
@@ -74,4 +74,4 @@ CLI inference เดิมยังโหลด pretrained เดิม ไม�
 
 ## ต่อจากนี้
 
-ยังอยู่ใน **pilot ก่อนการทดลองจริง** ขั้นต่อไปคือเช็ก recipe กับ Train/Dev แบบมีงบและบันทึก run เช่น ค่อยแยกตรวจผล BatchNorm/microbatch โดยเปลี่ยนทีละปัจจัย ไม่เอาน้ำหนักที่จำ 4 คลิปไปต่อยอดเป็น main run และไม่แก้ recipe หลายตัวพร้อมกันแล้วอ้างสาเหตุ จากนั้นค่อยเพิ่ม generator/conditions/main experiments ตาม [workflow](COMMON_VOICE_PROJECT_WORKFLOW_TH.md)
+ยังอยู่ใน **pilot ก่อนการทดลองจริง** ขั้นต่อไปคือเช็ก recipe กับ Train/Dev แบบมีงบและบันทึก run เช่น ค่อยแยกตรวจผล BatchNorm/microbatch โดยเปลี่ยนทีละปัจจัย ไม่เอาน้ำหนักที่จำ 4 คลิปไปต่อยอดเป็น main run และไม่แก้ recipe หลายตัวพร้อมกันแล้วอ้างสาเหตุ จากนั้นค่อยเพิ่ม generator/conditions/main experiments ตาม [workflow](../../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md)

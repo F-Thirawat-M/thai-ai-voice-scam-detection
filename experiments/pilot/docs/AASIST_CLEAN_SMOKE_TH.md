@@ -1,4 +1,4 @@
-# ลอง fine-tune AASIST Clean 1 epoch — อ่านผลครั้งแรก
+# Pilot: ลอง fine-tune AASIST Clean 1 epoch — อ่านผลครั้งแรก
 
 ## ขั้นนี้ทำอะไร
 
@@ -9,9 +9,9 @@
 โค้ดโครงข่ายยังมาจาก `external/aasist/models/AASIST.py` ไม่ได้เขียน AASIST ใหม่ สิ่งที่เพิ่มในโปรเจกต์คือ:
 
 - `src/thai_spoof/cvtts/windows.py`: เลือกช่วงเสียง 64,600 samples (4.0375 วินาที); Train สุ่มจุดเริ่มแบบรวมจุดท้าย, Dev ใช้ช่วงแรก, คลิปสั้นวนเสียงซ้ำ ทั้งสองคลาสใช้กฎเดียวกัน ไม่แก้เสียงเต็ม
-- `src/thai_spoof/cvtts/pilot_data.py`: ตรวจ hash/schema/counts/split/source path แล้วสร้าง Dataset จาก canonical WAV mono 16 kHz; โหลด Train/Dev เท่านั้น
-- `scripts/train_aasist_pilot.py`: forward/backward, gradient accumulation, optimizer update, บันทึก checkpoint/log/Dev scores และโหลดกลับเข้าโมเดลใหม่เพื่อตรวจความตรงกัน
-- `tests/cvtts/test_windows.py`, `test_pilot_data.py`: ตรวจ crop/pad ขอบเขต, class mapping, source/output hashes และ split overlap ด้วย fixture สัญญาณที่สร้างเอง ไม่ใช้ข้อมูลจริงเป็น fixture
+- `src/thai_spoof/pilot/pilot_data.py`: ตรวจ hash/schema/counts/split/source path แล้วสร้าง Dataset จาก canonical WAV mono 16 kHz; โหลด Train/Dev เท่านั้น
+- `experiments/pilot/scripts/train_aasist_clean.py`: forward/backward, gradient accumulation, optimizer update, บันทึก checkpoint/log/Dev scores และโหลดกลับเข้าโมเดลใหม่เพื่อตรวจความตรงกัน
+- `tests/cvtts/test_windows.py`, `tests/pilot/test_pilot_data.py`: ตรวจ crop/pad ขอบเขต, class mapping, source/output hashes และ split overlap ด้วย fixture สัญญาณที่สร้างเอง ไม่ใช้ข้อมูลจริงเป็น fixture
 
 ## ค่าที่ใช้รอบแรก
 
@@ -31,7 +31,7 @@ Gradient accumulation ไม่ได้ทำให้ BatchNorm มีพฤ�
 
 ## เปิดดูผลที่เครื่องนี้
 
-ผลอยู่ใน `results/cvtts/aasist_clean_smoke/clean_epoch1_20261007_v1/`:
+ผลอยู่ใน `results/pilot/aasist_clean_smoke/clean_epoch1_20261007_v1/`:
 
 | ไฟล์ | เอาไว้ดูอะไร |
 | --- | --- |
@@ -64,10 +64,10 @@ Gradient accumulation ไม่ได้ทำให้ BatchNorm มีพฤ�
 .\.venv\Scripts\python.exe -m pytest -q
 
 # ทดลองสั้น 4 Train คลิป (ใช้ชื่อใหม่ที่ยังไม่มี)
-.\.venv\Scripts\python.exe scripts\train_aasist_pilot.py --run-id my_preflight_01 --device cuda --max-batches 2
+.\.venv\Scripts\python.exe experiments\pilot\scripts\train_aasist_clean.py --run-id my_preflight_01 --device cuda --max-batches 2
 
 # ครบ 1 epoch เริ่มใหม่จาก pretrained ไม่ต่อจาก preflight
-.\.venv\Scripts\python.exe scripts\train_aasist_pilot.py --run-id my_clean_epoch1_01 --device cuda
+.\.venv\Scripts\python.exe experiments\pilot\scripts\train_aasist_clean.py --run-id my_clean_epoch1_01 --device cuda
 ```
 
 อย่ารันซ้ำโดยใช้ run ID เดิม Script จะปฏิเสธ ไม่ลบ/เขียนทับ/backup run เก่า เมื่อเกิด error จะเก็บ `status: failed` หากสร้าง run directory แล้ว ไม่ควรเอา checkpoint ของ run ล้มเหลวมารายงานว่าเสร็จ
@@ -85,4 +85,4 @@ CLI `thai-spoof infer` เดิมยังใช้ pretrained config เด�
 3. เพิ่ม TTS ระบบที่สองและตรวจ corpus/split/QC ก่อนการเปรียบเทียบหลาย generators; Wayu ตัวเดียวรอบนี้ยังไม่ตรง scope หลัก
 4. พัฒนา Noise/Telephone, training resume, Dev checkpoint/threshold และ EER ที่นิยามตรง workflow แล้วค่อยทำ Clean vs Mixed และ RawNet2 อย่างเทียบกันได้
 
-นี่คือผ่านเฉพาะ smoke ด้าน technical forward/backward/reload ไม่ใช่ผ่าน Gate การทดลองเต็มตาม [workflow](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s14)
+นี่คือผ่านเฉพาะ smoke ด้าน technical forward/backward/reload ไม่ใช่ผ่าน Gate การทดลองเต็มตาม [workflow](../../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s14)

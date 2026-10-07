@@ -2,6 +2,8 @@
 
 เริ่มจัดทำ: 2 ตุลาคม 2026 · ตรวจทานล่าสุด: 3 ตุลาคม 2026 · ฉบับ: ร่าง protocol v1 · สถานะ: แผนสำหรับตกลงร่วมกันและใช้พัฒนาระบบ ยังไม่ใช่ผลทดลอง
 
+**อัปเดตการจัดหมวด 7 ตุลาคม 2026:** ถ้าทำงานต่อจากปัจจุบันให้เปิด [Pilot README](../experiments/pilot/README.md) ก่อน มี smoke/overfit ที่ทำแล้ว ส่วนงานวิจัยจริงแยก [Research README](../experiments/research/README.md) เอกสารยาวนี้เป็นแผน main experiment; สถานะที่บันทึกตอนร่างไม่ได้แทนสถานะ pilot ปัจจุบัน และคำสั่ง proposed ยังไม่ใช่คำสั่งพร้อมรัน
+
 > **ให้อ่านไฟล์นี้ก่อนเริ่มงานใหม่** ทิศทางปัจจุบันคือใช้ Common Voice ภาษาไทยเป็นแหล่งเสียงมนุษย์และข้อความ แล้วสร้างเสียงสังเคราะห์ด้วย TTS เพื่อเปรียบเทียบ AASIST กับ RawNet2 ภายใต้การฝึกแบบ Clean และ Clean + Noise + Telephone ผู้ใช้ให้ปรับโครงสร้างและลบข้อมูล/โค้ด/แผน SEA-Spoof และ Typhoon ที่เลิกใช้แล้วเมื่อ 3 ตุลาคม 2026 ไม่ต้องนำกลับมาเป็น dependency ของ workflow ใหม่ ดู [โครงสร้างปัจจุบัน](PROJECT_STRUCTURE_TH.md) และ [รายการ cleanup](CLEANUP_2026-10-03.md)
 >
 > เอกสารนี้แยก “ข้อเท็จจริงที่ตรวจใน repository” ออกจาก “ข้อเสนอที่จะพัฒนา” คำสั่งของ pipeline ใหม่ในส่วน 20 **ยังไม่มีให้รันจนกว่าจะเขียนระบบตามแผน** ห้ามรายงานว่าดาวน์โหลด สร้างเสียง ฝึก หรือประเมินสำเร็จเพียงเพราะมีแผนนี้
@@ -269,11 +271,13 @@ data/processed/cvtts/<version>/
   conditions/                    # cache Dev/Test แบบ deterministic
   manifests/                     # CSV/Parquet และ source lineage; ไม่ commit
   qc/, jobs/, locks/              # ตรวจคุณภาพ, resume ledger, hashes
-data/exploration/common_voice/
-  common_voice_eda.ipynb           # notebook แสดงผลจาก helper ไม่ทำ destructive work
-  outputs/                       # รายงานส่วนตัว/ตารางรายละเอียด ไม่ commit
+experiments/pilot/                 # งานทดลองเบื้องต้นที่มี implementation แล้ว
+  notebooks/                      # EDA/TTS/canonical pilot
+    outputs/                      # ผลที่รันแล้ว ไม่ commit
+  scripts/, docs/                 # smoke/overfit diagnostics และคู่มือ
+experiments/research/              # งานจริงยังเป็นแผน; ยังไม่มี main trainer
 checkpoints/<model>/cvtts/<run_id>/
-results/cvtts/<protocol>/<run_id>/
+results/research/<protocol>/<run_id>/ # เสนอสำหรับ main runs; ผล pilot อยู่ results/pilot/
   resolved_config.yaml, environment.json, train_log.jsonl
   dev_scores.csv, threshold.json, test_scores.csv, metrics.json
   artifacts.json                 # input/output hashes และที่มาทั้งหมด
@@ -917,7 +921,7 @@ git status --short --branch
 
 > คำสั่งด้านล่างเป็น **specification ของคำสั่งใหม่ที่ยังต้องเขียน** ไม่ใช่สิ่งที่รับประกันว่ารันได้ตอนนี้ ผู้พัฒนาต้องทำ `--help`, validation, dry-run ที่เหมาะสม และ integration tests ก่อนแนะนำให้ผู้ใช้รัน
 
-ใช้ dispatcher `scripts/cvtts_pipeline.py` เรียก modules ใน `src/thai_spoof/cvtts/` โดยให้ common options ได้แก่ `--config`, `--dry-run` สำหรับงานเขียนข้อมูล และ `--output-root` สำหรับ override ที่บันทึกใน resolved config
+ใช้ dispatcher `experiments/research/scripts/cvtts_pipeline.py` เรียก modules ใน `src/thai_spoof/cvtts/` โดยให้ common options ได้แก่ `--config`, `--dry-run` สำหรับงานเขียนข้อมูล และ `--output-root` สำหรับ override ที่บันทึกใน resolved config
 
 | Subcommand | Input / หน้าที่ | Output / ข้อจำกัด |
 | --- | --- | --- |
@@ -938,22 +942,22 @@ git status --short --branch
 
 ```powershell
 # ตรวจข้อมูลและแบ่งชุด
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py audit --config configs\cvtts\protocol_v1.yaml
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py split --config configs\cvtts\protocol_v1.yaml
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py audit --config experiments\research\configs\protocol_v1.yaml
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py split --config experiments\research\configs\protocol_v1.yaml
 
 # ทดลอง/สร้าง TTS; dispatcher ต้องเรียก environment ที่ registry ระบุ
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py tts-pilot --config configs\cvtts\protocol_v1.yaml --generator G1
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py generate --config configs\cvtts\protocol_v1.yaml --generator G1 --resume
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py tts-pilot --config experiments\research\configs\protocol_v1.yaml --generator G1
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py generate --config experiments\research\configs\protocol_v1.yaml --generator G1 --resume
 
 # เตรียม shared inputs และตรวจ gates; G2 ต้องสร้างครบก่อน prepare core cohort
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py prepare --config configs\cvtts\protocol_v1.yaml
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py conditions --config configs\cvtts\protocol_v1.yaml --split dev
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py prepare --config experiments\research\configs\protocol_v1.yaml
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py conditions --config experiments\research\configs\protocol_v1.yaml --split dev
 # ต้องรัน unit tests และ tiny training/gradient/reload smoke ตามส่วน 14.1 ผ่านก่อน Gate 6
 # validate ต้องอ่านหลักฐานการทดสอบด้วย ไม่ใช่ตรวจ manifest อย่างเดียวแล้วถือว่าผ่าน
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py validate --config configs\cvtts\protocol_v1.yaml --through-gate 6
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py validate --config experiments\research\configs\protocol_v1.yaml --through-gate 6
 
 # ตัวอย่างหนึ่ง run; ต้องสร้าง resolved configs ให้ครบทุก model/arm/seed
-.\.venv\Scripts\python.exe scripts\cvtts_pipeline.py train --config configs\cvtts\runs\aasist_clean_seed13.yaml
+.\.venv\Scripts\python.exe experiments\research\scripts\cvtts_pipeline.py train --config configs\cvtts\runs\aasist_clean_seed13.yaml
 ```
 
 คำสั่ง `score/select-threshold/evaluate` ต้องรับ path ของ artifact ที่มีจริงอย่างชัดเจน เช่น `--checkpoint`, `--manifest`, `--scores`, `--threshold`, `--output` และตรวจ hash/split ไม่ใช้ค่าปริยายที่เผลอหยิบ pretrained weights หรือ Test มาเลือก threshold

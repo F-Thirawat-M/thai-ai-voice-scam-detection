@@ -5,7 +5,7 @@ import pytest
 import torch
 from torch import nn
 
-from thai_spoof.cvtts.overfit import evaluate_fixed, fit_fixed_batch, select_train_pairs
+from thai_spoof.pilot.overfit import evaluate_fixed, fit_fixed_batch, select_train_pairs
 
 
 def paired_rows(count=5):

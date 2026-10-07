@@ -5,7 +5,7 @@ import numpy as np
 import pytest
 
 from thai_spoof.cvtts.audio import CANONICAL_POLICY, encode_float32_wav
-from thai_spoof.cvtts.pilot_data import CleanPilotDataset, check_split_disjoint, file_sha256, load_pilot_split
+from thai_spoof.pilot.pilot_data import CleanPilotDataset, check_split_disjoint, file_sha256, load_pilot_split
 
 
 @pytest.fixture

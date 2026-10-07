@@ -15,7 +15,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
 
 import numpy as np
@@ -24,7 +24,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from thai_spoof.aasist.detector import AASISTDetector
-from thai_spoof.cvtts.pilot_data import (
+from thai_spoof.pilot.pilot_data import (
     LABEL_TO_INT, CleanPilotDataset, check_split_disjoint, file_sha256, load_pilot_split,
 )
 from thai_spoof.cvtts.provenance import verify_preparation_code
@@ -65,7 +65,7 @@ def main():
         parser.error("max-batches must be 0 (full epoch) or 2 (preflight)")
     if sys.prefix != str(ROOT / ".venv"):
         parser.error("use the project's main .venv Python, not .venv-wayu")
-    output = ROOT / "results/cvtts/aasist_clean_smoke" / args.run_id
+    output = ROOT / "results/pilot/aasist_clean_smoke" / args.run_id
     if output.exists():
         raise FileExistsError(f"run exists; use a NEW --run-id, do not delete or overwrite: {output}")
 
@@ -126,7 +126,7 @@ def main():
         "resume_supported": False, "final_test_accessed": False, "generator_count": 1,
         "preflight_subset_only": bool(args.max_batches),
     }
-    code_files = ["scripts/train_aasist_pilot.py", "src/thai_spoof/cvtts/pilot_data.py",
+    code_files = ["experiments/pilot/scripts/train_aasist_clean.py", "src/thai_spoof/pilot/pilot_data.py",
                   "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/cvtts/provenance.py", "src/thai_spoof/aasist/detector.py",
                   "src/thai_spoof/aasist/config.json", "external/aasist/models/AASIST.py",
                   "external/aasist/data_utils.py"]

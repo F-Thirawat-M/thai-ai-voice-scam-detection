@@ -13,15 +13,15 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "src"))
 
 import numpy as np
 import torch
 
 from thai_spoof.aasist.detector import AASISTDetector
-from thai_spoof.cvtts.overfit import evaluate_fixed, fit_fixed_batch, select_train_pairs
-from thai_spoof.cvtts.pilot_data import CleanPilotDataset, file_sha256, load_pilot_split
+from thai_spoof.pilot.overfit import evaluate_fixed, fit_fixed_batch, select_train_pairs
+from thai_spoof.pilot.pilot_data import CleanPilotDataset, file_sha256, load_pilot_split
 from thai_spoof.cvtts.provenance import verify_preparation_code
 
 
@@ -41,7 +41,7 @@ def main():
         parser.error("max-updates must be 20-200; this is a bounded diagnostic")
     if Path(sys.prefix).resolve() != (ROOT / ".venv").resolve():
         parser.error("use the project's main .venv Python")
-    output = ROOT / "results/cvtts/aasist_overfit_check" / args.run_id
+    output = ROOT / "results/pilot/aasist_overfit_check" / args.run_id
     if output.exists():
         raise FileExistsError(f"existing run; choose NEW run-id, never overwrite: {output}")
     report_path = ROOT / "data/processed/cvtts/pilot_v1/qc/canonical_audio/wayu_pilot_clean16k_v1.json"
@@ -84,8 +84,8 @@ def main():
         torch.cuda.reset_peak_memory_stats(device)
         torch.cuda.synchronize(device)
     start = time.perf_counter()
-    code = ["scripts/check_aasist_overfit.py", "src/thai_spoof/cvtts/overfit.py",
-            "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/cvtts/pilot_data.py", "src/thai_spoof/cvtts/provenance.py",
+    code = ["experiments/pilot/scripts/check_aasist_overfit.py", "src/thai_spoof/pilot/overfit.py",
+            "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/pilot/pilot_data.py", "src/thai_spoof/cvtts/provenance.py",
             "src/thai_spoof/aasist/detector.py", "src/thai_spoof/aasist/config.json",
             "external/aasist/models/AASIST.py", "external/aasist/data_utils.py"]
     run = {

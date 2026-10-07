@@ -1,16 +1,16 @@
-# Common Voice EDA แบบง่าย
+# Pilot notebook — รายละเอียดเพิ่มเติม (ไม่ใช่หน้าเริ่มต้น)
 
 ## ขั้นล่าสุด: ตรวจจำ Train 4 คลิป
 
-ทำ [fixed-input memorization check](../../../docs/AASIST_OVERFIT_CHECK_TH.md) แล้วจาก canonical Train: คน 2 + Wayu 2 ฝึกซ้ำและผ่านที่ 20 updates ไม่ใช้ Dev/Test ผลอยู่ `results/cvtts/aasist_overfit_check/fixed4_20261007_v1/` ไม่แก้ dataset หรือ notebooks เดิม Accuracy 100% นี้เป็นของชุดที่ฝึกซ้ำ ไม่ใช่ผลกับเสียงใหม่
+ทำ [fixed-input memorization check](AASIST_OVERFIT_CHECK_TH.md) แล้วจาก canonical Train: คน 2 + Wayu 2 ฝึกซ้ำและผ่านที่ 20 updates ไม่ใช้ Dev/Test ผลอยู่ `results/pilot/aasist_overfit_check/fixed4_20261007_v1/` ไม่แก้ dataset หรือ notebooks เดิม Accuracy 100% นี้เป็นของชุดที่ฝึกซ้ำ ไม่ใช่ผลกับเสียงใหม่
 
 ## AASIST Clean smoke 1 epoch
 
-หลัง canonical preparation มี Dataset/window policy และ `scripts/train_aasist_pilot.py` ที่ลองฝึกและตรวจ checkpoint reload แล้ว ใช้ `.venv` หลัก ไม่ใช่ notebook TTS อ่าน [คู่มือและผลครั้งแรก](../../../docs/AASIST_CLEAN_SMOKE_TH.md) ผลอยู่ใน `results/cvtts/aasist_clean_smoke/` เป็น technical smoke เท่านั้น (Dev loss รอบแรกแย่ลง) ไม่ใช่ Final Test/การพิสูจน์ความแม่นยำ และยังไม่ใช่ RawNet2/Mixed training
+หลัง canonical preparation มี Dataset/window policy และ `experiments/pilot/scripts/train_aasist_clean.py` ที่ลองฝึกและตรวจ checkpoint reload แล้ว ใช้ `.venv` หลัก ไม่ใช่ notebook TTS อ่าน [คู่มือและผลครั้งแรก](AASIST_CLEAN_SMOKE_TH.md) ผลอยู่ใน `results/pilot/aasist_clean_smoke/` เป็น technical smoke เท่านั้น (Dev loss รอบแรกแย่ลง) ไม่ใช่ Final Test/การพิสูจน์ความแม่นยำ และยังไม่ใช่ RawNet2/Mixed training
 
 ## เตรียมเสียงสองคลาสเป็น mono 16 kHz
 
-เปิด [common_voice_pilot_audio.ipynb](common_voice_pilot_audio.ipynb) เลือก **`.venv` หลัก** ไม่ใช่ `.venv-wayu` แล้วรันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](outputs/common_voice_pilot_audio.executed.ipynb) หัวข้อ 3 มีเสียงคน/Wayu ก่อนและหลังแปลงให้ฟัง ไม่โหลด TTS ใหม่
+เปิด [common_voice_pilot_audio.ipynb](../notebooks/common_voice_pilot_audio.ipynb) เลือก **`.venv` หลัก** ไม่ใช่ `.venv-wayu` แล้วรันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](../notebooks/outputs/common_voice_pilot_audio.executed.ipynb) หัวข้อ 3 มีเสียงคน/Wayu ก่อนและหลังแปลงให้ฟัง ไม่โหลด TTS ใหม่
 
 อ่าน `wayu_pilot_train_native.csv` / `wayu_pilot_dev_native.csv` ที่ตรวจ hash กับ generation report เตรียม **200 ไฟล์ WAV FLOAT, mono, 16 kHz** ด้วย helper ร่วม `thai_spoof.cvtts.audio` มี Train คน 80 + Wayu 80 และ Dev คน 20 + Wayu 20 ไม่แก้ไฟล์ต้นทาง แปลง sample rate โดยไม่ normalize gain/clip/trim ความยาวยังเต็มคลิป ไม่ตัดเป็น 4.04 วินาทีหรือ repeat/pad ในขั้นนี้ ไม่เติม noise/telephone และยังไม่ train
 
@@ -26,7 +26,7 @@ manifest เก็บ `source_audio_path`/`source_audio_file_sha256` และ s
 
 ## Wayu ครบ pilot Train 80 / Dev 20
 
-เปิด [common_voice_wayu_pilot_dataset.ipynb](common_voice_wayu_pilot_dataset.ipynb) เลือก **`.venv-wayu` Python 3.11** แล้วรันจากบนลงล่าง หรือดู [ผลที่รันแล้ว](outputs/common_voice_wayu_pilot_dataset.executed.ipynb) notebook นี้อ่าน `real_train.csv`, `real_dev.csv` และ `pilot_split_report.json` จาก EDA ไม่ต้องมี MMS หรือ manifest review10 ของ MMS
+เปิด [common_voice_wayu_pilot_dataset.ipynb](../notebooks/common_voice_wayu_pilot_dataset.ipynb) เลือก **`.venv-wayu` Python 3.11** แล้วรันจากบนลงล่าง หรือดู [ผลที่รันแล้ว](../notebooks/outputs/common_voice_wayu_pilot_dataset.executed.ipynb) notebook นี้อ่าน `real_train.csv`, `real_dev.csv` และ `pilot_split_report.json` จาก EDA ไม่ต้องมี MMS หรือ manifest review10 ของ MMS
 
 ใช้ Wayu/voice `m_young_clear`/seed 42 ต่อคลิป/speed 1.0 ตาม trial เดิม โดยสร้าง Train 80 / Dev 20 ใช้เสียงเก่าที่ตรวจ provenance ตรงกัน ไม่แทนที่ไฟล์หรือผลฟังเดิม ในเครื่องนี้มี Train 10 คลิปอยู่ก่อนแล้ว จึงเพิ่มจริง Train 70 + Dev 20 ทุกเสียงปลอมสืบทอด split ของข้อความต้นทาง ไม่มี Final Test ไม่เลือกค่าจากผล detector หรือจูนเสียงตาม Dev และยังไม่เปลี่ยนแผนวิจัยให้ใช้ TTS ตัวเดียวถาวร
 
@@ -53,7 +53,7 @@ manifest เก็บ `source_audio_path`/`source_audio_file_sha256` และ s
 
 ## Wayu pilot: คลิปแรกและชุดข้อความ Train 10 คลิป
 
-เปิด [common_voice_wayu_tts_pilot.ipynb](common_voice_wayu_tts_pilot.ipynb) แล้วเลือก **Select Kernel → Python Environments → .venv-wayu (Python 3.11)** รันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](outputs/common_voice_wayu_tts_pilot.executed.ipynb) และฟัง 3 players ในหัวข้อ 4: เสียงคนต้นทาง → MMS เดิม → Wayu ใหม่ ข้อความเดียวกัน “ฉันไม่ได้คุยโม้” จาก Train เท่านั้น ไม่ใช่ Dev/Test
+เปิด [common_voice_wayu_tts_pilot.ipynb](../notebooks/common_voice_wayu_tts_pilot.ipynb) แล้วเลือก **Select Kernel → Python Environments → .venv-wayu (Python 3.11)** รันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](../notebooks/outputs/common_voice_wayu_tts_pilot.executed.ipynb) และฟัง 3 players ในหัวข้อ 4: เสียงคนต้นทาง → MMS เดิม → Wayu ใหม่ ข้อความเดียวกัน “ฉันไม่ได้คุยโม้” จาก Train เท่านั้น ไม่ใช่ Dev/Test
 
 ทดลองบน CPU ด้วย voice `m_young_clear`, seed 42, speed 1.0; ผลคลิปแรกในเครื่องนี้ 1.50 วินาทีที่ native 24 kHz และ waveform ตรงกันเมื่อรันซ้ำ **ผู้ใช้ฟังยืนยันว่า “โม้ ถูก / คำครบ”** บันทึกผลเดิมไว้ใน `qc/tts_reviews/wayu_paxa_common_voice_th_25669007_m_young_clear_seed42.json` ไม่สรุปว่าอ่านถูกจาก frontend trace และไม่เพิ่มเข้า manifest train อัตโนมัติ ไม่แก้ seed probes/เสียง MMS/manifest/reviews เดิม ไม่ train detector หรือ TTS และไม่โคลนเสียงคนต้นทาง ชื่อ voice ไม่ใช่อายุ/เพศของบุคคลที่ยืนยันแล้ว
 
@@ -61,7 +61,7 @@ generation JSON ยังแสดง `pending` ตามสถานะขณ�
 
 **หัวข้อ 5–6: Wayu review10** ใช้ข้อความและลำดับเดียวกับ `manifests/tts_train_review10.csv` ของ MMS เลือกจาก `real_train.csv` ที่ตรวจ hash แล้วเท่านั้น ใช้ voice/seed/speed เดิม คลิป 3 ใช้เสียง Wayu เดิมที่ตรวจแล้ว อีก 9 คลิปสร้างใหม่โดยไม่แก้ข้อความ/เสียง MMS/manifest เดิม ไม่ใช้เสียงคนเป็น input ของ TTS ไม่ใช้ Dev/Test ไม่เติม noise/telephone และไม่ train ตรวจ frontend ก่อนสร้างทั้ง batch ตรวจ waveform finite/nonempty/nonzero และสร้างซ้ำใน memory ตรวจความตรงกันก่อนบันทึก มี CSV แยก `manifests/tts_wayu_train_review10.csv` พร้อม summary `qc/tts_experiments/wayu_train_review10_v1.json` และ provenance รายคลิปที่ `qc/tts_samples/` รันซ้ำจะตรวจที่มาและใช้ไฟล์เดิม ไม่เขียนทับเมื่อข้อมูลต่าง
 
-เปิด [ผลที่รันแล้ว](outputs/common_voice_wayu_tts_pilot.executed.ipynb) ที่ **หัวข้อ 6** เพื่อฟัง Wayu ทีละคลิป มีข้อความและ player เสียงคนอ้างอิงด้วย ข้อความต้นทางบางข้อแปลก อย่าแก้ก่อนทดลองหรือถือว่าเสียงคนต้องอ่านถูกทุกคลิป ผลฟังคลิป 3 ไม่ใช้แทนอีก 9 ข้อ ทุกข้อยังต้องฟังตรวจคำผิด/คำหาย/วน/ขาดก่อนตัดสินขั้นถัดไป และไม่ลอกผลฟัง MMS มาใช้กับ Wayu
+เปิด [ผลที่รันแล้ว](../notebooks/outputs/common_voice_wayu_tts_pilot.executed.ipynb) ที่ **หัวข้อ 6** เพื่อฟัง Wayu ทีละคลิป มีข้อความและ player เสียงคนอ้างอิงด้วย ข้อความต้นทางบางข้อแปลก อย่าแก้ก่อนทดลองหรือถือว่าเสียงคนต้องอ่านถูกทุกคลิป ผลฟังคลิป 3 ไม่ใช้แทนอีก 9 ข้อ ทุกข้อยังต้องฟังตรวจคำผิด/คำหาย/วน/ขาดก่อนตัดสินขั้นถัดไป และไม่ลอกผลฟัง MMS มาใช้กับ Wayu
 
 **ผลฟัง Wayu review10 ล่าสุด:** ผู้ใช้ยืนยันว่าอ่านถูกทั้ง 10 คลิป เก็บเฉพาะผลตรวจข้อความพร้อม manifest/audio hashes ที่ `qc/tts_reviews/` ไม่แก้ review เดิมของคลิป 3 หรือ generation provenance การผ่านด้านข้อความใน 10 ตัวอย่างนี้ยังไม่ยืนยันคุณภาพทั้งชุด หรือประสิทธิภาพ AASIST/RawNet2
 
@@ -83,7 +83,7 @@ script ดาวน์โหลด Python/แพ็กเกจแยกแล�
 - น้ำหนัก: `checkpoints/tts/wayu-paxa-tts-edge/<revision>/`
 - เสียง: `data/processed/cvtts/pilot_v1/native_tts/wayu/train/`
 - ที่มาเสียง: `data/processed/cvtts/pilot_v1/qc/tts_samples/wayu_paxa_*.json`
-- notebook ที่รันแล้วและมี player: `data/exploration/common_voice/outputs/common_voice_wayu_tts_pilot.executed.ipynb`
+- notebook ที่รันแล้วและมี player: `experiments/pilot/notebooks/outputs/common_voice_wayu_tts_pilot.executed.ipynb`
 
 source notebook ไม่มี outputs ก่อน commit; ไม่ commit dataset, น้ำหนัก หรือเสียง/รายงานผลในเครื่อง
 
@@ -91,15 +91,15 @@ source notebook ไม่มี outputs ก่อน commit; ไม่ commit da
 
 **MMS Thai text-preparation fix (หัวข้อ 7–8 ใน notebook TTS):** ตรวจพบว่า tokenizer ที่ pin ไว้ไม่รองรับ U+0E33 (`ำ`) และตัดออกก่อน encode จึงทดลองใช้รูป U+0E4D + U+0E32 (`ํ` + `า`) เฉพาะคลิป 10 พร้อมตรวจข้อความหลัง tokenizer และ token roundtrip ใช้ helper `thai_spoof.cvtts.text` ที่มี tests บันทึกข้อความเดิม/ข้อความเข้า TTS/normalization version และเสียงใหม่ชื่อ `_sara_am_v1_seed42` แยกจาก baseline 10 คลิป ไม่แก้ manifest เดิม ไม่เปลี่ยนคลิป 3 และยังรอฟังตรวจ หัวข้อ 1–6 คงไว้เพื่อเทียบ baseline ที่มีข้อผิดพลาด ห้ามนำไปสร้างชุดเต็มโดยไม่ใช้ policy ที่ตรวจแล้ว
 
-**ขั้นที่ 4 (แยกจาก EDA):** เปิด [common_voice_tts_pilot.ipynb](common_voice_tts_pilot.ipynb) เพื่ออ่านข้อความจาก Train และใช้ MMS Thai ที่ล็อก revision สร้างเสียงสังเคราะห์เพียง 1 คลิป รันใน `.venv` บน CPU; optional dependencies อยู่ใน `.[tts]` โมเดลดาวน์โหลดครั้งแรกประมาณ 145 MB และอยู่ `checkpoints/tts/` ไม่โหลด remote code/weights pickle ไม่ส่งเสียงคนให้ API และไม่ทำ voice cloning ไฟล์เสียงอยู่ `data/processed/cvtts/pilot_v1/native_tts/mms_tha/train/` พร้อม JSON ที่ `qc/tts_samples/` ต้องฟังตรวจเองก่อนสร้างเพิ่ม (status `pending`) ไม่ถือว่าชุดสองคลาสพร้อม train แล้ว ผลที่รันแล้วเก็บใน [outputs/common_voice_tts_pilot.executed.ipynb](outputs/common_voice_tts_pilot.executed.ipynb) โมเดลมีข้อจำกัด CC-BY-NC 4.0 ตาม [model card](https://huggingface.co/facebook/mms-tts-tha)
+**ขั้นที่ 4 (แยกจาก EDA):** เปิด [common_voice_tts_pilot.ipynb](../notebooks/common_voice_tts_pilot.ipynb) เพื่ออ่านข้อความจาก Train และใช้ MMS Thai ที่ล็อก revision สร้างเสียงสังเคราะห์เพียง 1 คลิป รันใน `.venv` บน CPU; optional dependencies อยู่ใน `.[tts]` โมเดลดาวน์โหลดครั้งแรกประมาณ 145 MB และอยู่ `checkpoints/tts/` ไม่โหลด remote code/weights pickle ไม่ส่งเสียงคนให้ API และไม่ทำ voice cloning ไฟล์เสียงอยู่ `data/processed/cvtts/pilot_v1/native_tts/mms_tha/train/` พร้อม JSON ที่ `qc/tts_samples/` ต้องฟังตรวจเองก่อนสร้างเพิ่ม (status `pending`) ไม่ถือว่าชุดสองคลาสพร้อม train แล้ว ผลที่รันแล้วเก็บใน [outputs/common_voice_tts_pilot.executed.ipynb](../notebooks/outputs/common_voice_tts_pilot.executed.ipynb) โมเดลมีข้อจำกัด CC-BY-NC 4.0 ตาม [model card](https://huggingface.co/facebook/mms-tts-tha)
 
-เปิด [common_voice_eda.ipynb](common_voice_eda.ipynb) ใน VS Code เลือก **Select Kernel → Python Environments → .venv** แล้วกด **Run All** หรือรันทีละเซลล์จากบนลงล่าง เริ่มด้วย `pd.read_csv()`, `df.head()`, `df.shape`, `df.info()` และ `df.columns`
+เปิด [common_voice_eda.ipynb](../notebooks/common_voice_eda.ipynb) ใน VS Code เลือก **Select Kernel → Python Environments → .venv** แล้วกด **Run All** หรือรันทีละเซลล์จากบนลงล่าง เริ่มด้วย `pd.read_csv()`, `df.head()`, `df.shape`, `df.info()` และ `df.columns`
 
 **TTS review batch:** หัวข้อ 5–6 ของ `common_voice_tts_pilot.ipynb` เพิ่มตัวอย่าง Train ให้ครบ 10 คลิป รวมคลิปแรกและอีก 9 ข้อความที่กระจายตามความยาวข้อความ ใช้โมเดล/การตั้งค่า/seed เดิม ตรวจ hash ก่อนใช้ไฟล์ที่มีแล้ว ไม่ใช้ Dev และไม่สร้างครบ 100 คลิป รายการอยู่ `data/processed/cvtts/pilot_v1/manifests/tts_train_review10.csv` ผลฟังจริงจากผู้ใช้เก็บแยกใน `qc/tts_reviews/` เพื่อไม่แก้ provenance เดิม; อีก 9 คลิปยังรอฟังตรวจ มี player ทีละข้อท้าย notebook
 
 สิ่งที่ดูได้: ไฟล์ TSV ทั้งแพ็กและบทบาท, จำนวนคลิป, 13 คอลัมน์ต้นทาง, ค่าว่าง, ชื่อไฟล์/ข้อความซ้ำ, ความยาวเสียงและคลิปที่เกิน 4.04/6/8 วินาที, อายุ/เพศ/สำเนียง, speaker keys, โหวต, ข้อความ, ไฟล์เสียงที่มีจริง และ sample rate/channels ของตัวอย่าง 5 คลิป พร้อมฟังตัวอย่างหนึ่งคลิป
 
-ใช้ pandas ตรงใน notebook ไม่ต้องเรียก helper หรือ CLI ใหม่ ข้อมูลดิบที่ใช้คือ `data/raw/common_voice/cv-corpus-27.0-2026-09-11/th/` ส่วนผลที่รันแล้วอยู่ [outputs/common_voice_eda.executed.ipynb](outputs/common_voice_eda.executed.ipynb) ในเครื่องนี้และไม่เข้า Git
+ใช้ pandas ตรงใน notebook ไม่ต้องเรียก helper หรือ CLI ใหม่ ข้อมูลดิบที่ใช้คือ `data/raw/common_voice/cv-corpus-27.0-2026-09-11/th/` ส่วนผลที่รันแล้วอยู่ [outputs/common_voice_eda.executed.ipynb](../notebooks/outputs/common_voice_eda.executed.ipynb) ในเครื่องนี้และไม่เข้า Git
 
 `df` คือ validated; `df_all` รวม validated/invalidated/other เท่านั้น Train/Dev/Test ต้นทางเป็นส่วนย่อยจึงไม่บวกซ้ำ คอลัมน์ `clip_status`/`duration_s` เป็นสิ่งที่เติมเองเพื่อดูข้อมูล ไม่ใช่ฟีเจอร์ต้นทางหรือ input โมเดล
 
