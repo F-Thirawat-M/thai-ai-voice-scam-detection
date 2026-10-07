@@ -1,5 +1,30 @@
 # Common Voice EDA แบบง่าย
 
+## ขั้นถัดไป: Wayu ครบ pilot Train 80 / Dev 20
+
+เปิด [common_voice_wayu_pilot_dataset.ipynb](common_voice_wayu_pilot_dataset.ipynb) เลือก **`.venv-wayu` Python 3.11** แล้วรันจากบนลงล่าง หรือดู [ผลที่รันแล้ว](outputs/common_voice_wayu_pilot_dataset.executed.ipynb) notebook นี้อ่าน `real_train.csv`, `real_dev.csv` และ `pilot_split_report.json` จาก EDA ไม่ต้องมี MMS หรือ manifest review10 ของ MMS
+
+ใช้ Wayu/voice `m_young_clear`/seed 42 ต่อคลิป/speed 1.0 ตาม trial เดิม โดยสร้าง Train 80 / Dev 20 ใช้เสียงเก่าที่ตรวจ provenance ตรงกัน ไม่แทนที่ไฟล์หรือผลฟังเดิม ในเครื่องนี้มี Train 10 คลิปอยู่ก่อนแล้ว จึงเพิ่มจริง Train 70 + Dev 20 ทุกเสียงปลอมสืบทอด split ของข้อความต้นทาง ไม่มี Final Test ไม่เลือกค่าจากผล detector หรือจูนเสียงตาม Dev และยังไม่เปลี่ยนแผนวิจัยให้ใช้ TTS ตัวเดียวถาวร
+
+เครื่องใหม่: ต้องมี Common Voice release/path เดียวกัน และรัน EDA ขั้นเตรียมทดลอง 1–3 ให้ได้ชุดเสียงคน 100 คลิปก่อน จาก project root ใช้:
+
+```powershell
+.\scripts\setup_wayu_pilot.ps1 -Dataset
+```
+
+`-Dataset` เพิ่ม [spaCy English resource 3.8.0](https://github.com/explosion/spacy-models/releases/tag/en_core_web_sm-3.8.0) ให้ frontend เพราะใน Train มีคำว่า `Facebook` หนึ่งข้อความ ใช้ requirements ที่ล็อกรุ่น/URL/checksum ใน [wayu-dataset-requirements.txt](../../../configs/cvtts/wayu-dataset-requirements.txt) ติดตั้งเฉพาะ `.venv-wayu` ไม่ลดรุ่นแพ็กเกจใน `.venv` หลัก
+
+ตรวจ source hashes และ split overlap, frontend ทั้ง 100 ก่อนสร้าง, waveform finite/nonempty/nonzero, float32 WAV roundtrip และสร้างเสียงใหม่ซ้ำใน memory ตรวจความตรงกัน รายงานมี model/code/config/software/manifest hashes ไม่ใส่ความคิดเห็นส่วนตัว และ **ไม่ยืนยันว่าทั้ง 100 อ่านถูกจากการตรวจเทคนิค** อีก 90 คลิปยังไม่ได้ฟังครบ หัวข้อ 5 มีตัวอย่าง Train ใหม่ให้ฟังแบบกระจายความยาว พร้อมข้อความที่มีคำอังกฤษ ไม่ปรับ TTS ตามผลฟัง Dev
+
+ผลใน `data/processed/cvtts/pilot_v1/` (ไม่เข้า Git):
+
+- เสียง Wayu: `native_tts/wayu/train/` และ `native_tts/wayu/dev/`
+- ที่มารายคลิป: `qc/tts_samples/<sample_id>.json`; ชุดนี้: `qc/tts_experiments/wayu_pilot_train_dev_v1.json`
+- เสียงปลอม: `manifests/tts_wayu_train.csv` (80), `tts_wayu_dev.csv` (20), `tts_wayu_all.csv` (100)
+- สองคลาส: `manifests/wayu_pilot_train_native.csv` (คน 80 + TTS 80), `wayu_pilot_dev_native.csv` (คน 20 + TTS 20)
+
+**ยังไม่พร้อมสั่ง train โดยตรง:** เสียงคนยังเป็น MP3 sample rate เดิม ส่วน TTS เป็น WAV 24 kHz รายการ `native` ไม่ใช่ config/manifest ของ CLI ฝึกที่พร้อมใช้ ขั้นต่อไปต้องจัดรูปแบบเสียงร่วมกันและเพิ่ม training loop AASIST ไม่มีการ resample/crop/pad/noise/telephone/fine-tune ใน notebook นี้ ไม่อ้างว่าควบคุมความต่าง codec/sample rate ระหว่างคลาสแล้ว หรือว่าผล pilot เท่ากับผลวิจัย
+
 <a id="wayu-pilot"></a>
 
 ## Wayu pilot: คลิปแรกและชุดข้อความ Train 10 คลิป

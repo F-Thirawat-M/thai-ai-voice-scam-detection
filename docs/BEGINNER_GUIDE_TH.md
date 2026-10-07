@@ -11,6 +11,14 @@
 
 ตอนนี้ยังอยู่ระยะ pretrained inference + เตรียมระบบข้อมูล/ฝึกใหม่ การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ
 
+## ขั้นเตรียม Wayu ครบชุดทดลองเล็ก
+
+หลัง EDA แบ่งเสียงคนเป็น Train 80 / Dev 20 และฟัง Wayu review10 แล้ว ใช้ [notebook สร้างครบ pilot](../data/exploration/common_voice/common_voice_wayu_pilot_dataset.ipynb) เลือก `.venv-wayu` ไม่ใช่ `.venv` หลัก เครื่องใหม่เตรียม environment ด้วย `scripts/setup_wayu_pilot.ps1 -Dataset` หลังมี raw Common Voice และ manifests จาก EDA ก่อน ไม่ต้องสร้าง MMS เพื่อรัน notebook นี้
+
+ผลคือ Wayu Train 80 / Dev 20 และรายการเสียงคน+TTS ใน `wayu_pilot_train_native.csv` (160) / `wayu_pilot_dev_native.csv` (40) ภายใน `data/processed/cvtts/pilot_v1/manifests/` ใช้ข้อความแต่ละ split ตามเดิม ไม่ใช่ Final Test ใช้ TTS ตัวเดียวเพื่อทดลอง pipeline ไม่ได้ตัดโมเดลอื่นจากแผนวิจัย
+
+**ยังไม่ใช่การ train:** เสียงคนเป็น MP3 native rate ส่วน Wayu เป็น WAV 24 kHz ต้องจัดเสียงร่วมกันและเพิ่ม training loop ก่อน ไม่ใช้ CLI inference เดิมเป็นคำสั่ง fine-tune อีก 90 คลิปใหม่ผ่านได้เพียงตรวจเทคนิคจนกว่าจะฟังตรวจ ไม่เติม noise/telephone ในขั้นนี้
+
 ## เริ่มตรวจของที่มี
 
 เปิด PowerShell ที่ project root:

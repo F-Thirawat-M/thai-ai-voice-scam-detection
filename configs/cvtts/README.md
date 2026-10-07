@@ -2,6 +2,8 @@
 
 เพิ่ม [wayu-pilot-requirements.txt](wayu-pilot-requirements.txt) สำหรับ notebook ทดลอง Wayu 1 ข้อความ ใช้ environment **`.venv-wayu` Python 3.11** แยกจาก `.venv` หลัก ไม่ใช่ config ฝึก AASIST/RawNet2 ดู setup/ขอบเขตใน [README ของ notebook](../../data/exploration/common_voice/README.md#wayu-pilot)
 
+[wayu-dataset-requirements.txt](wayu-dataset-requirements.txt) เพิ่ม English resource ที่ล็อกรุ่นไว้สำหรับ notebook สร้าง Wayu ครบ pilot Train 80 / Dev 20 เรียก `scripts/setup_wayu_pilot.ps1 -Dataset` ไม่ใช่ config ฝึก detector และไม่ติดตั้งลง `.venv` หลัก
+
 ยังไม่มี executable config/training pipeline ในโฟลเดอร์นี้ ให้สร้างใน T01 หลังตรวจ release/paths และยืนยันขอบเขต
 
 ไฟล์เป้าหมาย:
