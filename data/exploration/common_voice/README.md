@@ -2,13 +2,19 @@
 
 <a id="wayu-pilot"></a>
 
-## Wayu pilot: ลองตัวสร้างเสียงอีกโมเดล 1 คลิป
+## Wayu pilot: คลิปแรกและชุดข้อความ Train 10 คลิป
 
 เปิด [common_voice_wayu_tts_pilot.ipynb](common_voice_wayu_tts_pilot.ipynb) แล้วเลือก **Select Kernel → Python Environments → .venv-wayu (Python 3.11)** รันจากบนลงล่าง หรือเปิด [ผลที่รันแล้ว](outputs/common_voice_wayu_tts_pilot.executed.ipynb) และฟัง 3 players ในหัวข้อ 4: เสียงคนต้นทาง → MMS เดิม → Wayu ใหม่ ข้อความเดียวกัน “ฉันไม่ได้คุยโม้” จาก Train เท่านั้น ไม่ใช่ Dev/Test
 
-ทดลองบน CPU ด้วย voice `m_young_clear`, seed 42, speed 1.0; ผลในเครื่องนี้ 1.50 วินาทีที่ native 24 kHz และ waveform ตรงกันเมื่อรันซ้ำ **ผู้ใช้ฟังยืนยันว่า “โม้ ถูก / คำครบ” สำหรับคลิปนี้แล้ว** บันทึกผลแยกใน `qc/tts_reviews/wayu_paxa_common_voice_th_25669007_m_young_clear_seed42.json` ยังไม่ได้ประเมินความชัด/ความเนียนหรือข้อความอื่น ไม่สรุปว่าอ่านถูกจาก frontend trace และไม่เพิ่มเข้า manifest train อัตโนมัติ ไม่แก้ seed probes/เสียง MMS/manifest/reviews เดิม ไม่ train detector หรือ TTS และไม่โคลนเสียงคนต้นทาง ชื่อ voice ไม่ใช่อายุ/เพศของบุคคลที่ยืนยันแล้ว
+ทดลองบน CPU ด้วย voice `m_young_clear`, seed 42, speed 1.0; ผลคลิปแรกในเครื่องนี้ 1.50 วินาทีที่ native 24 kHz และ waveform ตรงกันเมื่อรันซ้ำ **ผู้ใช้ฟังยืนยันว่า “โม้ ถูก / คำครบ”** บันทึกผลเดิมไว้ใน `qc/tts_reviews/wayu_paxa_common_voice_th_25669007_m_young_clear_seed42.json` ไม่สรุปว่าอ่านถูกจาก frontend trace และไม่เพิ่มเข้า manifest train อัตโนมัติ ไม่แก้ seed probes/เสียง MMS/manifest/reviews เดิม ไม่ train detector หรือ TTS และไม่โคลนเสียงคนต้นทาง ชื่อ voice ไม่ใช่อายุ/เพศของบุคคลที่ยืนยันแล้ว
 
-generation JSON และผล notebook ที่รันก่อนฟังยังแสดง `pending` ตามสถานะขณะสร้าง ไม่แก้ provenance เดิมให้รันซ้ำยังตรวจ hash ได้; ผลฟังล่าสุดให้อ่าน review JSON ที่แยกไว้ ขั้นถัดไปที่เสนอคือใช้ Wayu สร้างข้อความ Train ชุด review10 เดิม ด้วย voice/seed/speed เดิมแล้วฟังตรวจหลายความยาว ยังไม่สร้างทั้งชุดหรือเริ่ม train
+generation JSON ยังแสดง `pending` ตามสถานะขณะสร้าง ไม่แก้ provenance เดิมให้รันซ้ำยังตรวจ hash ได้; notebook อ่านผลฟังล่าสุดจาก review JSON ที่แยกไว้
+
+**หัวข้อ 5–6: Wayu review10** ใช้ข้อความและลำดับเดียวกับ `manifests/tts_train_review10.csv` ของ MMS เลือกจาก `real_train.csv` ที่ตรวจ hash แล้วเท่านั้น ใช้ voice/seed/speed เดิม คลิป 3 ใช้เสียง Wayu เดิมที่ตรวจแล้ว อีก 9 คลิปสร้างใหม่โดยไม่แก้ข้อความ/เสียง MMS/manifest เดิม ไม่ใช้เสียงคนเป็น input ของ TTS ไม่ใช้ Dev/Test ไม่เติม noise/telephone และไม่ train ตรวจ frontend ก่อนสร้างทั้ง batch ตรวจ waveform finite/nonempty/nonzero และสร้างซ้ำใน memory ตรวจความตรงกันก่อนบันทึก มี CSV แยก `manifests/tts_wayu_train_review10.csv` พร้อม summary `qc/tts_experiments/wayu_train_review10_v1.json` และ provenance รายคลิปที่ `qc/tts_samples/` รันซ้ำจะตรวจที่มาและใช้ไฟล์เดิม ไม่เขียนทับเมื่อข้อมูลต่าง
+
+เปิด [ผลที่รันแล้ว](outputs/common_voice_wayu_tts_pilot.executed.ipynb) ที่ **หัวข้อ 6** เพื่อฟัง Wayu ทีละคลิป มีข้อความและ player เสียงคนอ้างอิงด้วย ข้อความต้นทางบางข้อแปลก อย่าแก้ก่อนทดลองหรือถือว่าเสียงคนต้องอ่านถูกทุกคลิป ผลฟังคลิป 3 ไม่ใช้แทนอีก 9 ข้อ ทุกข้อยังต้องฟังตรวจคำผิด/คำหาย/วน/ขาดก่อนตัดสินขั้นถัดไป และไม่ลอกผลฟัง MMS มาใช้กับ Wayu
+
+**ผลฟัง Wayu review10 ล่าสุด:** ผู้ใช้ยืนยันว่าอ่านถูกทั้ง 10 คลิป เก็บเฉพาะผลตรวจข้อความพร้อม manifest/audio hashes ที่ `qc/tts_reviews/` ไม่แก้ review เดิมของคลิป 3 หรือ generation provenance การผ่านด้านข้อความใน 10 ตัวอย่างนี้ยังไม่ยืนยันคุณภาพทั้งชุด หรือประสิทธิภาพ AASIST/RawNet2
 
 น้ำหนัก [Wayu-Paxa-TTS-Edge](https://huggingface.co/wayu-ai/wayu-paxa-tts-edge) revision `8196688df56a8d08ccfa186505343adff412ab6b` ดาวน์โหลดเฉพาะ 4 ไฟล์รวมประมาณ 328 MB: config, model.pth, voice เดียว, model card โค้ด [ผู้พัฒนา](https://github.com/wayu-research/wayu-tts-inference) ที่นำมาติดตั้ง pin commit `07ab898d516649313926f0b843b809a962f993ad`; notebook และ script setup เป็นโค้ดเชื่อมกระบวนการทดลองที่เราเพิ่มเอง ไม่ใช่โมเดลที่เขียน/ฝึกเอง โมเดลหลักและ voice โหลด weights แบบ `weights_only=True` ไม่ใช้ checkpoint ที่ไม่ได้ตรวจแหล่งที่มา น้ำหนัก CC-BY-NC-4.0 / โค้ด Apache-2.0 ต้องแสดง attribution และตรวจ [เงื่อนไขการใช้](https://www.wayuresearch.org/terms) ก่อนใช้งานอื่น
 
