@@ -1,5 +1,6 @@
 """Shared Common Voice/TTS research pipeline package.
 
-Only the pilot MMS Thai text-preparation helpers are implemented here.
-Full dataset preparation, TTS adapters and training are not implemented yet.
+Includes pilot MMS text validation, shared full-length canonical audio
+preparation, and immutable artifact writes. Synthesis examples and pilot
+manifests live in notebooks; training and augmentation are not implemented yet.
 """

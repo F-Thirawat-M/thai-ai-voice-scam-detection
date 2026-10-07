@@ -1,6 +1,8 @@
-# Run from project root: .\scripts\setup_wayu_pilot.ps1
+# Run from project root: .\scripts\setup_wayu_pilot.ps1 [-Dataset]
 # Creates an isolated CPU-only environment. Does not install into .venv,
 # download TTS weights, generate speech, or modify existing data/manifests.
+param([switch]$Dataset)
+
 $ErrorActionPreference = 'Stop'
 $projectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location -LiteralPath $projectRoot
@@ -43,11 +45,21 @@ try {
         'pip', 'install', '--python', $wayuPython, 'torch==2.11.0',
         '--index-url', 'https://download.pytorch.org/whl/cpu'
     )
+    $requirementsFile = if ($Dataset) {
+        'configs/cvtts/wayu-dataset-requirements.txt'
+    } else {
+        'configs/cvtts/wayu-pilot-requirements.txt'
+    }
     Invoke-Checked -Executable $uvExe -Arguments @(
-        'pip', 'install', '--python', $wayuPython, '-r', 'configs/cvtts/wayu-pilot-requirements.txt'
+        'pip', 'install', '--python', $wayuPython, '-r', $requirementsFile
     )
     Invoke-Checked -Executable $uvExe -Arguments @('pip', 'check', '--python', $wayuPython)
-    Write-Host 'Ready. Select .venv-wayu as the kernel in common_voice_wayu_tts_pilot.ipynb.'
+    $notebookName = if ($Dataset) {
+        'common_voice_wayu_pilot_dataset.ipynb'
+    } else {
+        'common_voice_wayu_tts_pilot.ipynb'
+    }
+    Write-Host "Ready. Select .venv-wayu as the kernel in $notebookName."
     Write-Host 'Do not delete tmp/wayu-python: the environment uses that Python installation.'
 } finally {
     $env:UV_CACHE_DIR = $previousCache

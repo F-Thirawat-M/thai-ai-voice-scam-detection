@@ -9,7 +9,27 @@
 - **Fine-tuning**: ฝึกปรับน้ำหนักด้วยข้อมูลของโครงงาน
 - **Train / Dev / Final Test**: ใช้ฝึก / เลือกวิธีและ threshold / ประเมินขั้นสุดท้าย ตามลำดับ
 
-ตอนนี้ยังอยู่ระยะ pretrained inference + เตรียมระบบข้อมูล/ฝึกใหม่ การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ
+ตอนนี้มี pretrained inference และ AASIST Clean feasibility smoke 1 epoch แล้ว การรัน sample ได้ไม่เท่ากับ fine-tune สำเร็จ และการฝึกสำเร็จไม่เท่ากับตรวจแม่นขึ้น
+
+## ขั้นล่าสุด: ลองฝึก AASIST จริงรอบสั้น
+
+อ่าน [คู่มือ AASIST Clean smoke และผลรอบแรก](AASIST_CLEAN_SMOKE_TH.md) ใช้ `.venv` หลัก Script `scripts/train_aasist_pilot.py` ฝึก Train 160 คลิป/ตรวจ Dev 40 คลิป มี gradient, parameter update และ fresh-model checkpoint reload ผ่านแล้ว ผลใน `results/cvtts/aasist_clean_smoke/` ไม่เข้า Git ยังไม่มี RawNet2 training, Noise/Telephone, best selection, resume หรือ Final Test
+
+Dev loss รอบแรกเพิ่มจากประมาณ 1.59 เป็น 4.85 จึงสรุปเพียงว่าฝึกได้จริง ไม่ใช่ดีขึ้น ขั้นถัดไปควรตรวจ overfit-small-batch/recipe ก่อนขยายงาน ไม่ฝึกต่อเพื่อไล่คะแนนโดยไม่มี run log
+
+## ขั้นเตรียมเสียงร่วมก่อนลอง train
+
+หลังมี Wayu ครบ pilot ใช้ [common_voice_pilot_audio.ipynb](../data/exploration/common_voice/common_voice_pilot_audio.ipynb) เลือก **`.venv` หลัก** เพื่อทำไฟล์ใหม่ทั้งสองคลาสเป็น WAV FLOAT mono 16 kHz โดยเก็บความยาวเต็ม ไม่ตัดเหลือ 4 วินาที ไม่เติม noise/telephone ไม่ normalize gain และไม่แก้ native data ดูผลที่รันแล้วใน `data/exploration/common_voice/outputs/` ที่ไม่เข้า Git
+
+ใช้รายการใหม่ `wayu_pilot_train_clean16k.csv` / `wayu_pilot_dev_clean16k.csv` ภายใน `data/processed/cvtts/pilot_v1/manifests/` มี source/output hashes ย้อนตรวจได้ ขั้น canonical ไม่ฝึกโมเดล ส่วน script smoke ที่เพิ่มภายหลังเลือก window เฉพาะตอนสร้าง tensor: Train random inclusive crop / Dev first crop, คลิปสั้น repeat ให้ครบ 64,600 samples โดยไม่แก้เสียงเต็ม ไม่รายงาน EER จากขั้นเตรียมเสียง การเปลี่ยนรูปแบบไฟล์ไม่ได้ลบ artefacts/แบนด์วิดท์จากต้นทาง
+
+## ขั้นเตรียม Wayu ครบชุดทดลองเล็ก
+
+หลัง EDA แบ่งเสียงคนเป็น Train 80 / Dev 20 และฟัง Wayu review10 แล้ว ใช้ [notebook สร้างครบ pilot](../data/exploration/common_voice/common_voice_wayu_pilot_dataset.ipynb) เลือก `.venv-wayu` ไม่ใช่ `.venv` หลัก เครื่องใหม่เตรียม environment ด้วย `scripts/setup_wayu_pilot.ps1 -Dataset` หลังมี raw Common Voice และ manifests จาก EDA ก่อน ไม่ต้องสร้าง MMS เพื่อรัน notebook นี้
+
+ผลคือ Wayu Train 80 / Dev 20 และรายการเสียงคน+TTS ใน `wayu_pilot_train_native.csv` (160) / `wayu_pilot_dev_native.csv` (40) ภายใน `data/processed/cvtts/pilot_v1/manifests/` ใช้ข้อความแต่ละ split ตามเดิม ไม่ใช่ Final Test ใช้ TTS ตัวเดียวเพื่อทดลอง pipeline ไม่ได้ตัดโมเดลอื่นจากแผนวิจัย
+
+**Notebook สร้าง Wayu ไม่ใช่การ train:** เสียงคนเป็น MP3 native rate ส่วน Wayu เป็น WAV 24 kHz ใช้ canonical notebook จัดเสียงร่วมกันก่อน script smoke ไม่ใช้ CLI inference เดิมเป็นคำสั่ง fine-tune อีก 90 คลิปใหม่ผ่านได้เพียงตรวจเทคนิคจนกว่าจะฟังตรวจ ไม่เติม noise/telephone ในขั้นสร้างเสียง
 
 ## เริ่มตรวจของที่มี
 

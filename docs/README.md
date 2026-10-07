@@ -6,5 +6,6 @@
 4. [Decision log](decisions/CVTTS_DECISIONS.md) — ข้อสรุปจริงเทียบกับเรื่องรอยืนยัน
 5. [รายงาน](reports/cvtts/README.md) — ที่เก็บสรุปแบบเผยแพร่ได้
 6. [Cleanup 3 ตุลาคม 2026](CLEANUP_2026-10-03.md) — รายการที่เลิกใช้และนำออก
+7. [AASIST Clean smoke 1 epoch](AASIST_CLEAN_SMOKE_TH.md) — โค้ดที่เพิ่ม คำสั่งที่ใช้ได้ ผลรอบแรก และข้อจำกัด
 
 ไม่มีแผน SEA-Spoof คู่ขนานกับแผนใหม่แล้ว หากต้องดูแผนเก่าให้ดู Git history ไม่ดึงกลับมารวมใน workflow โดยอัตโนมัติ

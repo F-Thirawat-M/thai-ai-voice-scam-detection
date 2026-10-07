@@ -1,6 +1,10 @@
 # Tests สำหรับ pipeline ใหม่
 
-สร้าง unit/integration tests ตาม [workflow ส่วน 18](../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s18) เมื่อเพิ่ม implementation ขณะนี้ไม่มี CV/TTS tests ที่รันได้ในโฟลเดอร์นี้
+มี tests ที่รันได้สำหรับ MMS text validation (`test_text.py`), shared canonical audio (`test_canonical_audio.py`) และ immutable artifact writes (`test_artifacts.py`) ทดสอบ stereo mean, resample/duration, amplitude preservation, finite/nonempty/nonzero, reproducible FLOAT WAV roundtrip และ conflict ก่อนสร้างไฟล์ใหม่ ไม่มีการใช้ dataset จริงเป็น test fixture
+
+เพิ่ม `test_windows.py` / `test_pilot_data.py` ตรวจ crop แบบรวมจุดท้าย, ความยาวเท่ากันไม่เรียก random range ว่าง, repeat, silent window, seeded reproducibility, label order, manifest/audio/source hashes และ split overlap ด้วย fixture ที่สร้างเอง ไม่มีการโหลด GPU/model จริงใน unit tests ส่วน gradient/parameter-change/checkpoint reload ตรวจใน script smoke บนเครื่องที่มี upstream/weights/data ดู [คู่มือ](../../docs/AASIST_CLEAN_SMOKE_TH.md)
+
+สร้าง unit/integration tests เพิ่มตาม [workflow ส่วน 18](../../docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s18) เมื่อเริ่ม implementation ส่วนอื่น tests เหล่านี้ไม่ได้ยืนยันว่าคำอ่านทั้งหมดถูกหรือ model generalize ได้
 
 ใช้ fixtures ที่สร้างเองและแจกได้ ทดสอบ split isolation, shared audio/conditions, generation resume, gradients/save-load และ Dev-only threshold ก่อนเปิด Final Test
 
