@@ -12,12 +12,14 @@
 | `src/thai_spoof/metrics.py`, `prediction.py` | metrics/ผลทำนายเดิมที่ต้องพัฒนาต่อก่อน Final Test ใหม่ |
 | `scripts/check_environment.py` | ตรวจ runtime/GPU/ไฟล์ AASIST |
 | `scripts/create_smoke_audio.py` | สร้างเสียงสัญญาณทดสอบเส้นทาง inference |
+| `scripts/train_aasist_pilot.py` | AASIST Clean 1-epoch feasibility smoke พร้อม Dev diagnostics/reload; ไม่ใช่ main-run trainer |
+| `src/thai_spoof/cvtts/windows.py`, `pilot_data.py` | Shared window policy และ strict canonical Wayu pilot Dataset |
 | `scripts/setup.ps1` | bootstrap เครื่องใหม่ มีขั้นดาวน์โหลด/ติดตั้ง จึงไม่รันซ้ำโดยไม่อ่าน |
 | `external/aasist/` | upstream source ที่ AASIST adapter import จริง ไม่ใช่ของเหลือที่ลบได้ |
 | `checkpoints/aasist/`, `checkpoints/rawnet2/` | pretrained weights ที่ยังโหลดได้ |
 | `tests/test_audio.py`, `tests/test_metrics.py` | baseline regression tests ไม่ใช่การรับรอง protocol ใหม่ |
 
-## เตรียมพื้นที่แล้ว แต่ยังไม่มี pipeline
+## พื้นที่ pipeline ที่กำลังพัฒนา
 
 | ตำแหน่ง | งานที่จะสร้าง |
 | --- | --- |
@@ -40,7 +42,7 @@ Raw/processed เป็น ignored local directories ไม่อยู่ใน
 - รายงานเผยแพร่ได้: `docs/reports/cvtts/`
 - ไฟล์ชั่วคราว: `tmp/<task-name>/` ห้ามใช้เป็นที่เก็บผลที่ไม่มีสำเนาอื่น
 
-อย่าสับสน scaffold กับฟังก์ชันที่มีจริง: `scripts/cvtts_pipeline.py`, training modules และ YAML ที่รันได้ **ยังต้อง implement** ตาม [workflow ส่วน 20–21](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s20)
+อย่าสับสน smoke กับ pipeline วิจัยเต็ม: มี `scripts/train_aasist_pilot.py` สำหรับ AASIST Clean 1 epoch แล้ว โดย checkpoint/log/scores อยู่ร่วมกันใน `results/cvtts/aasist_clean_smoke/<run_id>/` ไม่ใช่เส้นทาง checkpoint main run ที่เสนอไว้ข้างบน อ่าน [คู่มือ](AASIST_CLEAN_SMOKE_TH.md) ส่วน `scripts/cvtts_pipeline.py`, multi-condition/multi-epoch/resume, RawNet2 trainer และ YAML main runs **ยังต้อง implement** ตาม [workflow ส่วน 20–21](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s20)
 
 ## ไม่ใช้แล้ว
 

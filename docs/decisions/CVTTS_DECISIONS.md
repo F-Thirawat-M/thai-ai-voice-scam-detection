@@ -9,6 +9,15 @@
 - ยังไม่มีการดาวน์โหลดข้อมูลใหม่ สร้าง TTS หรือ fine-tune ในการปรับโครงสร้างครั้งนี้
 - ผู้ใช้ commit เอง; branch ของงานนี้คือ `refactor-common-voice-layout`
 
+## 7 ตุลาคม 2026 — AASIST Clean feasibility smoke
+
+- หลัง canonical pilot เพิ่ม shared window/Dataset และ script 1-epoch smoke; ใช้ Train 160 / Dev 40, Wayu ตัวเดียว เพื่อพิสูจน์ forward/backward/update/reload ไม่ใช่ scope หลักหลาย TTS
+- อิง baseline input 64,600 samples; Train random inclusive crop / Dev first / short repeat ไม่เปลี่ยน full canonical files หรือ native audio
+- ใช้ AdamW 1e-5, microbatch 2, accumulation 8, unweighted cross-entropy, float32; ไม่เพิ่ม condition จำลอง ไม่ resume/best selection/Test
+- Preflight 4 Train clips 1 update ผ่าน จากนั้น full epoch เริ่มจาก pretrained เดิมใหม่ 160 clips / 10 updates และ fresh-model reload ผ่าน
+- Dev loss เพิ่ม 1.594355 → 4.853433; ผ่านด้านเทคนิคเท่านั้น ไม่อ้างว่าความแม่นยำเพิ่ม ขั้นต่อไปคือ overfit-small-batch/recipe checks ก่อนขยาย corpus/conditions
+- Branch `feat-aasist-clean-smoke` แยกจาก canonical audio ที่ผู้ใช้ commit แล้ว; ผู้ใช้ commit/push เอง รายละเอียดและคำสั่งอยู่ [คู่มือ](../AASIST_CLEAN_SMOKE_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

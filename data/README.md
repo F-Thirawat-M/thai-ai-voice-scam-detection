@@ -15,7 +15,7 @@
 | `exploration/common_voice/outputs/` | ตารางรายละเอียด ผล EDA และ executed notebook | ไม่เข้า |
 | `sample/` | เสียงทดลองส่วนตัว ไม่ใช่ corpus วิจัย | เฉพาะ README เข้า |
 
-เครื่องนี้ดาวน์โหลดและแตก Common Voice Thai 27.0 ไว้แล้วที่ `raw/common_voice/cv-corpus-27.0-2026-09-11/th/` มี notebook EDA, MMS/Wayu review10, [Wayu ครบ pilot Train/Dev](exploration/common_voice/common_voice_wayu_pilot_dataset.ipynb) และ [shared canonical audio](exploration/common_voice/common_voice_pilot_audio.ipynb) ยังไม่ได้เตรียม noise หรือ fine-tune หากข้อมูลอยู่ที่อื่นให้ระบุ data root ใน config ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
+เครื่องนี้ดาวน์โหลดและแตก Common Voice Thai 27.0 ไว้แล้วที่ `raw/common_voice/cv-corpus-27.0-2026-09-11/th/` มี notebook EDA, MMS/Wayu review10, [Wayu ครบ pilot Train/Dev](exploration/common_voice/common_voice_wayu_pilot_dataset.ipynb) และ [shared canonical audio](exploration/common_voice/common_voice_pilot_audio.ipynb) มี [AASIST Clean 1-epoch smoke](../docs/AASIST_CLEAN_SMOKE_TH.md) แล้ว แต่ยังไม่ได้เตรียม noise หรือ fine-tune รอบวิจัยเต็ม ผล smoke อยู่ `results/cvtts/aasist_clean_smoke/` ไม่แก้ dataset หากข้อมูลอยู่ที่อื่นต้องเพิ่ม config/data-root support ก่อนใช้ script smoke ไม่ย้าย/ทำสำเนาก้อนใหญ่โดยไม่จำเป็น
 
 ไม่ใช้ `data/manifests/` กลางอีกแล้ว เพราะ manifest ต้องผูกกับ dataset version; ตัวอย่างที่แจกได้ย้ายไป `examples/` ส่วน config ไม่เก็บ tokens
 

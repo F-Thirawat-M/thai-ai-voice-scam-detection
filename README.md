@@ -7,6 +7,7 @@
 - [Workflow ทั้งโปรเจกต์](docs/COMMON_VOICE_PROJECT_WORKFLOW_TH.md): ขั้นตอนละเอียด ข้อตกลงการทดลอง และ prompt ส่งต่อให้ AI
 - [โครงสร้างและตำแหน่งเก็บไฟล์](docs/PROJECT_STRUCTURE_TH.md): อะไรมีแล้ว และอะไรต้องพัฒนาต่อ
 - [เริ่มใช้งานสำหรับผู้เริ่มต้น](docs/BEGINNER_GUIDE_TH.md): ตรวจเครื่องและทดลอง inference ที่มีอยู่
+- [AASIST Clean smoke 1 epoch](docs/AASIST_CLEAN_SMOKE_TH.md): วิธีฝึกรอบสั้น ผลครั้งแรก และข้อจำกัด
 - [การจัดการข้อมูล](data/README.md): raw / processed / exploration / sample
 - [Common Voice EDA แบบง่าย](data/exploration/common_voice/common_voice_eda.ipynb): เริ่มดู df, คอลัมน์, ค่าว่าง, ความยาวเสียง และผู้พูด
 - [รายการทำความสะอาด](docs/CLEANUP_2026-10-03.md): สิ่งที่ลบและข้อจำกัดการกู้คืน
@@ -15,7 +16,9 @@
 
 มี pretrained inference ของ AASIST/RawNet2, CLI `infer/evaluate`, checkpoint, environment check และ tests พื้นฐานแล้ว
 
-**ยังไม่มี** Common Voice audit pipeline, TTS generation pipeline, multi-condition training หรือ Final Test แบบ fixed Dev threshold โฟลเดอร์ที่เตรียมไว้เป็นจุดเริ่มต้น ไม่ได้หมายความว่าการทดลองเสร็จแล้ว
+มี notebooks EDA/split/pilot synthesis ของ Common Voice และ shared canonical audio พร้อม AASIST **Clean feasibility smoke 1 epoch** ที่มีการอัปเดตน้ำหนักและตรวจ reload จริงแล้ว ผลนี้ยังไม่ใช่ความสำเร็จด้านความแม่นยำ (Dev loss รอบแรกสูงขึ้น) และมี Wayu generator เดียว
+
+**ยังไม่มี** automated full-corpus pipeline, multi-condition/main-run training, RawNet2 fine-tuning หรือ Final Test แบบ fixed Dev threshold ไม่ได้หมายความว่าการทดลองวิจัยเสร็จแล้ว
 
 SEA-Spoof/Typhoon พร้อม pipeline และเอกสารแผนเดิมถูกนำออกตามการปรับขอบเขต ไม่ต้องโหลดชุดเหล่านั้นเพื่อเริ่มงานใหม่
 
@@ -77,7 +80,7 @@ Relative audio paths ใน CLI เดิมอ้างจาก working direct
 
 ## งานถัดไป
 
-เริ่ม T00–T02 ใน workflow: ยืนยัน scope → ตรวจ Common Voice release/สิทธิ์/ไฟล์จริง → พัฒนา audit ก่อนสร้างเสียงจำนวนมาก ไม่มีการดาวน์โหลด dataset ใหม่หรือเริ่ม train จากการปรับโครงสร้างครั้งนี้
+หลัง smoke ควรตรวจ overfit-small-batch/recipe, เพิ่ม TTS ระบบที่สอง และพัฒนา Noise/Telephone, resume, Dev selection/threshold ก่อนทำ main runs โดยยังต้องยืนยัน scope/สิทธิ์ตาม workflow ดู [ขั้นต่อไปและผลรอบแรก](docs/AASIST_CLEAN_SMOKE_TH.md)
 
 Branch ใช้ชื่อตาม feature โดยไม่ใส่ `codex/`; ผู้ใช้เป็นผู้ commit/push เอง
 
