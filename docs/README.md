@@ -1,11 +1,14 @@
-# เอกสารโครงงาน
+# เอกสาร — เลือกตามงาน
 
-1. [Workflow ทั้งโปรเจกต์](COMMON_VOICE_PROJECT_WORKFLOW_TH.md) — แผนหลักและ handoff ให้ AI
-2. [โครงสร้างไฟล์](PROJECT_STRUCTURE_TH.md) — ตำแหน่งข้อมูล/โค้ดและสถานะปัจจุบัน
-3. [คู่มือเริ่มต้น](BEGINNER_GUIDE_TH.md) — คำสั่งที่มีแล้วและงานแรก
-4. [Decision log](decisions/CVTTS_DECISIONS.md) — ข้อสรุปจริงเทียบกับเรื่องรอยืนยัน
-5. [รายงาน](reports/cvtts/README.md) — ที่เก็บสรุปแบบเผยแพร่ได้
-6. [Cleanup 3 ตุลาคม 2026](CLEANUP_2026-10-03.md) — รายการที่เลิกใช้และนำออก
-7. [AASIST Clean smoke 1 epoch](AASIST_CLEAN_SMOKE_TH.md) — โค้ดที่เพิ่ม คำสั่งที่ใช้ได้ ผลรอบแรก และข้อจำกัด
+| ต้องการอ่าน | ไปที่ |
+| --- | --- |
+| ทำ pilot ต่อจากปัจจุบัน | [Pilot README](../experiments/pilot/README.md) |
+| ความหมาย/ตำแหน่งโฟลเดอร์ | [โครงสร้าง](PROJECT_STRUCTURE_TH.md) |
+| คำศัพท์และ environment | [คู่มือเริ่มต้น](BEGINNER_GUIDE_TH.md) |
+| งานวิจัยจริงที่ยังไม่เริ่ม | [Research README](../experiments/research/README.md) |
+| แผนวิจัยละเอียด / handoff ให้ AI | [Workflow หลัก](COMMON_VOICE_PROJECT_WORKFLOW_TH.md) |
+| ข้อตกลงและเหตุผลที่เปลี่ยน | [Decision log](decisions/CVTTS_DECISIONS.md) |
 
-ไม่มีแผน SEA-Spoof คู่ขนานกับแผนใหม่แล้ว หากต้องดูแผนเก่าให้ดู Git history ไม่ดึงกลับมารวมใน workflow โดยอัตโนมัติ
+คู่มือ Clean 1 epoch / จำ Train 4 คลิป / notebooks ย้ายไป `experiments/pilot/docs/` แล้ว อ่านเฉพาะขั้นที่กำลังทำ ไม่ต้องเปิดทุกคู่มือพร้อมกัน
+
+เอกสาร [Cleanup 3 ตุลาคม](CLEANUP_2026-10-03.md) และ [reports](reports/cvtts/README.md) เป็นประวัติ/พื้นที่รายงาน ไม่ใช่หน้าเริ่มรัน pilot

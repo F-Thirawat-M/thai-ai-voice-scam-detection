@@ -11,8 +11,8 @@ import soundfile as sf
 import torch
 from torch.utils.data import Dataset
 
-from .audio import CANONICAL_POLICY
-from .windows import select_window
+from ..cvtts.audio import CANONICAL_POLICY
+from ..cvtts.windows import select_window
 
 
 LABEL_TO_INT = {"spoof": 0, "bonafide": 1}  # upstream aasist/data_utils.py

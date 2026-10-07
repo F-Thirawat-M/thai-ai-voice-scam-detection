@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def trainer_module():
-    path = Path(__file__).resolve().parents[2] / "scripts/train_aasist_pilot.py"
+    path = Path(__file__).resolve().parents[2] / "experiments/pilot/scripts/train_aasist_clean.py"
     spec = importlib.util.spec_from_file_location("aasist_smoke_under_test", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
@@ -18,7 +18,7 @@ def test_existing_run_is_not_overwritten(trainer_module, tmp_path, monkeypatch):
     monkeypatch.setattr(module, "ROOT", tmp_path)
     monkeypatch.setattr(module.sys, "prefix", str(tmp_path / ".venv"))
     monkeypatch.setattr(module.sys, "argv", ["train", "--run-id", "existing"])
-    output = tmp_path / "results/cvtts/aasist_clean_smoke/existing"
+    output = tmp_path / "results/pilot/aasist_clean_smoke/existing"
     output.mkdir(parents=True)
     marker = output / "run.json"
     marker.write_text("original run", encoding="utf-8")

@@ -20,6 +20,7 @@ data/sample/*
 data/manifests/
 # EDA outputs may contain restricted source metadata and audio-derived data.
 data/exploration/*/outputs/
+experiments/pilot/notebooks/outputs/
 .ipynb_checkpoints/
 results/*
 !results/.gitkeep

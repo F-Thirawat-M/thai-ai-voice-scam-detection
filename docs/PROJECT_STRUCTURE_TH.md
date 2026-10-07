@@ -1,53 +1,73 @@
-# โครงสร้างโปรเจกต์หลังปรับแผน
+# แผนผังโปรเจกต์ — แยก pilot / research / โค้ดร่วม
 
-ปรับวันที่ 3 ตุลาคม 2026 ใช้ Common Voice + TTS เป็น workflow หลัก โครงสร้าง inference สองโมเดลเดิมเหมาะสมอยู่แล้วจึงคงไว้ ส่วนข้อมูล/เอกสารเลิกยึด SEA-Spoof
+## ให้ดูชื่อหมวดก่อน
 
-## มีแล้วและยังใช้อยู่
+- **pilot** = ทดลองให้ระบบทำงานและตรวจวิธีฝึก ยังไม่ใช่ผลวิจัยหลัก
+- **research** = การทดลองจริงตาม protocol ที่จะล็อกภายหลัง ตอนนี้ยังไม่เริ่ม
+- **src** = โค้ดที่ใช้ทำงาน ไม่ใช่ผลการทดลอง
+- **data/results** = ข้อมูล/ผลในเครื่อง ไม่เข้า Git
 
-| ตำแหน่ง | หน้าที่ |
+```text
+project/
+├─ experiments/
+│  ├─ pilot/                       ← งานที่เราทำอยู่ตอนนี้
+│  │  ├─ README.md                 ← เปิดอันนี้ก่อน
+│  │  ├─ notebooks/                ← EDA → TTS → เตรียมเสียง
+│  │  │  └─ outputs/               ← notebook ที่รันแล้ว (ไม่เข้า Git)
+│  │  ├─ scripts/                  ← Clean 1 epoch / จำ Train 4 คลิป
+│  │  └─ docs/                     ← คำอธิบายและผลแต่ละขั้น
+│  └─ research/
+│     └─ README.md                 ← ยังเป็นแผน ไม่ใช่โค้ดฝึกพร้อมใช้
+├─ src/thai_spoof/
+│  ├─ aasist/                      ← adapter/config ของ AASIST
+│  ├─ rawnet2/                     ← model/adapter ฝั่งเพื่อน
+│  ├─ cvtts/                       ← audio/windows/text/hash helpers ร่วม
+│  ├─ pilot/                       ← Dataset/diagnostics เฉพาะชุดเล็ก
+│  ├─ cli.py                       ← inference/evaluate เดิม
+│  └─ metrics.py                   ← metrics เดิม ไม่ใช่ Final Test protocol ใหม่
+├─ tests/
+│  ├─ pilot/                       ← tests เฉพาะงานทดลองเล็ก
+│  └─ cvtts/                       ← tests ของ shared helpers
+├─ data/
+│  ├─ raw/common_voice/            ← เสียง/metadata ต้นทาง ห้ามแก้ in-place
+│  ├─ processed/cvtts/pilot_v1/     ← เสียง/manifest pilot ไม่ใช่ corpus วิจัยหลัก
+│  ├─ raw/noise/                   ← ยังไม่ได้เตรียม noise สำหรับการทดลองหลัก
+│  └─ sample/                      ← เสียงลอง inference ไม่ใช่ชุด train/test
+├─ results/
+│  └─ pilot/
+│     ├─ aasist_clean_smoke/       ← ผล Train 160 / Dev 40
+│     └─ aasist_overfit_check/     ← ผลจำ Train 4 คลิป
+├─ checkpoints/                   ← weights ของ detector/TTS ไม่ใช่ dataset
+├─ external/aasist/               ← โครงข่ายต้นทางที่ยังใช้จริง
+├─ scripts/                       ← setup/environment/smoke inference เท่านั้น
+├─ configs/cvtts/                 ← dependencies ของ TTS pilot; ยังไม่มี main-run config
+├─ docs/                          ← แผนภาพ/คู่มือภาพรวม/workflow/decisions
+└─ tmp/                           ← ชั่วคราว; tmp/wayu-python เป็น base ของ .venv-wayu อย่าลบ
+```
+
+## ไฟล์ที่ใช้ตอนนี้
+
+เปิด [Pilot README](../experiments/pilot/README.md) มีลำดับ notebook/คำสั่งและสถานะครบ ไม่ต้องไล่เปิดทุกไฟล์ใน src
+
+Raw Common Voice และ pretrained ใช้ร่วมกันได้ ไม่แยกสำเนาตาม AASIST/RawNet2 ส่วนชุดข้อมูล/run สำหรับงานวิจัยจริงต้องสร้างเป็น version ใหม่ ไม่ตั้งชื่อ pilot_v1 เป็นงานจริงเฉย ๆ
+
+## ย้ายอะไรบ้าง
+
+| เดิม | ใหม่ |
 | --- | --- |
-| `src/thai_spoof/aasist/` | adapter, preprocessing, config และคู่มือ AASIST |
-| `src/thai_spoof/rawnet2/` | network, adapter, config, checkpoint utilities และ license |
-| `src/thai_spoof/cli.py` | infer/evaluate ของ pretrained baseline |
-| `src/thai_spoof/metrics.py`, `prediction.py` | metrics/ผลทำนายเดิมที่ต้องพัฒนาต่อก่อน Final Test ใหม่ |
-| `scripts/check_environment.py` | ตรวจ runtime/GPU/ไฟล์ AASIST |
-| `scripts/create_smoke_audio.py` | สร้างเสียงสัญญาณทดสอบเส้นทาง inference |
-| `scripts/train_aasist_pilot.py` | AASIST Clean 1-epoch feasibility smoke พร้อม Dev diagnostics/reload; ไม่ใช่ main-run trainer |
-| `src/thai_spoof/cvtts/windows.py`, `pilot_data.py` | Shared window policy และ strict canonical Wayu pilot Dataset |
-| `scripts/setup.ps1` | bootstrap เครื่องใหม่ มีขั้นดาวน์โหลด/ติดตั้ง จึงไม่รันซ้ำโดยไม่อ่าน |
-| `external/aasist/` | upstream source ที่ AASIST adapter import จริง ไม่ใช่ของเหลือที่ลบได้ |
-| `checkpoints/aasist/`, `checkpoints/rawnet2/` | pretrained weights ที่ยังโหลดได้ |
-| `tests/test_audio.py`, `tests/test_metrics.py` | baseline regression tests ไม่ใช่การรับรอง protocol ใหม่ |
+| `data/exploration/common_voice/*.ipynb` | `experiments/pilot/notebooks/*.ipynb` |
+| `data/exploration/common_voice/outputs/` | `experiments/pilot/notebooks/outputs/` |
+| `scripts/train_aasist_pilot.py` | `experiments/pilot/scripts/train_aasist_clean.py` |
+| `scripts/check_aasist_overfit.py` | `experiments/pilot/scripts/check_aasist_overfit.py` |
+| `src/thai_spoof/cvtts/pilot_data.py`, `overfit.py` | `src/thai_spoof/pilot/` |
+| pilot-specific tests ใน `tests/cvtts/` | `tests/pilot/` |
+| คู่มือ Clean/overfit ใน `docs/` | `experiments/pilot/docs/` |
+| `results/cvtts/aasist_*/` | `results/pilot/aasist_*/` |
 
-## พื้นที่ pipeline ที่กำลังพัฒนา
+**ไม่ย้าย** raw audio, native/canonical pilot data หรือ pretrained weights เพื่อรักษา lineage/manifest paths ไม่มีการลบผลทดลองเก่า หรือแก้รายงานเก่าว่าเป็น run ใหม่
 
-| ตำแหน่ง | งานที่จะสร้าง |
-| --- | --- |
-| `configs/cvtts/` | protocol, TTS registry, run configs |
-| `src/thai_spoof/cvtts/` | shared audit/split/TTS/conditions/training/evaluation |
-| `tests/cvtts/` | tests ของ pipeline ใหม่ |
-| `data/exploration/common_voice/` | มี notebook EDA แบบง่ายแล้ว; automated QC/split ยังต้องพัฒนาต่อ |
-| `data/raw/common_voice/`, `data/raw/noise/` | ข้อมูลต้นทางตาม source/release |
-| `data/processed/cvtts/` | corpus/version, canonical/native audio, manifests, QC, jobs |
-| `docs/decisions/`, `docs/reports/cvtts/` | decision log และรายงาน |
+Historical run JSON ยังเก็บ code paths/hash ของตอนที่รันจริง หากย้อนตรวจ source ให้ใช้ Git เวอร์ชันก่อน refactor ไม่คาดหวังว่า source hash ปัจจุบันที่แก้ import/path จะตรงกับ run เก่า ดู [หมายเหตุการย้าย](../experiments/pilot/docs/PATH_MIGRATION_TH.md)
 
-Raw/processed เป็น ignored local directories ไม่อยู่ใน Git; เมื่อ clone ใหม่ขั้น audit/setup ของ pipeline ต้องสร้างด้วย `mkdir(..., exist_ok=True)` ตาม config ไม่ต้องใส่ `.gitkeep` ลงในทุก dataset folder
+## งานจริงยังไม่มีอะไรบ้าง
 
-## เส้นทางผลทดลองเมื่อเริ่มทำจริง
-
-- Dataset หนึ่งรุ่น: `data/processed/cvtts/<version>/`
-- Run config: `configs/cvtts/runs/<model>_<arm>_seed<seed>.yaml`
-- Checkpoints: `checkpoints/<model>/cvtts/<run_id>/`
-- Scores/logs/metrics: `results/cvtts/<protocol>/<run_id>/`
-- รายงานเผยแพร่ได้: `docs/reports/cvtts/`
-- ไฟล์ชั่วคราว: `tmp/<task-name>/` ห้ามใช้เป็นที่เก็บผลที่ไม่มีสำเนาอื่น
-
-อย่าสับสน smoke กับ pipeline วิจัยเต็ม: มี `scripts/train_aasist_pilot.py` สำหรับ AASIST Clean 1 epoch แล้ว โดย checkpoint/log/scores อยู่ร่วมกันใน `results/cvtts/aasist_clean_smoke/<run_id>/` ไม่ใช่เส้นทาง checkpoint main run ที่เสนอไว้ข้างบน อ่าน [คู่มือ](AASIST_CLEAN_SMOKE_TH.md) ส่วน `scripts/cvtts_pipeline.py`, multi-condition/multi-epoch/resume, RawNet2 trainer และ YAML main runs **ยังต้อง implement** ตาม [workflow ส่วน 20–21](COMMON_VOICE_PROJECT_WORKFLOW_TH.md#s20)
-
-## ไม่ใช้แล้ว
-
-SEA-Spoof/Typhoon raw/processed/EDA, extract/audit scripts ของชุดเก่า, tests ที่ผูกกับ scripts เหล่านั้น และ `RESEARCH_PLAN_TH.md` เดิมถูกลบ ไม่สร้างโฟลเดอร์ legacy/archive ซ้ำ
-
-`data/manifests/` ถูกเลิกใช้ เพื่อไม่ให้ manifest ต่าง dataset/version ปนกัน ตัวอย่าง schema ของ CLI เดิมอยู่ `examples/inference_manifest.csv` และข้อมูลจริงต้องอยู่ใต้ dataset version
-
-ดู [รายการล้างและการกู้คืน](CLEANUP_2026-10-03.md) ถ้าต้องกลับไปดูงานเก่า ห้ามถือว่าข้อมูลที่ ignore จะกู้จาก Git ได้
+ดู [Research README](../experiments/research/README.md) ตอนนี้ยังไม่มี multi-condition/main-run trainer, RawNet2 fine-tuning หรือ Final Test pipeline ใหม่ ห้ามใช้ CLI metrics เดิมแทน Dev-threshold protocol
