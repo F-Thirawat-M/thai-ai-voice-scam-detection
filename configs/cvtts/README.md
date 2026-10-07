@@ -1,5 +1,7 @@
 # Configuration ของ workflow ใหม่
 
+เพิ่ม [wayu-pilot-requirements.txt](wayu-pilot-requirements.txt) สำหรับ notebook ทดลอง Wayu 1 ข้อความ ใช้ environment **`.venv-wayu` Python 3.11** แยกจาก `.venv` หลัก ไม่ใช่ config ฝึก AASIST/RawNet2 ดู setup/ขอบเขตใน [README ของ notebook](../../data/exploration/common_voice/README.md#wayu-pilot)
+
 ยังไม่มี executable config/training pipeline ในโฟลเดอร์นี้ ให้สร้างใน T01 หลังตรวจ release/paths และยืนยันขอบเขต
 
 ไฟล์เป้าหมาย:
