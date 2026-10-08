@@ -51,6 +51,8 @@ def test_private_payload_remains_ignored(git_executable):
         "results/pilot/aasist_bn_diagnostic/example/comparison.json",
         "results/pilot/aasist_frozen_bn_curve/example/epoch_001.pt",
         "results/pilot/aasist_frozen_bn_curve/example/loss_curve.png",
+        "results/pilot/aasist_seed_stability/example/summary.json",
+        "results/pilot/aasist_seed_stability/example/seed_curves.png",
         "results/pilot/rawnet2/example/run.json",
         "results/pilot/rawnet2/example/README.md",
         "results/pilot/share/example.zip",
@@ -80,6 +82,7 @@ def test_only_intentional_public_placeholders_are_visible(git_executable):
         "results/pilot/aasist_overfit_check/README.md",
         "results/pilot/aasist_bn_diagnostic/README.md",
         "results/pilot/aasist_frozen_bn_curve/README.md",
+        "results/pilot/aasist_seed_stability/README.md",
         "results/pilot/rawnet2/README.md", "results/pilot/share/README.md",
         "experiments/pilot/notebooks/outputs/.gitkeep",
     ]

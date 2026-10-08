@@ -50,9 +50,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
+    parser.add_argument("--seed", type=int, default=42, help="seed for fixed crop, shuffle and dropout (default: 42)")
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}", args.run_id):
         parser.error("use 1-80 letters/numbers/hyphens/underscores")
+    if not 0 <= args.seed <= 2**32 - 2:
+        parser.error("seed must be between 0 and 4294967294")
     if Path(sys.prefix).resolve() != (ROOT / ".venv").resolve():
         parser.error("use project's main .venv Python")
     output = ROOT / "results/pilot/aasist_frozen_bn_curve" / args.run_id
@@ -69,7 +72,7 @@ def main():
     check_split_disjoint(rows, dev_rows)
     print("Input audit passed: Train 160 / Dev 40; three epochs; no Test.", flush=True)
 
-    seed = 42
+    seed = args.seed
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)

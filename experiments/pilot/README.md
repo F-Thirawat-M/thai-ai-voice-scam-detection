@@ -15,9 +15,10 @@
 | 7. ตรวจจำ Train 4 คลิป | [คู่มือและผล](docs/aasist/AASIST_OVERFIT_CHECK_TH.md) / [script](scripts/aasist/check_aasist_overfit.py) | ผ่าน 20 updates; 100% บนคลิปที่ฝึกซ้ำ ไม่ใช่เสียงใหม่ |
 | 8. ตรวจวิธีฝึกด้วย Train/Dev | [คู่โหมด BatchNorm](docs/aasist/AASIST_BATCHNORM_CHECK_TH.md) / [script](scripts/aasist/check_aasist_batchnorm.py) | คู่แรกทำแล้ว; BN ปกติ Dev loss 4.853 / Frozen 1.074; ยังไม่ล็อก recipe |
 | 9. Frozen BN แบบงบเล็ก 3 epochs | [กราฟและผล](docs/aasist/AASIST_FROZEN_BN_CURVE_TH.md) / [script](scripts/aasist/train_aasist_frozen_bn.py) | ทำแล้ว; Dev 1.594 → 1.074 → 0.643 → 0.338; ยังเป็น seed เดียว |
-| 10. กำหนดงบยืนยัน recipe/seed/cohort ก่อนขยายงาน | ต้องตกลงก่อนเพิ่มรอบทดลอง ไม่ไล่ Dev แบบไม่จำกัด | **ขั้นถัดไป ยังไม่ทำ** |
+| 10. ตรวจความแกว่งสาม seeds | [คู่มือ/ผล](docs/aasist/AASIST_SEED_STABILITY_TH.md) / [script](scripts/aasist/check_aasist_seed_stability.py) | ทำแล้ว; epoch-3 Dev CE เฉลี่ย 0.360 ± sample SD 0.038 บน split เดิม |
+| 11. กำหนด protocol/cohort/generators/compute budget ก่อนขยายงาน | ไม่ไล่ Dev/เพิ่ม seeds หรือ epochs แบบไม่จำกัด | **ขั้นถัดไป ยังไม่ทำ** |
 
-**ไม่ต้องรันขั้น 1–9 ใหม่ทั้งหมด** เปิดคู่มือ Frozen BN 3 epochs ของขั้น 9 เพื่อเข้าใจผลล่าสุด แล้วค่อยออกแบบขั้น 10 ไม่ใช้ checkpoint pilot ไปอ้างว่าเป็น main model และยังไม่ไป Final Test
+**ไม่ต้องรันขั้น 1–10 ใหม่ทั้งหมด** เปิดคู่มือสาม seeds ของขั้น 10 เพื่อเข้าใจผลล่าสุด แล้วค่อยออกแบบขั้น 11 ไม่ใช้ checkpoint pilot ไปอ้างว่าเป็น main model และยังไม่ไป Final Test
 
 ## แยกชนิดไฟล์ให้เข้าใจ
 
@@ -37,6 +38,7 @@
 | ผลจำ 4 คลิป | `results/pilot/aasist_overfit_check/fixed4_20261007_v1/` |
 | ผลคู่ BatchNorm | `results/pilot/aasist_bn_diagnostic/bn_pair_20261008_v1/comparison.json` |
 | กราฟ Frozen BN 3 epochs | `results/pilot/aasist_frozen_bn_curve/frozen3_20261008_v1/loss_curve.png` |
+| กราฟสาม seeds | `results/pilot/aasist_seed_stability/seeds_20261008_v1/seed_curves.png` |
 | น้ำหนักเริ่มต้น | `checkpoints/aasist/AASIST.pth` |
 
 `last.pt` ภายในแต่ละ run คือ weights ของรอบนั้น ไม่ใช่ pretrained เดิม และ CLI infer เดิมไม่ได้เลือก weights นี้อัตโนมัติ

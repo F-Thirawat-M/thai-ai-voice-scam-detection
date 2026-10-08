@@ -39,6 +39,8 @@ Train evaluation ใช้ seeded windows ที่ใช้ฝึก ส่ว�
 
 Script จำกัด 3 epochs ไม่รับ `--epochs` เพื่อไม่ขยายงบโดยไม่ได้ตกลง ใช้ run-id ใหม่ ไม่ทับ/ลบ/backup ผลเก่า หากรันแล้วไม่ต้องรันซ้ำ หากล้มเหลวจะเก็บ `status: failed` และผลที่ได้ถึงตอนนั้น ไม่สร้างผลว่า completed
 
+อัปเดตสำหรับการตรวจความแกว่ง: รับ `--seed` ได้ โดย default ยังเป็น 42 และสูตรอื่นไม่เปลี่ยน ดู [การตรวจสาม seeds](AASIST_SEED_STABILITY_TH.md) ผล seed 42 ที่รายงานด้านล่างยังคงเป็นผล/hashes เดิม ไม่ถูกเขียนใหม่
+
 Helpers อยู่ `src/thai_spoof/pilot/learning_curve.py` ทดสอบ accumulation กลุ่มท้าย, BN ไม่เปลี่ยน, RNG-neutral evaluation/reload และการเลือก checkpoint จาก Dev เท่านั้น
 
 ## ไฟล์ผล

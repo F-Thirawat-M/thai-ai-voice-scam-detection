@@ -55,6 +55,16 @@
 - ผลแสดง loss ลดลงในงบนี้ ไม่พิสูจน์ว่าไม่มี overfit/generalization หรือ best main recipe; ยังคง pilot/seed เดียว/Wayu ตัวเดียว และไม่ใช้ผลนี้แทน EER/Final Test
 - ไม่เปลี่ยน branch/index/staging ของผู้ใช้ ไม่ commit/push อัตโนมัติ งานใหม่อยู่ใน working tree ของ `feat-aasist-bn-diagnostic` ดู [คู่มือและกราฟ](../../experiments/pilot/docs/aasist/AASIST_FROZEN_BN_CURVE_TH.md)
 
+## 8 ตุลาคม 2026 — ตรวจสาม seeds บน pilot split เดิม
+
+- Branch `feat-aasist-seed-check` จากงาน curve ล่าสุดที่ผู้ใช้ commit/push แล้ว ไม่ใช้ `codex/` ไม่ commit/push อัตโนมัติ
+- กำหนดล่วงหน้า seeds 42/43/44 และ 3 epochs แต่ละ seed ใช้ 42 เดิมที่ตรวจผ่าน ฝึกใหม่เฉพาะ 43/44 จาก pretrained เดิม สูตร/Train/Dev เดิม เปลี่ยนเฉพาะ seed (crop/shuffle/dropout)
+- เพิ่ม `--seed` default 42 และ range guard โดยไม่มี recipe change; source compatibility ของผลเก่ายอมรับเฉพาะ CLI extension สามจุดและ CRLF→LF ไม่แก้ historical reports ให้มี hash ใหม่
+- Suite `seeds_20261008_v1`: epoch-3 Dev CE 0.338209/0.338875/0.404151; mean 0.360412, sample SD (`ddof=1`) 0.037881 รายงานทุก seed ไม่เลือก winner
+- ทั้งสามมี Train/Dev loss ลดลงในสาม epochs; BN buffers คงเดิม/Dev logits เริ่มต้นตรงกัน/checkpoint reload ผ่าน controls ตรวจ recipe/data/pretrained/environment/source/artifact hashes
+- สรุปเฉพาะความสม่ำเสมอใน pilot split เดิม ไม่ใช่ CI/Test/EER/cross-generator performance หรือ main recipe ที่ยืนยันแล้ว ก่อนขยายงานต้องกำหนด protocol/cohort/generators/compute budget
+- ผลจริงอยู่ `results/pilot/aasist_seed_stability/` และรอบใหม่ 43/44 อยู่ `results/pilot/aasist_frozen_bn_curve/` ไม่ขึ้น Git; raw/canonical/native audio, pretrained, ผลเก่าและ ZIP ส่งต่อไม่เปลี่ยน ดู [คู่มือ/กราฟ](../../experiments/pilot/docs/aasist/AASIST_SEED_STABILITY_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

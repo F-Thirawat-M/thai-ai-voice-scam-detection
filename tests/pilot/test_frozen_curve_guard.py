@@ -32,7 +32,10 @@ def test_existing_run_not_overwritten(driver, tmp_path, monkeypatch):
 
 
 @pytest.mark.parametrize("args", [["--run-id", "../escape"], ["--run-id", "ok", "--epochs", "10"],
-                                  ["--run-id", "ok", "--device", "invalid"]])
+                                  ["--run-id", "ok", "--device", "invalid"],
+                                  ["--run-id", "ok", "--seed", "-1"],
+                                  ["--run-id", "ok", "--seed", "4294967295"],
+                                  ["--run-id", "ok", "--seed", "not_a_number"]])
 def test_invalid_or_unbounded_arguments_rejected(driver, monkeypatch, args):
     monkeypatch.setattr(driver.sys, "argv", ["curve", *args])
     with pytest.raises(SystemExit) as error:
