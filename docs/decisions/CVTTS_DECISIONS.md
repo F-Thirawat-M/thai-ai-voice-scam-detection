@@ -45,6 +45,16 @@
 - ผลสนับสนุนให้ศึกษา Frozen BN ต่อใน Train/Dev แต่ยังไม่ล็อก main recipe/อ้างสาเหตุทั้งหมดหรือ Test accuracy/EER เป็นเพียง seed เดียว/1 epoch/Wayu ระบบเดียว
 - เก็บผลใน `results/pilot/aasist_bn_diagnostic/` ไม่แก้ data/pretrained/old runs/handoff ZIP; อ่าน [คู่มือและผล](../../experiments/pilot/docs/aasist/AASIST_BATCHNORM_CHECK_TH.md)
 
+## 8 ตุลาคม 2026 — Frozen BN 3 epochs พร้อม learning curve
+
+- ผู้ใช้อนุญาตให้ต่อจากคู่ BN โดยลอง 3 epochs กำหนดงบก่อนรัน เริ่ม pretrained เดิมใหม่ ไม่ต่อจาก checkpoint pilot เก่า
+- เพิ่มสคริปต์แยก `train_aasist_frozen_bn.py` และ helper `learning_curve.py` ไม่แก้สคริปต์/ผล BN pair ที่ stage ไว้แล้ว
+- ใช้ windows เดิมตลอด 3 epochs; recipe อื่นคงเดิม, dropout เปิดตอน Train, Frozen BN statistics คงเดิม; วัด Train/Dev ใน eval mode แยกจาก optimization loss
+- Extra Train monitoring และ fresh-model reload ไม่เปลี่ยน RNG ฝึก; บันทึก checkpoint/ตรวจ reload ทุก epoch เลือก lowest Dev CE ของ epochs 1–3 เสมอกันเลือกแรก ไม่ใช้ Test และ epoch 0 เป็น reference เท่านั้น
+- Run `frozen3_20261008_v1`: Train evaluation CE 1.785548→1.477809→0.972610→0.530635; Dev CE 1.594355→1.074124→0.642973→0.338209; BN buffers คงเดิม/reload logits ตรงกันทุก epoch
+- ผลแสดง loss ลดลงในงบนี้ ไม่พิสูจน์ว่าไม่มี overfit/generalization หรือ best main recipe; ยังคง pilot/seed เดียว/Wayu ตัวเดียว และไม่ใช้ผลนี้แทน EER/Final Test
+- ไม่เปลี่ยน branch/index/staging ของผู้ใช้ ไม่ commit/push อัตโนมัติ งานใหม่อยู่ใน working tree ของ `feat-aasist-bn-diagnostic` ดู [คู่มือและกราฟ](../../experiments/pilot/docs/aasist/AASIST_FROZEN_BN_CURVE_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

@@ -9,7 +9,7 @@ import pytest
 ROOT = Path(__file__).resolve().parents[2]
 
 
-@pytest.mark.parametrize("name", ["train_aasist_clean", "check_aasist_overfit", "check_aasist_batchnorm"])
+@pytest.mark.parametrize("name", ["train_aasist_clean", "check_aasist_overfit", "check_aasist_batchnorm", "train_aasist_frozen_bn"])
 def test_pilot_entrypoint_finds_project_root_after_move(name):
     path = ROOT / "experiments/pilot/scripts/aasist" / f"{name}.py"
     spec = importlib.util.spec_from_file_location(f"layout_{name}", path)

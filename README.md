@@ -9,7 +9,8 @@
 - Clean 1 epoch: ฝึกได้ แต่ Dev loss เพิ่ม 1.59 → 4.85
 - จำ Train 4 คลิป: ผ่านที่ 20 updates; 100% บนคลิปที่ฝึกซ้ำ ไม่ใช่ความแม่นยำกับเสียงใหม่
 - คู่ตรวจโหมด BatchNorm: BN ปกติ Dev loss 4.853 / Frozen BN 1.074 (ก่อนฝึก 1.594); คู่แรกผ่านการตรวจ controls แต่ยังไม่ใช่สูตรที่ดีที่สุดหรือผล Test
-- ขั้นถัดไป: ยืนยัน recipe ด้วยงบ Train/Dev ที่กำหนด ก่อนขยายงาน
+- Frozen BN 3 epochs: Train/Dev loss ลดลงครบ 3 รอบ; Dev หลัง epoch 3 = 0.338209, reload ผ่านทุก epoch ยังเป็น pilot/seed เดียว ไม่ใช่ Test accuracy
+- ขั้นถัดไป: กำหนดงบยืนยัน recipe/seed/cohort ก่อนขยายงาน ไม่ไล่เพิ่ม epochs ตาม Dev แบบไม่มีขอบเขต
 
 ## เปิดอ่านจากตรงนี้
 

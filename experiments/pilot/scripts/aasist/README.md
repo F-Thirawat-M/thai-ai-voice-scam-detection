@@ -3,6 +3,7 @@
 - [train_aasist_clean.py](train_aasist_clean.py): Clean 1 epoch, Train 160 / Dev 40 หรือ preflight สั้น
 - [check_aasist_overfit.py](check_aasist_overfit.py): จำ Train 4 คลิป ไม่โหลด Dev/Test
 - [check_aasist_batchnorm.py](check_aasist_batchnorm.py): เทียบสองรอบ Clean เปลี่ยนเฉพาะโหมด BN, Train 160 / Dev 40 ไม่โหลด Test
+- [train_aasist_frozen_bn.py](train_aasist_frozen_bn.py): Frozen BN แบบกำหนด 3 epochs, Train/Dev curve และ checkpoint ทุก epoch ไม่โหลด Test
 
 รันจาก project root ด้วย `.venv` หลัก ใช้ run-id ใหม่ทุกครั้ง ไม่ใช่การทดลองวิจัยหลัก ดู [คู่มือ AASIST](../../docs/aasist/README.md) สำหรับคำสั่งและข้อจำกัด
 
