@@ -2,6 +2,7 @@
 
 - `pilot_data.py`: strict loader ของ `pilot_v1` เท่านั้น และ fixed-window Dataset
 - `overfit.py`: เลือก paired Train subset และ bounded memorization diagnostic
+- `batchnorm.py`: ตั้งโหมด BN โดยไม่ปิด dropout/ไม่ freeze affine parameters และตรวจ running buffers สำหรับคู่เปรียบเทียบ
 
 ไม่ใช่ generic research Dataset หรือ main trainer โค้ดที่ใช้ร่วมกันจริงอยู่ `../cvtts/` ส่วน network/inference อยู่ `../aasist/` และ `../rawnet2/`
 

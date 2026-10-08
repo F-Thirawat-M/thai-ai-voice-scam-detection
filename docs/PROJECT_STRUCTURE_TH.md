@@ -17,7 +17,8 @@ project/
 │  │  ├─ scripts/
 │  │  │  ├─ aasist/                ← ฝั่งผู้ทำ AASIST
 │  │  │  │  ├─ train_aasist_clean.py
-│  │  │  │  └─ check_aasist_overfit.py
+│  │  │  │  ├─ check_aasist_overfit.py
+│  │  │  │  └─ check_aasist_batchnorm.py
 │  │  │  └─ rawnet2/               ← ฝั่งเพื่อน มี README ยังไม่มี trainer
 │  │  └─ docs/
 │  │     ├─ aasist/                ← คู่มือและผล AASIST
@@ -62,6 +63,7 @@ project/
 │  └─ pilot/
 │     ├─ aasist_clean_smoke/       ← ผล Train 160 / Dev 40
 │     ├─ aasist_overfit_check/     ← ผลจำ Train 4 คลิป
+│     ├─ aasist_bn_diagnostic/     ← เปรียบเทียบโหมด BN บน Train/Dev
 │     ├─ rawnet2/                  ← พื้นที่เพื่อน ยังไม่มี run
 │     └─ share/                    ← ZIP ส่งในทีม ไม่เข้า Git
 ├─ checkpoints/                   ← weights ไม่ใช่ dataset; ไฟล์จริงไม่เข้า Git

@@ -36,6 +36,15 @@
 - แก้ canonical notebook code hash ให้ normalize CRLF→LF เพื่อรันซ้ำหลัง Git checkout โดยไม่เปลี่ยน existing report; audio/manifest hashes ยังคง byte-exact
 - มีหน้าเริ่มเดียว `experiments/pilot/README.md` แสดงขั้นที่ทำแล้ว/ขั้นถัดไป; Branch `refactor-pilot-research-layout` ผู้ใช้ commit/push เอง
 
+## 8 ตุลาคม 2026 — คู่ตรวจโหมด BatchNorm ใน AASIST pilot
+
+- Branch `feat-aasist-bn-diagnostic` จาก main ที่ผู้ใช้ commit โครงสร้างแยกโมเดลแล้ว ไม่ commit/push อัตโนมัติ
+- ทำสอง Clean epochs ใหม่จาก pretrained เดิม: microbatch 2/accumulation 8, LR 1e-5, seed/data/crops/order เท่ากัน เปลี่ยนเฉพาะ BN train vs frozen; dropout ยัง train และ BN affine ยัง trainable
+- Frozen BN ใช้สถิติ pretrained normalize Train ด้วย ไม่ใช่เพียงหยุด running-buffer EMA และไม่ใช่ eval ทั้งโมเดลแบบการจำ 4 คลิป
+- คู่ `bn_pair_20261008_v1`: Dev loss เริ่ม 1.594355 ทั้งคู่; Train BN หลังฝึก 4.853433, Frozen BN 1.074124; controls/BN buffers/fresh-model reload ผ่าน
+- ผลสนับสนุนให้ศึกษา Frozen BN ต่อใน Train/Dev แต่ยังไม่ล็อก main recipe/อ้างสาเหตุทั้งหมดหรือ Test accuracy/EER เป็นเพียง seed เดียว/1 epoch/Wayu ระบบเดียว
+- เก็บผลใน `results/pilot/aasist_bn_diagnostic/` ไม่แก้ data/pretrained/old runs/handoff ZIP; อ่าน [คู่มือและผล](../../experiments/pilot/docs/aasist/AASIST_BATCHNORM_CHECK_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

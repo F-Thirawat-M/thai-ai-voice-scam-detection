@@ -13,9 +13,10 @@
 | 5. จัดคน+AI เป็น WAV mono 16 kHz | [Canonical notebook](notebooks/common_voice_pilot_audio.ipynb) | ทำแล้ว; 200 คลิปเต็มความยาว |
 | 6. ลอง fine-tune Clean 1 epoch | [คู่มือและผล](docs/aasist/AASIST_CLEAN_SMOKE_TH.md) / [script](scripts/aasist/train_aasist_clean.py) | ทำแล้ว; Dev loss 1.59 → 4.85 (แย่ลง) |
 | 7. ตรวจจำ Train 4 คลิป | [คู่มือและผล](docs/aasist/AASIST_OVERFIT_CHECK_TH.md) / [script](scripts/aasist/check_aasist_overfit.py) | ผ่าน 20 updates; 100% บนคลิปที่ฝึกซ้ำ ไม่ใช่เสียงใหม่ |
-| 8. ตรวจวิธีฝึกด้วย Train/Dev | ยังต้องพัฒนา diagnostic เปลี่ยนทีละปัจจัย | **ขั้นถัดไป ยังไม่ทำ** |
+| 8. ตรวจวิธีฝึกด้วย Train/Dev | [คู่โหมด BatchNorm](docs/aasist/AASIST_BATCHNORM_CHECK_TH.md) / [script](scripts/aasist/check_aasist_batchnorm.py) | คู่แรกทำแล้ว; BN ปกติ Dev loss 4.853 / Frozen 1.074; ยังไม่ล็อก recipe |
+| 9. ยืนยัน recipe ด้วยงบ Train/Dev ที่กำหนด | ต้องออกแบบการทดลองถัดไปก่อนขยายจำนวน epochs/seed | **ขั้นถัดไป ยังไม่ทำ** |
 
-**ไม่ต้องรันขั้น 1–7 ใหม่ทั้งหมด** เปิดคู่มือของขั้น 7 เพื่อเข้าใจผลล่าสุด แล้วค่อยเริ่มขั้น 8 ไม่ใช้ checkpoint ที่จำ 4 คลิปไปเป็น main model และยังไม่ไป Final Test
+**ไม่ต้องรันขั้น 1–8 ใหม่ทั้งหมด** เปิดคู่มือ BatchNorm ของขั้น 8 เพื่อเข้าใจผลล่าสุด แล้วค่อยออกแบบขั้น 9 ไม่ใช้ checkpoint ที่จำ 4 คลิปไปเป็น main model และยังไม่ไป Final Test
 
 ## แยกชนิดไฟล์ให้เข้าใจ
 
@@ -33,6 +34,7 @@
 | เสียงและรายการข้อมูล pilot | `data/processed/cvtts/pilot_v1/` |
 | ผล Clean 1 epoch | `results/pilot/aasist_clean_smoke/clean_epoch1_20261007_v1/` |
 | ผลจำ 4 คลิป | `results/pilot/aasist_overfit_check/fixed4_20261007_v1/` |
+| ผลคู่ BatchNorm | `results/pilot/aasist_bn_diagnostic/bn_pair_20261008_v1/comparison.json` |
 | น้ำหนักเริ่มต้น | `checkpoints/aasist/AASIST.pth` |
 
 `last.pt` ภายในแต่ละ run คือ weights ของรอบนั้น ไม่ใช่ pretrained เดิม และ CLI infer เดิมไม่ได้เลือก weights นี้อัตโนมัติ
