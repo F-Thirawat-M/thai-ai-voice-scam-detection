@@ -13,12 +13,17 @@ def trainer_module():
     return module
 
 
-def test_existing_run_is_not_overwritten(trainer_module, tmp_path, monkeypatch):
+@pytest.mark.parametrize("mode", [None, "train", "frozen"])
+def test_existing_run_is_not_overwritten(trainer_module, tmp_path, monkeypatch, mode):
     module = trainer_module
     monkeypatch.setattr(module, "ROOT", tmp_path)
     monkeypatch.setattr(module.sys, "prefix", str(tmp_path / ".venv"))
-    monkeypatch.setattr(module.sys, "argv", ["train", "--run-id", "existing"])
-    output = tmp_path / "results/pilot/aasist_clean_smoke/existing"
+    arguments = ["train", "--run-id", "existing"]
+    if mode:
+        arguments += ["--diagnostic-bn", mode]
+    monkeypatch.setattr(module.sys, "argv", arguments)
+    namespace = "aasist_bn_diagnostic" if mode else "aasist_clean_smoke"
+    output = tmp_path / "results/pilot" / namespace / "existing"
     output.mkdir(parents=True)
     marker = output / "run.json"
     marker.write_text("original run", encoding="utf-8")
@@ -28,7 +33,9 @@ def test_existing_run_is_not_overwritten(trainer_module, tmp_path, monkeypatch):
     assert list(output.iterdir()) == [marker]
 
 
-@pytest.mark.parametrize("arguments", [["--run-id", "../escape"], ["--run-id", "valid", "--max-batches", "3"]])
+@pytest.mark.parametrize("arguments", [["--run-id", "../escape"], ["--run-id", "valid", "--max-batches", "3"],
+                                      ["--run-id", "valid", "--diagnostic-bn", "invalid"],
+                                      ["--run-id", "valid", "--diagnostic-bn", "frozen", "--max-batches", "2"]])
 def test_invalid_run_arguments_rejected_before_loading_data(trainer_module, monkeypatch, arguments):
     monkeypatch.setattr(trainer_module.sys, "argv", ["train", *arguments])
     with pytest.raises(SystemExit) as error:

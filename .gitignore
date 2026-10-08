@@ -37,6 +37,9 @@ results/**
 !results/README.md
 !results/pilot/aasist_clean_smoke/README.md
 !results/pilot/aasist_overfit_check/README.md
+!results/pilot/aasist_bn_diagnostic/README.md
+!results/pilot/aasist_frozen_bn_curve/README.md
+!results/pilot/aasist_seed_stability/README.md
 !results/pilot/rawnet2/README.md
 !results/pilot/share/README.md
 checkpoints/**

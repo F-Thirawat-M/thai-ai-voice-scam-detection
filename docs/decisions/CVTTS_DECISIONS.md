@@ -36,6 +36,35 @@
 - แก้ canonical notebook code hash ให้ normalize CRLF→LF เพื่อรันซ้ำหลัง Git checkout โดยไม่เปลี่ยน existing report; audio/manifest hashes ยังคง byte-exact
 - มีหน้าเริ่มเดียว `experiments/pilot/README.md` แสดงขั้นที่ทำแล้ว/ขั้นถัดไป; Branch `refactor-pilot-research-layout` ผู้ใช้ commit/push เอง
 
+## 8 ตุลาคม 2026 — คู่ตรวจโหมด BatchNorm ใน AASIST pilot
+
+- Branch `feat-aasist-bn-diagnostic` จาก main ที่ผู้ใช้ commit โครงสร้างแยกโมเดลแล้ว ไม่ commit/push อัตโนมัติ
+- ทำสอง Clean epochs ใหม่จาก pretrained เดิม: microbatch 2/accumulation 8, LR 1e-5, seed/data/crops/order เท่ากัน เปลี่ยนเฉพาะ BN train vs frozen; dropout ยัง train และ BN affine ยัง trainable
+- Frozen BN ใช้สถิติ pretrained normalize Train ด้วย ไม่ใช่เพียงหยุด running-buffer EMA และไม่ใช่ eval ทั้งโมเดลแบบการจำ 4 คลิป
+- คู่ `bn_pair_20261008_v1`: Dev loss เริ่ม 1.594355 ทั้งคู่; Train BN หลังฝึก 4.853433, Frozen BN 1.074124; controls/BN buffers/fresh-model reload ผ่าน
+- ผลสนับสนุนให้ศึกษา Frozen BN ต่อใน Train/Dev แต่ยังไม่ล็อก main recipe/อ้างสาเหตุทั้งหมดหรือ Test accuracy/EER เป็นเพียง seed เดียว/1 epoch/Wayu ระบบเดียว
+- เก็บผลใน `results/pilot/aasist_bn_diagnostic/` ไม่แก้ data/pretrained/old runs/handoff ZIP; อ่าน [คู่มือและผล](../../experiments/pilot/docs/aasist/AASIST_BATCHNORM_CHECK_TH.md)
+
+## 8 ตุลาคม 2026 — Frozen BN 3 epochs พร้อม learning curve
+
+- ผู้ใช้อนุญาตให้ต่อจากคู่ BN โดยลอง 3 epochs กำหนดงบก่อนรัน เริ่ม pretrained เดิมใหม่ ไม่ต่อจาก checkpoint pilot เก่า
+- เพิ่มสคริปต์แยก `train_aasist_frozen_bn.py` และ helper `learning_curve.py` ไม่แก้สคริปต์/ผล BN pair ที่ stage ไว้แล้ว
+- ใช้ windows เดิมตลอด 3 epochs; recipe อื่นคงเดิม, dropout เปิดตอน Train, Frozen BN statistics คงเดิม; วัด Train/Dev ใน eval mode แยกจาก optimization loss
+- Extra Train monitoring และ fresh-model reload ไม่เปลี่ยน RNG ฝึก; บันทึก checkpoint/ตรวจ reload ทุก epoch เลือก lowest Dev CE ของ epochs 1–3 เสมอกันเลือกแรก ไม่ใช้ Test และ epoch 0 เป็น reference เท่านั้น
+- Run `frozen3_20261008_v1`: Train evaluation CE 1.785548→1.477809→0.972610→0.530635; Dev CE 1.594355→1.074124→0.642973→0.338209; BN buffers คงเดิม/reload logits ตรงกันทุก epoch
+- ผลแสดง loss ลดลงในงบนี้ ไม่พิสูจน์ว่าไม่มี overfit/generalization หรือ best main recipe; ยังคง pilot/seed เดียว/Wayu ตัวเดียว และไม่ใช้ผลนี้แทน EER/Final Test
+- ไม่เปลี่ยน branch/index/staging ของผู้ใช้ ไม่ commit/push อัตโนมัติ งานใหม่อยู่ใน working tree ของ `feat-aasist-bn-diagnostic` ดู [คู่มือและกราฟ](../../experiments/pilot/docs/aasist/AASIST_FROZEN_BN_CURVE_TH.md)
+
+## 8 ตุลาคม 2026 — ตรวจสาม seeds บน pilot split เดิม
+
+- Branch `feat-aasist-seed-check` จากงาน curve ล่าสุดที่ผู้ใช้ commit/push แล้ว ไม่ใช้ `codex/` ไม่ commit/push อัตโนมัติ
+- กำหนดล่วงหน้า seeds 42/43/44 และ 3 epochs แต่ละ seed ใช้ 42 เดิมที่ตรวจผ่าน ฝึกใหม่เฉพาะ 43/44 จาก pretrained เดิม สูตร/Train/Dev เดิม เปลี่ยนเฉพาะ seed (crop/shuffle/dropout)
+- เพิ่ม `--seed` default 42 และ range guard โดยไม่มี recipe change; source compatibility ของผลเก่ายอมรับเฉพาะ CLI extension สามจุดและ CRLF→LF ไม่แก้ historical reports ให้มี hash ใหม่
+- Suite `seeds_20261008_v1`: epoch-3 Dev CE 0.338209/0.338875/0.404151; mean 0.360412, sample SD (`ddof=1`) 0.037881 รายงานทุก seed ไม่เลือก winner
+- ทั้งสามมี Train/Dev loss ลดลงในสาม epochs; BN buffers คงเดิม/Dev logits เริ่มต้นตรงกัน/checkpoint reload ผ่าน controls ตรวจ recipe/data/pretrained/environment/source/artifact hashes
+- สรุปเฉพาะความสม่ำเสมอใน pilot split เดิม ไม่ใช่ CI/Test/EER/cross-generator performance หรือ main recipe ที่ยืนยันแล้ว ก่อนขยายงานต้องกำหนด protocol/cohort/generators/compute budget
+- ผลจริงอยู่ `results/pilot/aasist_seed_stability/` และรอบใหม่ 43/44 อยู่ `results/pilot/aasist_frozen_bn_curve/` ไม่ขึ้น Git; raw/canonical/native audio, pretrained, ผลเก่าและ ZIP ส่งต่อไม่เปลี่ยน ดู [คู่มือ/กราฟ](../../experiments/pilot/docs/aasist/AASIST_SEED_STABILITY_TH.md)
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์

@@ -28,6 +28,7 @@ from thai_spoof.pilot.pilot_data import (
     LABEL_TO_INT, CleanPilotDataset, check_split_disjoint, file_sha256, load_pilot_split,
 )
 from thai_spoof.cvtts.provenance import verify_preparation_code
+from thai_spoof.pilot.batchnorm import configure_training_mode, snapshot_bn_buffers, summarize_bn_changes
 
 
 def evaluate(model, loader, device):
@@ -58,14 +59,19 @@ def main():
     parser.add_argument("--run-id", required=True, help="new output directory name; never overwrite an existing run")
     parser.add_argument("--device", choices=["auto", "cpu", "cuda"], default="auto")
     parser.add_argument("--max-batches", type=int, default=0, help="0 = all 80 Train microbatches; 2 = separate short preflight")
+    parser.add_argument("--diagnostic-bn", choices=["train", "frozen"], default=None,
+                        help="optional BN comparison arm; separate output namespace; no Test")
     args = parser.parse_args()
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,79}", args.run_id):
         parser.error("run-id must be 1-80 letters, numbers, hyphens or underscores")
     if args.max_batches not in {0, 2}:
         parser.error("max-batches must be 0 (full epoch) or 2 (preflight)")
+    if args.diagnostic_bn is not None and args.max_batches:
+        parser.error("BN diagnostic requires full Train epoch, not preflight")
     if sys.prefix != str(ROOT / ".venv"):
         parser.error("use the project's main .venv Python, not .venv-wayu")
-    output = ROOT / "results/pilot/aasist_clean_smoke" / args.run_id
+    output_namespace = "aasist_bn_diagnostic" if args.diagnostic_bn is not None else "aasist_clean_smoke"
+    output = ROOT / "results/pilot" / output_namespace / args.run_id
     if output.exists():
         raise FileExistsError(f"run exists; use a NEW --run-id, do not delete or overwrite: {output}")
 
@@ -112,7 +118,8 @@ def main():
     original_parameters = {name: p.detach().cpu().clone() for name, p in model.named_parameters()}
     batch_count = args.max_batches or len(train_loader)
     config = {
-        "scope": "feasibility_smoke_only_not_main_research", "seed": seed, "epochs": 1,
+        "scope": ("one_factor_bn_pilot_not_main_research" if args.diagnostic_bn is not None
+                  else "feasibility_smoke_only_not_main_research"), "seed": seed, "epochs": 1,
         "max_batches": args.max_batches, "microbatch": 2, "gradient_accumulation": 8,
         "full_group_effective_batch": 16, "num_workers": 0,
         "optimizer": "AdamW", "learning_rate": 1e-5, "weight_decay": 1e-4,
@@ -125,11 +132,13 @@ def main():
         "score_type": "bonafide_margin_v1", "checkpoint_selection": "last_only_no_best_selection",
         "resume_supported": False, "final_test_accessed": False, "generator_count": 1,
         "preflight_subset_only": bool(args.max_batches),
+        "batchnorm_mode": args.diagnostic_bn or "train", "dropout_mode_during_training": "train",
+        "bn_affine_parameters_trainable": True,
     }
     code_files = ["experiments/pilot/scripts/aasist/train_aasist_clean.py", "src/thai_spoof/pilot/pilot_data.py",
                   "src/thai_spoof/cvtts/windows.py", "src/thai_spoof/cvtts/provenance.py", "src/thai_spoof/aasist/detector.py",
                   "src/thai_spoof/aasist/config.json", "external/aasist/models/AASIST.py",
-                  "external/aasist/data_utils.py"]
+                  "external/aasist/data_utils.py", "src/thai_spoof/pilot/batchnorm.py"]
     run = {
         "run_id": args.run_id, "status": "running", "started_utc": datetime.now(timezone.utc).isoformat(),
         "config": config, "canonical_report_sha256": file_sha256(report_path),
@@ -151,7 +160,8 @@ def main():
     try:
         before_loss, before_scores = evaluate(model, dev_loader, device)
         print(f"Pretrained Dev loss: {before_loss:.6f} (diagnostic only, not Test accuracy)", flush=True)
-        model.train()
+        bn_before = snapshot_bn_buffers(model)
+        bn_layer_count = configure_training_mode(model, config["batchnorm_mode"])
         optimizer.zero_grad(set_to_none=True)
         microbatches = []
         updates = []
@@ -189,6 +199,11 @@ def main():
         changed = sum(not torch.equal(p.detach().cpu(), original_parameters[name]) for name, p in model.named_parameters())
         if not changed:
             raise RuntimeError("no model parameters changed")
+        bn_check = summarize_bn_changes(bn_before, snapshot_bn_buffers(model))
+        if config["batchnorm_mode"] == "frozen" and bn_check["changed_buffer_count"]:
+            raise RuntimeError("frozen BN buffers changed")
+        if config["batchnorm_mode"] == "train" and not bn_check["changed_buffer_count"]:
+            raise RuntimeError("train BN buffers unexpectedly did not change")
         after_loss, after_scores = evaluate(model, dev_loader, device)
         saved_model = {name: value.detach().cpu().clone() for name, value in model.state_dict().items()}
         torch.save({"model": saved_model, "optimizer": optimizer.state_dict(), "config": config,
@@ -217,6 +232,7 @@ def main():
                     "peak_cuda_reserved_bytes": torch.cuda.max_memory_reserved(device) if device.type == "cuda" else None,
                     "checkpoint_sha256": file_sha256(output / "last.pt"),
                     "exposures": {label: sum(r["label"] == label for r in exposures) for label in LABEL_TO_INT},
+                    "batchnorm_audit": {"layer_count": bn_layer_count, **bn_check},
                     "not_evidence_of_generalization_or_fair_clean_mixed_comparison": True})
         with (output / "dev_scores.csv").open("x", encoding="utf-8", newline="") as handle:
             writer = csv.DictWriter(handle, fieldnames=["sample_id", "label", "stage", "spoof_logit", "bonafide_logit", "bonafide_margin"])

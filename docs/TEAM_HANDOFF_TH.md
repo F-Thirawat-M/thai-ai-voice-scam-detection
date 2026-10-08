@@ -8,7 +8,7 @@
 | คู่มือโมเดล | `experiments/pilot/docs/aasist/` | `experiments/pilot/docs/rawnet2/` | เอกสารอื่นใน `experiments/pilot/docs/` |
 | Network/adapter | `src/thai_spoof/aasist/` | `src/thai_spoof/rawnet2/` | `src/thai_spoof/pilot/` และ `cvtts/` |
 | น้ำหนักเริ่มต้น | `checkpoints/aasist/` | `checkpoints/rawnet2/` | ไม่ใช้ weights ข้ามโมเดล |
-| ผล pilot | `results/pilot/aasist_clean_smoke/`, `aasist_overfit_check/` | `results/pilot/rawnet2/<run_id>/` (ยังไม่มี run) | — |
+| ผล pilot | `results/pilot/aasist_clean_smoke/`, `aasist_overfit_check/`, `aasist_bn_diagnostic/`, `aasist_frozen_bn_curve/`, `aasist_seed_stability/` | `results/pilot/rawnet2/<run_id>/` (ยังไม่มี run) | — |
 | Dataset/notebooks | — | — | `data/processed/cvtts/pilot_v1/`, `experiments/pilot/notebooks/` |
 
 ไม่คัดลอก dataset เป็นสองชุด การเปรียบเทียบใช้ manifest/split/label และการเตรียมเสียงเดียวกัน ส่วนการปรับ recipe ของแต่ละโมเดลต้องบันทึกให้ชัด
