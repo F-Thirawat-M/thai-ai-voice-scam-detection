@@ -17,6 +17,7 @@
 | 9. Frozen BN แบบงบเล็ก 3 epochs | [กราฟและผล](docs/aasist/AASIST_FROZEN_BN_CURVE_TH.md) / [script](scripts/aasist/train_aasist_frozen_bn.py) | ทำแล้ว; Dev 1.594 → 1.074 → 0.643 → 0.338; ยังเป็น seed เดียว |
 | 10. ตรวจความแกว่งสาม seeds | [คู่มือ/ผล](docs/aasist/AASIST_SEED_STABILITY_TH.md) / [script](scripts/aasist/check_aasist_seed_stability.py) | ทำแล้ว; epoch-3 Dev CE เฉลี่ย 0.360 ± sample SD 0.038 บน split เดิม |
 | 11. กำหนด protocol/cohort/generators/compute budget ก่อนขยายงาน | ไม่ไล่ Dev/เพิ่ม seeds หรือ epochs แบบไม่จำกัด | **ขั้นถัดไป ยังไม่ทำ** |
+| 12. Voice cloning feasibility (F5-TTS-THAI / OmniVoice) | [บรีฟ](docs/cloning/CLONING_PILOT_BRIEF_TH.md) | **ยังไม่ทำ**; ใช้ผู้พูด Train pilot เป็นต้นแบบ; protocol อยู่ [`RESEARCH_PROTOCOL_V2_TH.md`](../../docs/RESEARCH_PROTOCOL_V2_TH.md) |
 
 **ไม่ต้องรันขั้น 1–10 ใหม่ทั้งหมด** เปิดคู่มือสาม seeds ของขั้น 10 เพื่อเข้าใจผลล่าสุด แล้วค่อยออกแบบขั้น 11 ไม่ใช้ checkpoint pilot ไปอ้างว่าเป็น main model และยังไม่ไป Final Test
 
@@ -26,6 +27,7 @@
 - `notebooks/outputs/`: สำเนาที่รันแล้ว มีตารางและเสียงให้ฟัง ไม่เข้า Git
 - `scripts/aasist/`: คำสั่งลองฝึก AASIST ฝั่งผู้ทำ AASIST ไม่ใช่ TTS ไม่ใช่ main-run trainer
 - `scripts/rawnet2/`: พื้นที่คำสั่ง RawNet2 ฝั่งเพื่อน ตอนนี้มี README ยังไม่มี trainer
+- `docs/cloning/`: บรีฟ/ผล pilot voice cloning (ยังไม่เริ่ม)
 - `docs/aasist/`, `docs/rawnet2/`: คู่มือแยกโมเดล ส่วนเอกสาร notebook/การย้ายไฟล์ยังใช้ร่วมกัน
 - `../../src/thai_spoof/pilot/`: Dataset และฟังก์ชัน diagnostic ที่ scripts เรียก ไม่ต้องเปิดแก้เองเพื่อเริ่มอ่าน
 

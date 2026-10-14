@@ -55,3 +55,6 @@ _pilot_handoff/
 
 # The setup script downloads this upstream research repository when needed.
 external/aasist/
+
+# Personal Claude Code settings (not shared)
+.claude/settings.local.json

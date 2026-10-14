@@ -65,10 +65,26 @@
 - สรุปเฉพาะความสม่ำเสมอใน pilot split เดิม ไม่ใช่ CI/Test/EER/cross-generator performance หรือ main recipe ที่ยืนยันแล้ว ก่อนขยายงานต้องกำหนด protocol/cohort/generators/compute budget
 - ผลจริงอยู่ `results/pilot/aasist_seed_stability/` และรอบใหม่ 43/44 อยู่ `results/pilot/aasist_frozen_bn_curve/` ไม่ขึ้น Git; raw/canonical/native audio, pretrained, ผลเก่าและ ZIP ส่งต่อไม่เปลี่ยน ดู [คู่มือ/กราฟ](../../experiments/pilot/docs/aasist/AASIST_SEED_STABILITY_TH.md)
 
+## 14 ตุลาคม 2026 — ทดลองเปลี่ยนเสียงปลอมเป็น voice cloning (feasibility)
+
+- หลัง progress อาจารย์ให้ระบุตัวแปรต้น/ตาม/ควบคุมและสมมติฐานให้ชัด ผู้ใช้ตัดสินใจลอง zero-shot voice cloning แทน TTS เสียงสำเร็จรูป เพื่อให้ตรงชื่อหัวข้อมากขึ้น
+- แกน 2×2 ไม่เปลี่ยน: ตัวแปรต้น = สภาพข้อมูล fine-tune; ตัวแปรของ generator ทั้งหมดเป็นตัวแปรควบคุม (สร้างครั้งเดียว freeze ใช้ร่วมทุกสูตร)
+- Candidates: G1 `VIZINTZOR/F5-TTS-THAI` (ฝึกจาก Common Voice Thai → pretraining-overlap risk), G2 `k2-fsa/OmniVoice`; Wayu เป็นสำรอง/อาจเป็น held-out generator
+- Stage A ใช้เสียงต้นแบบที่ยินยอมเท่านั้น; **ยังไม่อนุญาตให้ clone ผู้พูด Common Voice** จนกว่าอาจารย์ยืนยันประเด็นจริยธรรม
+- ยังไม่ได้ติดตั้ง/ดาวน์โหลด/สร้างเสียง; บรีฟอยู่ `experiments/pilot/docs/cloning/CLONING_PILOT_BRIEF_TH.md`
+- สมมติฐาน (H0 fine-tune ดีกว่า pretrained, H1 สภาพโทรศัพท์ทำให้แย่ลง, H2 ฝึกหลายสภาพช่วย, H3 ไม่เสีย Clean เกิน margin, H4 cloning ตรวจยากกว่า TTS) และชื่อเรียกสภาพเสียงใหม่ ยังอยู่ระหว่างหารือ ไม่ได้แก้เอกสารหลัก
+
+## 14 ตุลาคม 2026 — ล็อก protocol v2 และอนุญาต clone ผู้พูด Common Voice
+
+- ผู้ใช้อนุญาตให้ clone ผู้พูด Common Voice เพื่อการวิจัยตรวจจับ (เป็นการตัดสินใจของผู้ใช้ ยังไม่ได้รับการยืนยันจากอาจารย์) ห้ามเผยแพร่เสียง/ID
+- ผู้ใช้ให้เลือกค่าที่ค้างตามข้อเสนอ: SNR 10/5 dB (ตาม Ass6) ทั้ง Train/Test, เกณฑ์เลือก checkpoint ตาม Ass6, margin ของ H3 = 2 pp, seeds 42/43/44, ชื่อสภาพเสียงใหม่ (original / added noise / simulated telephone; `orig` / `mct`)
+- สมมติฐาน H0–H4 และตัวแปรสรุปใน `docs/RESEARCH_PROTOCOL_V2_TH.md`; เมื่อขัดกับ workflow เดิมให้ยึด protocol v2
+- บรีฟ cloning pilot ปรับให้ใช้คลิปต้นแบบจาก Common Voice (Train pilot) แทนเสียงของผู้ใช้
+
 ## ยังรอยืนยันก่อนล็อก protocol
 
 - Common Voice exact release/root/สิทธิ์
-- fixed experiment หรือ adaptive Dev loop; TTS-only หรือจำเป็นต้อง cloning
+- fixed experiment หรือ adaptive Dev loop; TTS-only หรือ cloning (ผู้ใช้เลือกลอง cloning 14 ต.ค.; รออาจารย์ยืนยันจริยธรรมการ clone ผู้พูด Common Voice)
 - ขอบเขต demographic analysis และ held-out generator
 - generators/revisions, cohort size, noise pool, telephone profile, tuning/compute budget
 
